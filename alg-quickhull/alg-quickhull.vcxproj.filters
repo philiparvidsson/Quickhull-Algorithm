@@ -33,7 +33,7 @@
     <ClCompile Include="src\benchmark.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\demo.c">
+    <ClCompile Include="src\sandbox.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClInclude Include="src\benchmark.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\demo.h">
+    <ClInclude Include="src\sandbox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

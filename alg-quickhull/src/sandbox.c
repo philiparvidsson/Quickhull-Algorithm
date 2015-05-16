@@ -1,12 +1,12 @@
 /*------------------------------------------------------------------------------
- * File: demo.c
+ * File: sandbox.c
  * Created: May 16, 2015
  * Last changed: May 16, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
  * Description:
- *   Demo-funktioner för att visualisera alltihop på roliga sätt.
+ *   Sandbox-funktioner för att visualisera alltihop på roliga sätt.
  *
  * Changes:
  *
@@ -28,13 +28,13 @@
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Constant: DemoSpeed
+ * Constant: Speed
  *
  * Description:
- *   Hastighetsmultipel för demons körningshastighet vad gäller simulering av
+ *   Hastighetsmultipel för körningshastighet vad gäller simulering av
  *   punkterna. 0.5 = halv hastighet, 1.0 = normal, 2.0 = dubbel, etc.
  *------------------------------------*/
-#define DemoSpeed 0.5f
+#define Speed 0.5f
 
 /*--------------------------------------
  * Constant: FrameRate
@@ -201,7 +201,7 @@ static void ToggleQuickhull(void *arg) {
 }
 
 /*----------------------------------------------------------------------------*/
-/* Här nedan är demolägets mest relevanta funktioner, som meddelanden,        */
+/* Här nedan är sandbox-lägets mest relevanta funktioner, som meddelanden,        */
 /* uppdatering av punkter, rendering etc.                                     */
 /*----------------------------------------------------------------------------*/
 
@@ -352,14 +352,14 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
 }
 
 /*--------------------------------------
- * Function: RunDemo()
+ * Function: RunSandbox()
  * Parameters:
  *   numPoints  Antal punkter att använda vid uträkning av det konvexa höljet.
  *
  * Description:
- *   Kör programmet i demo-läge.
+ *   Kör programmet i sandbox-läge.
  *------------------------------------*/
-void RunDemo(int numPoints) {
+void RunSandbox(int numPoints) {
     // Vi skapar uppsättningen med punkter som ska visas på skärmen.
     printf("Creating random points...");
     pointsetT ps = CreatePoints(numPoints);
@@ -412,7 +412,7 @@ void RunDemo(int numPoints) {
     InitGraphics();
     SetFrameRate(FrameRate);
 
-    // Här ställer vi in lite roliga knappar så att demon blir lite mer
+    // Här ställer vi in lite roliga knappar så att sandbox blir lite mer
     // interaktiv och rolig.
     OnKeyPress('b', ToggleBlackHole  , NULL);
     OnKeyPress('d', ToggleDamping    , NULL);
@@ -431,7 +431,7 @@ void RunDemo(int numPoints) {
 
     float dt = 0.0f;
     while (WindowIsOpen()) {
-        dt += DemoSpeed / FrameRate;
+        dt += Speed / FrameRate;
         while (dt > StepSize) {
             UpdatePoints(aps, ps, vps, hull, StepSize);
             dt -= StepSize;

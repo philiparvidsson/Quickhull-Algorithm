@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: alg-quickhull.c
  * Created: May 15, 2015
- * Last changed: May 15, 2015
+ * Last changed: May 16, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
@@ -19,8 +19,8 @@
 
 #include "benchmark.h"
 #include "common.h"
-#include "demo.h"
 #include "io.h"
+#include "sandbox.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,9 +38,9 @@
  *   Skriver ut introduktionsmeddelandet.
  *------------------------------------*/
 static void PrintIntroMessage() {
-    printf("Quickhull Demo v%s by %s\n"
+    printf("Quickhull Sandbox v%s by %s\n"
            "\n"
-           " - The most awesome Quickhull demo ever made!\n\n",
+           " - The most awesome Quickhull sandbox/benchmark ever made!\n\n",
            ProgramVersion, ProgramAuthors);
 }
 
@@ -70,5 +70,5 @@ main() {
 #endif
 
     if (benchmark) RunBenchmark(numPoints);
-    else           RunDemo     (numPoints);
+    else           RunSandbox  (numPoints);
 }

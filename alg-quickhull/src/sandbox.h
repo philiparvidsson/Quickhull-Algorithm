@@ -1,32 +1,32 @@
 /*------------------------------------------------------------------------------
- * File: demo.h
+ * File: sandbox.h
  * Created: May 16, 2015
  * Last changed: May 16, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
  * Description:
- *   Demo-funktioner för att visualisera alltihop på roliga sätt.
+ *   Sandbox-funktioner för att visualisera alltihop på roliga sätt.
  *
  * Changes:
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef Demo_h
-#define Demo_h
+#ifndef Sandbox_h
+#define Sandbox_h
 
 /*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Function: RunDemo()
+ * Function: RunSandbox()
  * Parameters:
  *   numPoints  Antal punkter att använda vid uträkning av det konvexa höljet.
  *
  * Description:
- *   Kör programmet i demo-läge.
+ *   Kör programmet i sandbox-läge.
  *------------------------------------*/
-void RunDemo(int numPoints);
+void RunSandbox(int numPoints);
 
-#endif // Demo_h
+#endif // Sandbox_h

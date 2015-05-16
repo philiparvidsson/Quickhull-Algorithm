@@ -20,6 +20,7 @@
 #include "common.h"
 #include "debug.h"
 #include "graphics.h"
+#include "sandbox.h"
 
 #include <tchar.h>
 #include <Windows.h>
@@ -46,7 +47,7 @@
  * Description:
  *   Grafikfönstrets titel.
  *------------------------------------*/
-#define WindowTitle _T("Quickhull Demo")
+#define WindowTitle _T("Quickhull Sandbox")
 
 /*------------------------------------------------
  * TYPES
@@ -365,11 +366,6 @@ void ClearCanvas(float red, float green, float blue) {
 
     glClearColor(red, green, blue, 1.0f);
     glClear     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glBegin(GL_LINE);
-    glVertex2f(-0.5f, -0.5f);
-    glVertex2f(0.5f, 0.5f);
-    glEnd();
 }
 
 /*--------------------------------------
