@@ -432,13 +432,13 @@ void RunSandbox(int numPoints) {
     float dt = 0.0f;
     while (WindowIsOpen()) {
         dt += Speed / FrameRate;
-        while (dt > StepSize) {
+        while (dt >= StepSize) {
             UpdatePoints(aps, ps, vps, hull, StepSize);
             dt -= StepSize;
-        }
 
-        if (useQuickhull) Quickhull(ps, &hull);
-        else              BruteforceHull(ps, &hull);
+            if (useQuickhull) Quickhull     (ps, &hull);
+            else              BruteforceHull(ps, &hull);
+        }
 
         // Dags att rita upp allting! Rensa ritytan!
         ClearCanvas(0.992f, 0.964f, 0.890f);
