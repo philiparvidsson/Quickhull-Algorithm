@@ -148,8 +148,19 @@ void BruteforceHull(pointsetT ps, hullT *hull) {
     // -
 }
 
+/*--------------------------------------
+ * Function: Quickhull()
+ * Parameters:
+ *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
+ *   hull  En pekare till höljet.
+ *
+ * Description:
+ *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
+ *   Quickhull.
+ *------------------------------------*/
 void Quickhull(pointsetT ps, hullT *hull) {
-    pointT *a = &ps.points[0],
+    BruteforceHull(ps, hull);
+    /*pointT *a = &ps.points[0],
            *b = a;
 
     for (int i = 1; i < ps.numPoints; i++) {
@@ -157,7 +168,7 @@ void Quickhull(pointsetT ps, hullT *hull) {
 
         if (p->x < a->x) a = p;
         if (p->x > b->x) b = p;
-    }
+    }*/
 }
 
 /*--------------------------------------

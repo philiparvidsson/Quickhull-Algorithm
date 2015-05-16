@@ -115,6 +115,18 @@ void FreeHull(hullT hull);
 void BruteforceHull(pointsetT ps, hullT *hull);
 
 /*--------------------------------------
+ * Function: Quickhull()
+ * Parameters:
+ *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
+ *   hull  En pekare till höljet.
+ *
+ * Description:
+ *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
+ *   Quickhull.
+ *------------------------------------*/
+void Quickhull(pointsetT ps, hullT *hull);
+
+/*--------------------------------------
  * Function: RandomizePoints()
  * Parameters:
  *   ps    Punktuppsättningen vars positioner ska slumpas.
