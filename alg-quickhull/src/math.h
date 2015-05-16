@@ -102,8 +102,26 @@ hullT InitHull(pointsetT ps);
  *------------------------------------*/
 void FreeHull(hullT hull);
 
+/*--------------------------------------
+ * Function: BruteforceHull()
+ * Parameters:
+ *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
+ *   hull  En pekare till höljet.
+ *
+ * Description:
+ *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
+ *   sökning.
+ *------------------------------------*/
 void BruteforceHull(pointsetT ps, hullT *hull);
 
+/*--------------------------------------
+ * Function: RandomizePoints()
+ * Parameters:
+ *   ps    Punktuppsättningen vars positioner ska slumpas.
+ *
+ * Description:
+ *   Slumpar positionerna för punkterna i den specificerade punktuppsättningen.
+ *------------------------------------*/
 void RandomizePoints(pointsetT ps);
 
 /*--------------------------------------

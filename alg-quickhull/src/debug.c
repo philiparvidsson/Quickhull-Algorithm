@@ -58,7 +58,7 @@ void Error(string msg) {
 }
 
 /*--------------------------------------
- * Function: Fail()
+ * Function: ProgramFail()
  * Parameters:
  *   funcName  Namnet på den funktion som programmet kraschade i.
  *   line      Den rad i koden som programmet kraschade på.
@@ -66,7 +66,7 @@ void Error(string msg) {
  * Description:
  *   Kraschar programmet med ett meddelande.
  *------------------------------------*/
-void Fail(string funcName, int line) {
+void ProgramFail(string funcName, int line) {
     printf("Program failed in %s() on line %d and will now crash.\n"
            "Press ENTER to continue...", funcName, line);
     getchar();

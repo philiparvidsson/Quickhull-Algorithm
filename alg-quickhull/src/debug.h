@@ -29,11 +29,11 @@
  * MACROS
  *----------------------------------------------*/
 
-#define ASSERT(expr) if (!(expr)) {                                 \
+#define Assert(expr) if (!(expr)) {                                 \
                          AssertFail(#expr, __FUNCTION__, __LINE__); \
                      }
 
-#define FAIL() Fail(__FUNCTION__, __LINE__)
+#define Fail() ProgramFail(__FUNCTION__, __LINE__)
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -62,7 +62,7 @@ void AssertFail(string expr, string funcName, int line);
 void Error(string msg);
 
 /*--------------------------------------
- * Function: Fail()
+ * Function: ProgramFail()
  * Parameters:
  *   funcName  Namnet på den funktion som programmet kraschade i.
  *   line      Den rad i koden som programmet kraschade på.
@@ -70,6 +70,6 @@ void Error(string msg);
  * Description:
  *   Kraschar programmet med ett meddelande.
  *------------------------------------*/
-void Fail(string funcName, int line);
+void ProgramFail(string funcName, int line);
 
 #endif // Debug_h

@@ -21,13 +21,13 @@
     <ClCompile Include="src\io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\debug.c">
+    <ClCompile Include="src\math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\math.c">
+    <ClCompile Include="src\debug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,13 +38,13 @@
     <ClInclude Include="src\io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\debug.h">
+    <ClInclude Include="src\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\math.h">
+    <ClInclude Include="src\debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -22,6 +22,7 @@
 #include "io.h"
 #include "math.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -53,7 +54,15 @@
  * Description:
  *   Antal bildrutor per sekund.
  *------------------------------------*/
-#define FrameRate 60.0f
+#define FrameRate 60
+
+/*--------------------------------------
+ * Constant: StepSize
+ *
+ * Description:
+ *   Tidssteget vi simulerar i fysiksimuleringen varje bildruta.
+ *------------------------------------*/
+#define StepSize 1.0f / 120.0f
 
 /*--------------------------------------
  * Constant: BottomEdge
@@ -87,6 +96,30 @@
  *------------------------------------*/
 #define TopEdge 0.9f
 
+/*--------------------------------------
+ * Constant: SpringCoefficient
+ *
+ * Description:
+ *   Fjädringskoefficienten. Högre värde ger "stelare" gummiband runt prickarna.
+ *------------------------------------*/
+#define SpringCoefficient 30.0f
+
+/*--------------------------------------
+ * Constant: SpringDamping
+ *
+ * Description:
+ *   Mjukar sammandragningen och expansionen av gummibandet.
+ *------------------------------------*/
+#define SpringDamping 0.5f
+
+/*--------------------------------------
+ * Constant: SpringLength
+ *
+ * Description:
+ *   Längden som segmenten i gummibandet eftersträvar.
+ *------------------------------------*/
+#define SpringLength 0.1f
+
 /*------------------------------------------------
  * GLOBALS
  *----------------------------------------------*/
@@ -94,7 +127,9 @@
 bool blackHole   = FALSE;
 bool damping     = FALSE;
 bool drawHull    = TRUE;
+bool drawPoints  = TRUE;
 bool gravity     = FALSE;
+bool rubberBand  = FALSE;
 bool slopedFloor = FALSE;
 bool wind        = FALSE;
 
@@ -131,8 +166,22 @@ static void ToggleGravity(void *arg) {
 static void ToggleHull(void *arg) {
     drawHull = !drawHull;
 
-    if (drawHull) printf(":: Hull enabled.\n");
-    else          printf(":: Hull disabled.\n");
+    if (drawHull) printf(":: Hull rendering enabled.\n");
+    else          printf(":: Hull rendering disabled.\n");
+}
+
+static void TogglePoints(void *arg) {
+    drawPoints = !drawPoints;
+
+    if (drawPoints) printf(":: Points rendering enabled.\n");
+    else            printf(":: Points rendering disabled.\n");
+}
+
+static void ToggleRubberBand(void *arg) {
+    rubberBand = !rubberBand;
+
+    if (rubberBand) printf(":: Rubber band enabled.\n");
+    else            printf(":: Rubber band disabled.\n");
 }
 
 static void ToggleWind(void *arg) {
@@ -157,7 +206,10 @@ static void ToggleSlopedFloor(void *arg) {
  *   Skriver ut introduktionsmeddelandet.
  *------------------------------------*/
 static void PrintIntroMessage() {
-    printf("Quickhull Demo v%s by %s\n\n", ProgramVersion, ProgramAuthors);
+    printf("Quickhull Demo v%s by %s\n"
+           "\n"
+           " - The most awesome Quickhull demo ever made!\n\n",
+           ProgramVersion, ProgramAuthors);
 }
 
 static void PrintInstructions() {
@@ -168,10 +220,12 @@ static void PrintInstructions() {
            "  d    Toggle damping.\n"
            "  g    Toggle gravity.\n"
            "  h    Toggle hull rendering.\n"
-           "  p    Randomize point positions.\n"
+           "  p    Toggle point rendering.\n"
+           "  r    Toggle rubber band mode (hull becomes a rubber band).\n"
            "  s    Toggle sloped floor.\n"
-           "  v    Randomize point velocities.\n"
            "  w    Toggle wind.\n"
+           "  x    Randomize point velocities.\n"
+           "  z    Randomize point positions.\n"
            "------------\n\n");
 }
 
@@ -185,13 +239,15 @@ static void PrintInstructions() {
  *   Kör programmet i benchmark-läge.
  *------------------------------------*/
 static void RunBenchmark(int numPoints) {
-    printf("Creating random points...\n");
+    printf("Creating random points...");
     pointsetT ps = CreatePoints(numPoints);
+    printf(" done.\n");
 
-    printf("Initializing hull...\n");
+    printf("Initializing hull...");
     hullT hull = InitHull(ps);
+    printf(" done.\n");
 
-    printf("Done. Benchmark will now run.\n");
+    printf("Benchmark will now run.\n");
     printf("Benchmarking...\n");
 
     for (int i = 1; i <= BenchmarkNumIterations; i++) {
@@ -208,7 +264,51 @@ static void RunBenchmark(int numPoints) {
     FreePoints(ps);
 }
 
-static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, float dt) {
+static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
+                         float dt)
+{
+    if (rubberBand) {
+        // Här nedan tillämpar vi Hookes lag på segmenten i höljet, så att
+        // höljet drar sig samman runt punkterna likt ett gummiband.
+        //
+        // Se http://en.wikipedia.org/wiki/Hooke%27s_law för mer information.
+        for (int k = 0; k < hull.numLines; k++) {
+            lineT line = hull.lines[k];
+
+            // Nedan använder vi lite ful pekararitmetik för att lista
+            // ut punkternas index, så att vi kan arbeta med deras
+            // hastigheter och accelerationer.
+            int i = line.a - ps.points;
+            int j = line.b - ps.points;
+
+            pointT dp = { ps.points[j].x - ps.points[i].x,
+                          ps.points[j].y - ps.points[i].y };
+
+            pointT dv = { vps.points[j].x - vps.points[i].x,
+                          vps.points[j].y - vps.points[i].y };
+
+            float r = (float)sqrt(dp.x*dp.x + dp.y*dp.y);
+
+            // Punkterna ligger för nära varandra för att vi ska kunna trycka
+            // isär dem utan avrundningsproblem.
+            if (r < 0.000001f)
+                continue;
+
+            dp.x /= r;
+            dp.y /= r;
+
+            r -= SpringLength;
+
+            pointT f = { dp.x*r*SpringCoefficient + dv.x*SpringDamping,
+                         dp.y*r*SpringCoefficient + dv.y*SpringDamping };
+
+            aps.points[i].x += f.x;
+            aps.points[i].y += f.y;
+            aps.points[j].x -= f.x;
+            aps.points[j].y -= f.y;
+        }
+    }
+
     for (int i = 0; i < ps.numPoints; i++) {
         pointT *a = &aps.points[i],
                *p = &ps .points[i],
@@ -216,9 +316,6 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, float dt) {
 
         //-----------------------------------
         // Här tillämpar vi miljömässiga effekter på punkterna.
-
-        a->x = 0.0f;
-        a->y = 0.0f;
 
         if (blackHole) {
             a->x -= p->x * 10.0f;
@@ -229,8 +326,8 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, float dt) {
             a->y -= 9.81f;
 
         if (damping) {
-            a->x -= v->x * 0.5f;
-            a->y -= v->y * 0.5f;
+            a->x -= v->x;
+            a->y -= v->y;
         }
 
         if (wind)
@@ -239,10 +336,11 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, float dt) {
         //-----------------------------------
 
         // Vi stegar punkterna framåt linjärt med Euler-integrering.
-        v->x += a->x * dt;
-        v->y += a->y * dt;
-        p->x += v->x * dt;
-        p->y += v->y * dt;
+        v->x += a->x * dt; v->y += a->y * dt;
+        p->x += v->x * dt; p->y += v->y * dt;
+
+        // Efter att vi tillämpat accelerationerna så nollställer vi dem.
+        a->x = a->y = 0.0f;
 
         // Här ser vi till att punkterna inte åker för långt ut mot kanterna,
         // utan att de i sådana fall studsar mot kanten och åker tillbaka.
@@ -292,28 +390,36 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, float dt) {
  *------------------------------------*/
 static void RunDemo(int numPoints) {
     // Vi skapar uppsättningen med punkter som ska visas på skärmen.
-    printf("Creating random points...\n");
+    printf("Creating random points...");
     pointsetT ps = CreatePoints(numPoints);
     RandomizePoints(ps);
+    printf(" done.\n");
 
     // Vi skapar en till uppsättning punkter - lika många som i ps - och
     // sparar dem i v. Vi använder i själva verket dessa som hastigheter för
     // punkterna i ps, för att kunna låta dem studsa omkring på skärmen!
-    printf("Randomizing velocities...\n");
+    printf("Randomizing velocities...");
     pointsetT vps = CreatePoints(ps.numPoints);
     RandomizePoints(vps);
+    printf(" done.\n");
 
     // Den tredje uppsättningen använder vi till accelerationer.
-    printf("Creating acceleration set...\n");
+    printf("Creating acceleration set...");
     pointsetT aps = CreatePoints(ps.numPoints);
+    for (int i = 0; i < aps.numPoints; i++) {
+        aps.points[i].x = 0.0f;
+        aps.points[i].y = 0.0f;
+    }
+    printf(" done.\n");
 
     // Höljet skapar vi här för att slippa massa allokeringar inuti huvudloopen.
-    printf("Initializing hull...\n");
+    printf("Initializing hull...");
     hullT hull = InitHull(ps);
+    printf(" done.\n");
 
     // Här skapar vi de fyra hörnen och räknar ut höljet(!) för dem, för att få
     // en fin ruta som visar var kanterna går.
-    printf("Initializing world hull...\n");
+    printf("Initializing world hull...");
     pointsetT corners = CreatePoints(4);
     hullT     edges   = InitHull    (corners);
 
@@ -324,45 +430,52 @@ static void RunDemo(int numPoints) {
 
     BruteforceHull(corners, &edges);
 
-    printf("Done.\n");
+    printf(" done.\n");
 
     PrintInstructions();
 
     printf("Press ENTER to start...\n");
     getchar();
 
-    printf("Initializing graphics...\n");
+    printf("Initializing graphics...");
     InitGraphics();
-    SetFrameRate((int)FrameRate);
+    SetFrameRate(FrameRate);
 
     // Här ställer vi in lite roliga knappar så att demon blir lite mer
     // interaktiv och rolig.
     OnKeyPress('b', ToggleBlackHole  , NULL);
     OnKeyPress('d', ToggleDamping    , NULL);
+    OnKeyPress('f', ToggleSlopedFloor, NULL);
     OnKeyPress('g', ToggleGravity    , NULL);
     OnKeyPress('h', ToggleHull       , NULL);
-    OnKeyPress('p', RandomizePS      , &ps);
-    OnKeyPress('s', ToggleSlopedFloor, NULL);
-    OnKeyPress('v', RandomizePS      , &vps);
+    OnKeyPress('p', TogglePoints     , NULL);
+    OnKeyPress('r', ToggleRubberBand , NULL);
     OnKeyPress('w', ToggleWind       , NULL);
+    OnKeyPress('x', RandomizePS      , &vps);
+    OnKeyPress('z', RandomizePS      , &ps);
 
-    printf("Done. Enjoy! :-)\n\n");
+    printf(" done.\n");
+    printf("Enjoy! :-)\n\n");
 
+    float dt = 0.0f;
     while (WindowIsOpen()) {
-        UpdatePoints(aps, ps, vps, DemoSpeed / FrameRate);
-
-        // Här räknar vi ut det konvexa höljet.
-        BruteforceHull(ps, &hull);
+        dt += DemoSpeed / FrameRate;
+        while (dt > StepSize) {
+            UpdatePoints(aps, ps, vps, hull, StepSize);
+            dt -= StepSize;
+        }
 
         // Dags att rita upp allting!
-        ClearDisplay(0.992f, 0.964f, 0.890f);
+        ClearCanvas(0.992f, 0.964f, 0.890f);
 
         // Först ritar vi kanterna och höljet.
         SetColor(0.000f, 0.000f, 0.000f, 1.000f);
         DrawHull(edges);
 
-        if (drawHull)
+        if (drawHull) {
+            BruteforceHull(ps, &hull);
             DrawHull(hull);
+        }
 
         // Sedan miljögrejer.
         if (slopedFloor) {
@@ -374,9 +487,11 @@ static void RunDemo(int numPoints) {
             DrawLine(floor);
         }
 
-        // Sedan prickarna (så att de ligger ovanpå höljet).
-        SetColor  (0.866f, 0.000f, 0.000f, 1.000f);
-        DrawPoints(ps);
+        if (drawPoints) {
+            // Sedan prickarna (så att de ligger ovanpå höljet).
+            SetColor  (0.866f, 0.000f, 0.000f, 1.000f);
+            DrawPoints(ps);
+        }
 
         // Fram med allt på skärmen!
         UpdateDisplay();
@@ -410,6 +525,7 @@ main() {
     printf("Do you want to run the benchmark? (y/N) ");
     bool benchmark = GetBoolFromUser(FALSE);
 
+    printf("\n");
 
 #ifndef _DEBUG
     // Vi slumpar inte "på riktigt" i debugläge.

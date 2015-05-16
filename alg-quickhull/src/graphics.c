@@ -6,8 +6,8 @@
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
  * Description:
- *   Trivialt grafikbibliotek för visualisering av enkel geometri. Här använder
- *   vi OpenGL.
+ *   Enkelt grafikbibliotek för uppritning av simpel geometri. Här använder vi
+ *   OpenGL.
  *
  * Changes:
  *
@@ -20,14 +20,11 @@
 #include "common.h"
 #include "debug.h"
 #include "graphics.h"
-#include "math.h"
 
 #include <tchar.h>
 #include <Windows.h>
 
 #include <gl/GL.h>
-
-#include <time.h>
 
 #pragma comment(lib, "opengl32.lib")
 
@@ -55,40 +52,72 @@
  * TYPES
  *----------------------------------------------*/
 
-/*--------------------------------------
- * Type: graphicsT
- *
- * Description:
- *   Håller reda på information om grafiksystemet.
- *------------------------------------*/
 typedef struct {
-    bool initialized;
-    bool windowOpen;
-    HWND hwnd;
-    HDC  hdc;
-    int invFrameRate;
     actionT keyPressCB[UCHAR_MAX];
     actionT keyPressArg[UCHAR_MAX];
-
-    LARGE_INTEGER perfCounterFreq;
-    LARGE_INTEGER lastUpdate;
 } graphicsT;
 
 /*------------------------------------------------
  * GLOBALS
  *----------------------------------------------*/
 
-/*--------------------------------------
- * Type: Variable
- *
- * Description:
- *   Här sparar vi allt vi behöver för att hålla ordning på grafiken.
- *------------------------------------*/
 graphicsT graphics;
 
-//------------------------------------------------
-// FUNCTIONS
-//------------------------------------------------
+/*--------------------------------------
+ * Variable: frameInterval
+ *
+ * Description:
+ *   Används för att lagra intervallet i vilket bildrutor ska visas.
+ *------------------------------------*/
+int frameInterval;
+
+/*--------------------------------------
+ * Variable: hdc
+ *
+ * Description:
+ *   Grafikfönstrets DC (device context).
+ *------------------------------------*/
+HDC hdc;
+
+/*--------------------------------------
+ * Variable: hwnd
+ *
+ * Description:
+ *   Grafikfönstrets fönster-handtag (kommentarer på svenska äger).
+ *------------------------------------*/
+HWND hwnd;
+
+/*--------------------------------------
+ * Variable: initialized
+ *
+ * Description:
+ *   Indikerar om grafiksystemet är initierat.
+ *------------------------------------*/
+bool initialized;
+
+/*--------------------------------------
+ * Variable: lastUpdate
+ *
+ * Description:
+ *   Tidsstämpel då senaste uppdateringen av ritytan gjordes.
+ *------------------------------------*/
+LARGE_INTEGER lastUpdate;
+
+/*--------------------------------------
+ * Variable: windowOpen
+ *
+ * Description:
+ *   Indikerar om grafikfönstret är öppet.
+ *------------------------------------*/
+bool windowOpen;
+
+/*------------------------------------------------
+ * FUNCTIONS
+ *----------------------------------------------*/
+
+/*----------------------------------------------------------------------------*/
+/* Privata funktioner som bara används internet av philgraph-biblioteket.     */
+/*----------------------------------------------------------------------------*/
 
 /*--------------------------------------
  * Function: WindowProc()
@@ -103,12 +132,12 @@ LRESULT CALLBACK WindowProc(_In_ HWND   hwnd,
                             _In_ LPARAM lParam)
 {
     if (uMsg == WM_CLOSE)
-        graphics.windowOpen = FALSE;
+        windowOpen = FALSE;
 
     if (uMsg == WM_CHAR) {
         bool repeated = lParam & 0x40000000;
         if (!repeated) {
-            char c = tolower(wParam);
+            char    c  = tolower(wParam);
             actionT cb = graphics.keyPressCB[c];
             if (cb)
                 cb(graphics.keyPressArg[c]);
@@ -120,18 +149,18 @@ LRESULT CALLBACK WindowProc(_In_ HWND   hwnd,
 
 static void CheckInitGraphics() {
 #ifdef _DEBUG
-    if (!graphics.initialized)
+    if (!initialized)
         Error("InitGraphics() must be called first");
 #endif
 }
 
 static void InitOpenGL() {
-    HGLRC hglrc = wglCreateContext(graphics.hdc);
+    HGLRC hglrc = wglCreateContext(hdc);
 
     if (!hglrc)
         Error("wglCreateContext() failed");
 
-    if (!wglMakeCurrent(graphics.hdc, hglrc))
+    if (!wglMakeCurrent(hdc, hglrc))
         Error("wglMakeCurrent() failed");
 
     // Utan GL_BLEND fungerar inte kantutjämningen för linjer.
@@ -141,12 +170,12 @@ static void InitOpenGL() {
     // Runda, fina prickar! :-)
     glEnable   (GL_POINT_SMOOTH);
     glHint     (GL_POINT_SMOOTH_HINT, GL_NICEST);
-    glPointSize(10.0f);
+    glPointSize(8.0f);
 
     // Mjuka, fina linjer!
     glEnable   (GL_LINE_SMOOTH);
     glHint     (GL_LINE_SMOOTH_HINT, GL_NICEST);
-    glLineWidth(3.0f);
+    glLineWidth(2.0f);
 }
 
 static void InitPixelFormat() {
@@ -161,11 +190,11 @@ static void InitPixelFormat() {
     pfd.cDepthBits = 32;
     pfd.iLayerType = PFD_MAIN_PLANE;
 
-    int pixelFormat = ChoosePixelFormat(graphics.hdc, &pfd);
+    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
     if (pixelFormat == 0)
         Error("ChoosePixelFormat() failed");
 
-    if (!SetPixelFormat(graphics.hdc, pixelFormat, &pfd))
+    if (!SetPixelFormat(hdc, pixelFormat, &pfd))
         Error("SetPixelFormat() failed");
 }
 
@@ -194,71 +223,153 @@ static void InitWindow() {
 
     RECT rect = { 0, 0, 600, 600 };
 
-    if (!AdjustWindowRectEx(&rect, dwStyle, FALSE, WS_EX_TOPMOST))
+    if (!AdjustWindowRectEx(&rect, dwStyle, FALSE, WS_EX_LEFT))
         Error("AdjustWindowRectEx() failed");
 
-    graphics.hwnd = CreateWindowEx(WS_EX_TOPMOST,
-                                   ClassName,
-                                   WindowTitle,
-                                   dwStyle,
-                                   CW_USEDEFAULT,
-                                   CW_USEDEFAULT,
-                                   rect.right - rect.left,
-                                   rect.bottom - rect.top,
-                                   HWND_DESKTOP,
-                                   NULL,
-                                   wcx.hInstance,
-                                   NULL);
+    hwnd = CreateWindowEx(WS_EX_LEFT,
+                          ClassName,
+                          WindowTitle,
+                          dwStyle,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          rect.right - rect.left,
+                          rect.bottom - rect.top,
+                          HWND_DESKTOP,
+                          NULL,
+                          wcx.hInstance,
+                          NULL);
 
-    if (!graphics.hwnd)
+    if (!hwnd)
         Error("CreateWindowEx() failed");
 
-    ShowWindow(graphics.hwnd, SW_SHOW);
-    SetFocus(graphics.hwnd);
+    ShowWindow(hwnd, SW_SHOW);
+    SetFocus  (hwnd);
 
-    graphics.hdc = GetDC(graphics.hwnd);
+    hdc = GetDC(hwnd);
 }
+
+/*----------------------------------------------------------------------------*/
+/* Här nedanför är publika funktioner som grafikbiblioteket exporterar till   */
+/* andra program som vill använda det. Allt ovan är privata funktioner som    */
+/* bara används internt av biblioteket.                                       */
+/*----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------*/
+/* Grundläggande funktioner för att initiera grafikfönstret, ställa in        */
+/* egenskaper, med mera.                                                      */
+/*----------------------------------------------------------------------------*
 
 /*--------------------------------------
  * Function: InitGraphics()
  * Parameters:
  *
  * Description:
- *   Initialiserar grafiksystemet.
+ *   Initierar grafikbiblioteket.
  *------------------------------------*/
 void InitGraphics() {
-    if (graphics.initialized)
-        Error("Graphics already initialized");
+    // TODO: Bör vi anropa Error() om man försöker köra InitGraphics() mer än en
+    //       gång?
+    if (initialized)
+        return;
 
-    InitWindow();
+    InitWindow     ();
     InitPixelFormat();
-    InitOpenGL();
+    InitOpenGL     ();
+
+    initialized = TRUE;
+    windowOpen  = TRUE;
 
     SetFrameRate(30);
-
-    QueryPerformanceFrequency(&graphics.perfCounterFreq);
-
-    graphics.initialized = TRUE;
-    graphics.windowOpen  = TRUE;
 }
 
+/*--------------------------------------
+ * Function: SetFrameRate()
+ * Parameters:
+ *   fps  Antalet bildrutor per sekund.
+ *
+ * Description:
+ *   Ställer in hur många bildrutor per sekund som ska ritas.
+ *------------------------------------*/
 void SetFrameRate(int fps) {
     CheckInitGraphics();
 
-    graphics.invFrameRate = 1000000 / fps;
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+
+    frameInterval = (int)(freq.QuadPart / fps);
 }
 
+/*--------------------------------------
+ * Function: SetColor()
+ * Parameters:
+ *   red    Röd färgkomponent.
+ *   green  Grön färgkomponent.
+ *   blue   Blå färgkomponent.
+ *   alpha  Alphavärde.
+ *
+ * Description:
+ *   Ställer in färgen för nästa ritoperation.
+ *------------------------------------*/
 void SetColor(float red, float green, float blue, float alpha) {
     CheckInitGraphics();
 
     glColor4f(red, green, blue, alpha);
 }
 
-void ClearDisplay(float red, float green, float blue) {
+/*--------------------------------------
+ * Function: SetLineWidth()
+ * Parameters:
+ *   width  Bredden på linjer, i pixlar.
+ *
+ * Description:
+ *   Ställer in bredden på linjer.
+ *------------------------------------*/
+void SetLineWidth(float width) {
     CheckInitGraphics();
 
-    glClearColor(red, green, blue, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+         if (width <  0.0f) width =  0.0f;
+    else if (width > 10.0f) width = 10.0f;
+
+    glLineWidth(width);
+}
+
+/*--------------------------------------
+ * Function: WindowIsOpen()
+ * Parameters:
+ *
+ * Description:
+ *   Returnerar sant om grafikfönstret är öppet.
+ *------------------------------------*/
+bool WindowIsOpen() {
+    CheckInitGraphics();
+
+    return windowOpen;
+}
+
+/*----------------------------------------------------------------------------*/
+/* Ritfunktioner för att rensa ritytan, rita punkter, linjer, trianglar m.m.  */
+/*----------------------------------------------------------------------------*/
+
+/*--------------------------------------
+ * Function: ClearCanvas()
+ * Parameters:
+ *   red    Röd färgkomponent.
+ *   green  Grön färgkomponent.
+ *   blue   Blå färgkomponent.
+ *
+ * Description:
+ *   Rensar ritytan till den specificerade färgen.
+ *------------------------------------*/
+void ClearCanvas(float red, float green, float blue) {
+    CheckInitGraphics();
+
+    glClearColor(red, green, blue, 1.0f);
+    glClear     (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glBegin(GL_LINE);
+    glVertex2f(-0.5f, -0.5f);
+    glVertex2f(0.5f, 0.5f);
+    glEnd();
 }
 
 /*--------------------------------------
@@ -270,8 +381,6 @@ void ClearDisplay(float red, float green, float blue) {
  *   Ritar upp ett hölje.
  *------------------------------------*/
 void DrawHull(hullT hull) {
-    CheckInitGraphics();
-
     for (int i = 0; i < hull.numLines; i++)
         DrawLine(hull.lines[i]);
 }
@@ -285,28 +394,24 @@ void DrawHull(hullT hull) {
  *   Ritar upp en linje.
  *------------------------------------*/
 void DrawLine(lineT line) {
-    CheckInitGraphics();
-
-    glBegin(GL_LINES);
+    glBegin   (GL_LINES);
     glVertex2f(line.a->x, line.a->y);
     glVertex2f(line.b->x, line.b->y);
-    glEnd();
+    glEnd     ();
 }
 
 /*--------------------------------------
  * Function: DrawPoint()
  * Parameters:
- *   point  Den punkt som ska ritas upp.
+ *   p  Punkten som ska ritas.
  *
  * Description:
- *   Ritar upp en punkt.
+ *   Ritar en punkt på ritytan.
  *------------------------------------*/
-void DrawPoint(pointT point) {
-    CheckInitGraphics();
-
-    glBegin(GL_POINTS);
-    glVertex2f(point.x, point.y);
-    glEnd();
+void DrawPoint(pointT p) {
+    glBegin   (GL_POINTS);
+    glVertex2f(p.x, p.y);
+    glEnd     ();
 }
 
 /*--------------------------------------
@@ -318,8 +423,6 @@ void DrawPoint(pointT point) {
  *   Ritar en uppsättning punkter.
  *------------------------------------*/
 void DrawPoints(pointsetT ps) {
-    CheckInitGraphics();
-
     for (int i = 0; i < ps.numPoints; i++)
         DrawPoint(ps.points[i]);
 }
@@ -332,30 +435,31 @@ void DrawPoints(pointsetT ps) {
  *   Uppdaterar ritytan.
  *------------------------------------*/
 void UpdateDisplay() {
-    LARGE_INTEGER perfCount;
-
     CheckInitGraphics();
 
-    SwapBuffers(graphics.hdc);
+    SwapBuffers(hdc);
 
     while (TRUE) {
         MSG msg;
-        while (PeekMessage(&msg, graphics.hwnd, 0, 0, PM_REMOVE)) {
+        while (PeekMessage(&msg, hwnd, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
             DispatchMessage (&msg);
         }
 
-        QueryPerformanceCounter(&perfCount);
-        perfCount.QuadPart -= graphics.lastUpdate.QuadPart;
-        perfCount.QuadPart *= 1000000;
-        perfCount.QuadPart /= graphics.perfCounterFreq.QuadPart;
+        LARGE_INTEGER pc;
+        QueryPerformanceCounter(&pc);
+        pc.QuadPart -= lastUpdate.QuadPart;
 
-        if (perfCount.QuadPart > graphics.invFrameRate)
+        if (pc.QuadPart > frameInterval)
             break;
     }
 
-    QueryPerformanceCounter(&graphics.lastUpdate);
+    QueryPerformanceCounter(&lastUpdate);
 }
+
+/*----------------------------------------------------------------------------*/
+/* Funktioner för input, t ex associera knappar med callback-funktioner m.m.  */
+/*----------------------------------------------------------------------------*/
 
 /*--------------------------------------
  * Function: OnKeyPress()
@@ -373,17 +477,4 @@ void OnKeyPress(char c, actionT cb, void *arg) {
 
     graphics.keyPressCB [c] = cb;
     graphics.keyPressArg[c] = arg;
-}
-
-/*--------------------------------------
- * Function: WindowIsOpen()
- * Parameters:
- *
- * Description:
- *   Returnerar sant om grafikfönstret är öppet.
- *------------------------------------*/
-bool WindowIsOpen() {
-    CheckInitGraphics();
-
-    return graphics.windowOpen;
 }

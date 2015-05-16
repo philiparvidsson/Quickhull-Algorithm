@@ -33,7 +33,7 @@
  * Description:
  *   Programmets version.
  *------------------------------------*/
-#define ProgramVersion "0.12"
+#define ProgramVersion "0.13"
 
 /*------------------------------------------------
  * TYPES
@@ -45,7 +45,7 @@
  * Description:
  *   Representerar en callback-funktion med ett argument.
  *------------------------------------*/
-typedef void (*actionT)(void*);
+typedef void (*actionT)(void *);
 
 /*--------------------------------------
  * Type: bool

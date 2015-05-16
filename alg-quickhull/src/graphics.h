@@ -6,8 +6,8 @@
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
  * Description:
- *   Trivialt grafikbibliotek för visualisering av enkel geometri. Här använder
- *   vi OpenGL.
+ *   Enkelt grafikbibliotek för uppritning av simpel geometri. Här använder vi
+ *   OpenGL.
  *
  * Changes:
  *
@@ -27,20 +27,77 @@
  * FUNCTIONS
  *----------------------------------------------*/
 
+/*----------------------------------------------------------------------------*/
+/* Grundläggande funktioner för att initiera grafikfönstret, ställa in        */
+/* egenskaper, med mera.                                                      */
+/*----------------------------------------------------------------------------*/
+
 /*--------------------------------------
  * Function: InitGraphics()
  * Parameters:
  *
  * Description:
- *   Initialiserar grafiksystemet.
+ *   Initierar grafikbiblioteket.
  *------------------------------------*/
 void InitGraphics();
 
-void SetColor(float red, float green, float blue, float alpha);
-
+/*--------------------------------------
+ * Function: SetFrameRate()
+ * Parameters:
+ *   fps  Antalet bildrutor per sekund.
+ *
+ * Description:
+ *   Ställer in hur många bildrutor per sekund som ska ritas.
+ *------------------------------------*/
 void SetFrameRate(int fps);
 
-void ClearDisplay(float red, float green, float blue);
+/*--------------------------------------
+ * Function: SetColor()
+ * Parameters:
+ *   red    Röd färgkomponent.
+ *   green  Grön färgkomponent.
+ *   blue   Blå färgkomponent.
+ *   alpha  Alphavärde.
+ *
+ * Description:
+ *   Ställer in färgen för nästa ritoperation.
+ *------------------------------------*/
+void SetColor(float red, float green, float blue, float alpha);
+
+/*--------------------------------------
+ * Function: SetLineWidth()
+ * Parameters:
+ *   width  Bredden på linjer, i pixlar.
+ *
+ * Description:
+ *   Ställer in bredden på linjer.
+ *------------------------------------*/
+void SetLineWidth(float width);
+
+/*--------------------------------------
+ * Function: WindowIsOpen()
+ * Parameters:
+ *
+ * Description:
+ *   Returnerar sant om grafikfönstret är öppet.
+ *------------------------------------*/
+bool WindowIsOpen();
+
+/*----------------------------------------------------------------------------*/
+/* Ritfunktioner för att rensa ritytan, rita punkter, linjer, trianglar m.m.  */
+/*----------------------------------------------------------------------------*/
+
+/*--------------------------------------
+ * Function: ClearCanvas()
+ * Parameters:
+ *   red    Röd färgkomponent.
+ *   green  Grön färgkomponent.
+ *   blue   Blå färgkomponent.
+ *
+ * Description:
+ *   Rensar ritytan till den specificerade färgen.
+ *------------------------------------*/
+void ClearCanvas(float red, float green, float blue);
 
 /*--------------------------------------
  * Function: DrawHull()
@@ -65,12 +122,12 @@ void DrawLine(lineT line);
 /*--------------------------------------
  * Function: DrawPoint()
  * Parameters:
- *   point  Den punkt som ska ritas upp.
+ *   p  Punkten som ska ritas.
  *
  * Description:
- *   Ritar upp en punkt.
+ *   Ritar en punkt på ritytan.
  *------------------------------------*/
-void DrawPoint(pointT point);
+void DrawPoint(pointT p);
 
 /*--------------------------------------
  * Function: DrawPoints()
@@ -91,6 +148,10 @@ void DrawPoints(pointsetT ps);
  *------------------------------------*/
 void UpdateDisplay();
 
+/*----------------------------------------------------------------------------*/
+/* Funktioner för input, t ex associera knappar med callback-funktioner m.m.  */
+/*----------------------------------------------------------------------------*/
+
 /*--------------------------------------
  * Function: OnKeyPress()
  * Parameters:
@@ -103,14 +164,5 @@ void UpdateDisplay();
  *   Registerar en callback-funktion för en viss knapp.
  *------------------------------------*/
 void OnKeyPress(char c, actionT cb, void *arg);
-
-/*--------------------------------------
- * Function: WindowIsOpen()
- * Parameters:
- *
- * Description:
- *   Returnerar sant om grafikfönstret är öppet.
- *------------------------------------*/
-bool WindowIsOpen();
 
 #endif // Graphics_h

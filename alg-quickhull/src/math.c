@@ -88,6 +88,16 @@ void FreeHull(hullT hull) {
     hull.numLines = 0;
 }
 
+/*--------------------------------------
+ * Function: BruteforceHull()
+ * Parameters:
+ *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
+ *   hull  En pekare till höljet.
+ *
+ * Description:
+ *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
+ *   sökning.
+ *------------------------------------*/
 void BruteforceHull(pointsetT ps, hullT *hull) {
     // For-looparna med i och j används för att konstruera alla tänkbara
     // kombinationer av par bland punkterna.
@@ -139,7 +149,8 @@ void BruteforceHull(pointsetT ps, hullT *hull) {
 }
 
 void Quickhull(pointsetT ps, hullT *hull) {
-    pointT *a = &ps.points[0], *b = a;
+    pointT *a = &ps.points[0],
+           *b = a;
 
     for (int i = 1; i < ps.numPoints; i++) {
         pointT *p = &ps.points[i];
@@ -149,10 +160,19 @@ void Quickhull(pointsetT ps, hullT *hull) {
     }
 }
 
+/*--------------------------------------
+ * Function: RandomizePoints()
+ * Parameters:
+ *   ps    Punktuppsättningen vars positioner ska slumpas.
+ *
+ * Description:
+ *   Slumpar positionerna för punkterna i den specificerade punktuppsättningen.
+ *------------------------------------*/
 void RandomizePoints(pointsetT ps) {
     for (int i = 0; i < ps.numPoints; i++) {
-        ps.points[i].x = 1.0f * ((float)rand() / (float)RAND_MAX) - 0.5f;
-        ps.points[i].y = 1.0f * ((float)rand() / (float)RAND_MAX) - 0.5f;
+        // Positionskomponenterna slumpas i intervallet [-0.5, 0.5).
+        ps.points[i].x = (float)rand()/RAND_MAX - 0.5f;
+        ps.points[i].y = (float)rand()/RAND_MAX - 0.5f;
     }
 }
 
