@@ -1,17 +1,55 @@
-//------------------------------------------------
-// INCLUDES
-//------------------------------------------------
+/*------------------------------------------------------------------------------
+ * File: io.c
+ * Created: May 15, 2015
+ * Last changed: May 15, 2015
+ *
+ * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
+ *
+ * Description:
+ *   Input-funktioner för att läsa in data från användaren.
+ *
+ * Changes:
+ *
+ *----------------------------------------------------------------------------*/
+
+/*------------------------------------------------
+ * INCLUDES
+ *----------------------------------------------*/
 
 #include "common.h"
+#include "io.h"
 
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-//------------------------------------------------
-// FUNCTIONS
-//------------------------------------------------
+/*------------------------------------------------
+ * FUNCTIONS
+ *----------------------------------------------*/
+
+/*--------------------------------------
+ * Function: GetBoolFromUser()
+ * Parameters:
+ *   defaultVal  Värdet som ska returneras om användaren inte svarar.
+ *
+ * Description:
+ *   Låter användaren skriva in ja eller nej.
+ *------------------------------------*/
+bool GetBoolFromUser(bool defaultVal) {
+    string s = GetStringFromUser();
+    char   c = s[0];
+
+    free(s);
+
+    if (c=='\0')
+        return defaultVal;
+
+    if (c=='Y' || c=='y')
+        return TRUE;
+
+    return FALSE;
+}
 
 /*--------------------------------------
  * Function: GetIntFromUser()
@@ -22,14 +60,14 @@
  *------------------------------------*/
 int GetIntFromUser() {
     char buf[16];
-    bool isValidInt = FALSE;
+    bool validInt = FALSE;
 
-    while (!isValidInt) {
+    while (!validInt) {
+        validInt = TRUE;
+
         fgets(buf, sizeof(buf), stdin);
 
         int len = strlen(buf);
-
-        isValidInt = TRUE;
         for (int i = 0; i < len; i++) {
             char c = buf[i];
 
@@ -39,15 +77,15 @@ int GetIntFromUser() {
             }
 
             if (!isdigit(c)) {
-                isValidInt = FALSE;
+                validInt = FALSE;
                 break;
             }
         }
 
         if (strlen(buf) == 0)
-            isValidInt = FALSE;
+            validInt = FALSE;
 
-        if (!isValidInt)
+        if (!validInt)
             printf("Invalid integer. Try again: ");
     }
 
@@ -71,7 +109,7 @@ string GetStringFromUser() {
     for (int i = 0; i < len; i++) {
         char c = buf[i];
         if (c == '\r' || c == '\n') {
-            buf[i] = 0;
+            buf[i] = '\0';
             break;
         }
     }

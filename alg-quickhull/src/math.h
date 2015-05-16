@@ -1,5 +1,23 @@
-#ifndef MATH_H_
-#define MATH_H_
+/*------------------------------------------------------------------------------
+ * File: math.h
+ * Created: May 15, 2015
+ * Last changed: May 15, 2015
+ *
+ * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
+ *
+ * Description:
+ *   Matematikbibliotek för lösning av olika matematiska problem.
+ *
+ * Changes:
+ *
+ *----------------------------------------------------------------------------*/
+
+#ifndef Math_h
+#define Math_h
+
+/*------------------------------------------------
+ * TYPES
+ *----------------------------------------------*/
 
 /*
  * Type: pointT
@@ -44,16 +62,60 @@ typedef struct {
     int    maxLines;
 } hullT;
 
+/*--------------------------------------
+ * Function: CreatePoints()
+ * Parameters:
+ *   n  Antalet punkter att skapa i uppsättningen.
+ *
+ * Description:
+ *   Skapar en uppsättning punkter.
+ *------------------------------------*/
 pointsetT CreatePoints(int n);
 
+/*--------------------------------------
+ * Function: FreePoints()
+ * Parameters:
+ *   ps  Den uppsättning punkter som ska avallokeras.
+ *
+ * Description:
+ *   Avallokerar en uppsättning punkter,
+ *------------------------------------*/
 void FreePoints(pointsetT ps);
 
+/*--------------------------------------
+ * Function: InitHull()
+ * Parameters:
+ *   ps  Den uppsättning punkter som ska användas till att initiera höljet.
+ *
+ * Description:
+ *   Initierar ett nytt hölje.
+ *------------------------------------*/
 hullT InitHull(pointsetT ps);
 
+/*--------------------------------------
+ * Function: FreeHull()
+ * Parameters:
+ *   hull Det hölje som ska avallokeras.
+ *
+ * Description:
+ *   Avallokerar ett hölje.
+ *------------------------------------*/
 void FreeHull(hullT hull);
 
 void BruteforceHull(pointsetT ps, hullT *hull);
 
 void RandomizePoints(pointsetT ps);
 
-#endif // MATH_H_
+/*--------------------------------------
+ * Function: Reflect()
+ * Parameters:
+ *   d  Riktningsvektorn.
+ *   n  Normalvektorn som riktningsvektorn ska reflekteras mot.
+ *
+ * Description:
+ *   Reflekterar en riktningsvektor mot en normalvektor och returnerar
+ *   resultatet.
+ *------------------------------------*/
+pointT Reflect(pointT d, pointT n);
+
+#endif // Math_h

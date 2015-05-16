@@ -1,15 +1,39 @@
-#ifndef IO_H_
-#define IO_H_
+/*------------------------------------------------------------------------------
+ * File: io.h
+ * Created: May 15, 2015
+ * Last changed: May 15, 2015
+ *
+ * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
+ *
+ * Description:
+ *   Input-funktioner för att läsa in data från användaren.
+ *
+ * Changes:
+ *
+ *----------------------------------------------------------------------------*/
 
-//------------------------------------------------
-// INCLUDES
-//------------------------------------------------
+#ifndef IO_h
+#define IO_h
+
+/*------------------------------------------------
+ * INCLUDES
+ *----------------------------------------------*/
 
 #include "common.h"
 
-//------------------------------------------------
-// FUNCTIONS
-//------------------------------------------------
+/*------------------------------------------------
+ * FUNCTIONS
+ *----------------------------------------------*/
+
+/*--------------------------------------
+ * Function: GetBoolFromUser()
+ * Parameters:
+ *   defaultVal  Värdet som ska returneras om användaren inte svarar.
+ *
+ * Description:
+ *   Låter användaren skriva in ja eller nej.
+ *------------------------------------*/
+bool GetBoolFromUser(bool defaultVal);
 
 /*--------------------------------------
  * Function: GetIntFromUser()
@@ -30,4 +54,4 @@ int GetIntFromUser();
  *------------------------------------*/
 string GetStringFromUser();
 
-#endif // IO_H_
+#endif // IO_h
