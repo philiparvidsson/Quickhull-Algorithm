@@ -16,6 +16,12 @@
 #define Math_h
 
 /*------------------------------------------------
+ * INCLUDES
+ *----------------------------------------------*/
+
+#include "benchmark.h"
+
+/*------------------------------------------------
  * TYPES
  *----------------------------------------------*/
 
@@ -110,9 +116,9 @@ void FreeHull(hullT hull);
  *
  * Description:
  *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
- *   sökning.
+ *   sökning. Returnerar det totala antalet kritiska operationer som utfördes.
  *------------------------------------*/
-void BruteforceHull(pointsetT ps, hullT *hull);
+int BruteforceHull(pointsetT ps, hullT *hull);
 
 /*--------------------------------------
  * Function: Quickhull()
@@ -122,9 +128,9 @@ void BruteforceHull(pointsetT ps, hullT *hull);
  *
  * Description:
  *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
- *   Quickhull.
+ *   Quickhull. Returnerar det totala antalet kritiska operationer som utfördes.
  *------------------------------------*/
-void Quickhull(pointsetT ps, hullT *hull);
+int Quickhull(pointsetT ps, hullT *hull);
 
 /*--------------------------------------
  * Function: RandomizePoints()

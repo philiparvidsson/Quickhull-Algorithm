@@ -15,6 +15,16 @@
 #ifndef Benchmark_h
 #define Benchmark_h
 
+typedef struct {
+    int minCritOps;
+    int maxCritOps;
+    float avgCritOps;
+
+    int minTime;
+    int maxTime;
+    float avgTime;
+} benchmarkdataT;
+
 /*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/

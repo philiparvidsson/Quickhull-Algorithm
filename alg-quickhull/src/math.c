@@ -16,7 +16,9 @@
  * INCLUDES
  *----------------------------------------------*/
 
+#include "benchmark.h"
 #include "common.h"
+#include "debug.h"
 #include "math.h"
 
 #include <stdlib.h>
@@ -96,9 +98,11 @@ void FreeHull(hullT hull) {
  *
  * Description:
  *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
- *   sökning.
+ *   sökning. Returnerar det totala antalet kritiska operationer som utfördes.
  *------------------------------------*/
-void BruteforceHull(pointsetT ps, hullT *hull) {
+int BruteforceHull(pointsetT ps, hullT *hull) {
+    int numCritOps = 0;
+
     // For-looparna med i och j används för att konstruera alla tänkbara
     // kombinationer av par bland punkterna.
 
@@ -120,9 +124,14 @@ void BruteforceHull(pointsetT ps, hullT *hull) {
                 c = &ps.points[k];
 
                 // Nedan avgör vi vilken sida om linjen punkten ligger på.
+                //
                 // d<0.0 : Punkten är utanför.
                 // d=0.0 : Punkten ligger på linjen.
                 // d>0.0 : Punkten är innanför.
+                //
+                // Dessutom har jag låtit detta utgöra algoritmens kritiska
+                // operation, vilket jag hoppas är adekvat.
+                numCritOps++;
                 float d = (b->x - a->x) * (c->y - a->y)
                         - (b->y - a->y) * (c->x - a->x);
 
@@ -135,17 +144,17 @@ void BruteforceHull(pointsetT ps, hullT *hull) {
             // Om alla punkter visade sig vara innanför linjen, så behåller vi
             // den som ett segment i det konvexa höljet.
             if (!outside) {
+                if (hull->numLines >= hull->maxLines)
+                    Error("Hull is not large enough for specified point set.");
+
                 hull->lines[hull->numLines].a = a;
                 hull->lines[hull->numLines].b = b;
                 hull->numLines++;
-
-                if (hull->numLines >= hull->maxLines)
-                    return;
             }
         }
     }
 
-    // -
+    return numCritOps;
 }
 
 /*--------------------------------------
@@ -156,10 +165,10 @@ void BruteforceHull(pointsetT ps, hullT *hull) {
  *
  * Description:
  *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
- *   Quickhull.
+ *   Quickhull. Returnerar det totala antalet kritiska operationer som utfördes.
  *------------------------------------*/
-void Quickhull(pointsetT ps, hullT *hull) {
-    BruteforceHull(ps, hull);
+int Quickhull(pointsetT ps, hullT *hull) {
+    return BruteforceHull(ps, hull);
     /*pointT *a = &ps.points[0],
            *b = a;
 

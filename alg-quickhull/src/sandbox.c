@@ -34,7 +34,7 @@
  *   Hastighetsmultipel för körningshastighet vad gäller simulering av
  *   punkterna. 0.5 = halv hastighet, 1.0 = normal, 2.0 = dubbel, etc.
  *------------------------------------*/
-#define Speed 0.5f
+#define Speed 1.0f
 
 /*--------------------------------------
  * Constant: FrameRate
@@ -48,7 +48,8 @@
  * Constant: StepSize
  *
  * Description:
- *   Tidssteget vi simulerar i fysiksimuleringen varje bildruta.
+ *   Tidssteget vi simulerar i fysiksimuleringen varje steg. Flera steg kan
+ *   köras varje bildruta för att garantera välsimulerad fysik.
  *------------------------------------*/
 #define StepSize 1.0f / 120.0f
 
@@ -85,12 +86,44 @@
 #define TopEdge 0.9f
 
 /*--------------------------------------
+ * Constant: BlackHoleForce
+ *
+ * Description:
+ *   Svarta hålets dragningskraft.
+ *------------------------------------*/
+#define BlackHoleForce 6.0f
+
+/*--------------------------------------
+ * Constant: DampingCoefficient
+ *
+ * Description:
+ *   Dämpningskoefficient.
+ *------------------------------------*/
+#define DampingCoefficient 1.3f
+
+/*--------------------------------------
+ * Constant: Gravity
+ *
+ * Description:
+ *   Gravitationskraft.
+ *------------------------------------*/
+#define Gravity -9.81f
+
+/*--------------------------------------
+ * Constant: Wind
+ *
+ * Description:
+ *   Vindens kraft.
+ *------------------------------------*/
+#define Wind 7.0f
+
+/*--------------------------------------
  * Constant: SpringCoefficient
  *
  * Description:
  *   Fjädringskoefficienten. Högre värde ger "stelare" gummiband runt prickarna.
  *------------------------------------*/
-#define SpringCoefficient 30.0f
+#define SpringCoefficient 20.0f
 
 /*--------------------------------------
  * Constant: SpringDamping
@@ -98,7 +131,7 @@
  * Description:
  *   Mjukar sammandragningen och expansionen av gummibandet.
  *------------------------------------*/
-#define SpringDamping 0.5f
+#define SpringDamping 0.4f
 
 /*--------------------------------------
  * Constant: SpringLength
@@ -106,7 +139,7 @@
  * Description:
  *   Längden som segmenten i gummibandet eftersträvar.
  *------------------------------------*/
-#define SpringLength 0.1f
+#define SpringLength 0.07f
 
 /*------------------------------------------------
  * GLOBALS
@@ -168,8 +201,8 @@ static void ToggleHull(void *arg) {
 static void TogglePoints(void *arg) {
     drawPoints = !drawPoints;
 
-    if (drawPoints) printf(":: Points rendering enabled.\n");
-    else            printf(":: Points rendering disabled.\n");
+    if (drawPoints) printf(":: Point rendering enabled.\n");
+    else            printf(":: Point rendering disabled.\n");
 }
 
 static void ToggleRubberBand(void *arg) {
@@ -205,21 +238,28 @@ static void ToggleQuickhull(void *arg) {
 /* uppdatering av punkter, rendering etc.                                     */
 /*----------------------------------------------------------------------------*/
 
+/*--------------------------------------
+ * Function: PrintInstructions()
+ * Parameters:
+ *
+ * Description:
+ *   Skriver ut instruktionerna för sandbox-läget.
+ *------------------------------------*/
 static void PrintInstructions() {
     printf("\nINSTRUCTIONS:\n\n"
            "KEYS\n------------\n"
            "Key    Effect\n\n"
-           "  b    Toggle black hole (gravity towards center).\n"
-           "  d    Toggle damping.\n"
-           "  g    Toggle gravity.\n"
-           "  h    Toggle hull rendering.\n"
-           "  p    Toggle point rendering.\n"
-           "  q    Toggle between bruteforce and quickhull.\n"
-           "  r    Toggle rubber band mode (hull becomes a rubber band).\n"
-           "  s    Toggle sloped floor.\n"
-           "  w    Toggle wind.\n"
-           "  x    Randomize point velocities.\n"
-           "  z    Randomize point positions.\n"
+           "  b    Toggles black hole (gravity towards center).\n"
+           "  d    Toggles damping.\n"
+           "  g    Toggles gravity.\n"
+           "  h    Toggles hull rendering.\n"
+           "  p    Toggles point rendering.\n"
+           "  q    Toggles between bruteforce and quickhull.\n"
+           "  r    Toggles rubber band mode (hull becomes a rubber band).\n"
+           "  s    Toggles sloped floor.\n"
+           "  w    Toggles wind.\n"
+           "  x    Randomizes point velocities.\n"
+           "  z    Randomizes point positions.\n"
            "------------\n\n");
 }
 
@@ -243,6 +283,7 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
         // höljet drar sig samman runt punkterna likt ett gummiband.
         //
         // Se http://en.wikipedia.org/wiki/Hooke%27s_law för mer information.
+        //
         for (int k = 0; k < hull.numLines; k++) {
             lineT line = hull.lines[k];
 
@@ -252,16 +293,16 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
             int i = line.a - ps.points;
             int j = line.b - ps.points;
 
-            pointT dp = { ps.points[j].x - ps.points[i].x,
-                          ps.points[j].y - ps.points[i].y };
+            pointT dp = { ps .points[j].x - ps .points[i].x,
+                          ps .points[j].y - ps .points[i].y };
 
             pointT dv = { vps.points[j].x - vps.points[i].x,
                           vps.points[j].y - vps.points[i].y };
 
             float r = (float)sqrt(dp.x*dp.x + dp.y*dp.y);
 
-            // Punkterna ligger för nära varandra för att vi ska kunna trycka
-            // isär dem utan avrundningsproblem.
+            // Punkterna ligger kanske för nära varandra för att vi ska kunna
+            // trycka isär dem utan avrundningsproblem.
             if (r < 0.000001f)
                 continue;
 
@@ -289,26 +330,31 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
         // Här tillämpar vi miljömässiga effekter på punkterna.
 
         if (blackHole) {
-            a->x -= p->x * 10.0f;
-            a->y -= p->y * 10.0f;
+            float r = (float)sqrt(p->x*p->x + p->y*p->y);
+            // Vi använder en linjär modell för gravitationen, inte inverse
+            // square law. Den funkar uselt med Euler-integrering oavsett.
+            if (r > 0.000001f) {
+                a->x -= p->x*BlackHoleForce/r;
+                a->y -= p->y*BlackHoleForce/r;
+            }
         }
 
         if (gravity)
-            a->y -= 9.81f;
+            a->y += Gravity;
 
         if (damping) {
-            a->x -= v->x;
-            a->y -= v->y;
+            a->x -= v->x*DampingCoefficient;
+            a->y -= v->y*DampingCoefficient;
         }
 
         if (wind)
-            a->x += 7.0f;
+            a->x += Wind;
 
         //-----------------------------------
 
         // Vi stegar punkterna framåt linjärt med Euler-integrering.
-        v->x += a->x * dt; v->y += a->y * dt;
-        p->x += v->x * dt; p->y += v->y * dt;
+        v->x += a->x*dt; v->y += a->y*dt;
+        p->x += v->x*dt; p->y += v->y*dt;
 
         // Efter att vi tillämpat accelerationerna så nollställer vi dem.
         a->x = a->y = 0.0f;
@@ -399,8 +445,7 @@ void RunSandbox(int numPoints) {
     corners.points[2].x = RightEdge; corners.points[2].y = BottomEdge;
     corners.points[3].x =  LeftEdge; corners.points[3].y = BottomEdge;
 
-    Quickhull(corners, &edges);
-
+    Quickhull(corners, &edges, NULL);
     printf(" done.\n");
 
     PrintInstructions();
@@ -436,8 +481,8 @@ void RunSandbox(int numPoints) {
             UpdatePoints(aps, ps, vps, hull, StepSize);
             dt -= StepSize;
 
-            if (useQuickhull) Quickhull     (ps, &hull);
-            else              BruteforceHull(ps, &hull);
+            if (useQuickhull) Quickhull     (ps, &hull, NULL);
+            else              BruteforceHull(ps, &hull, NULL);
         }
 
         // Dags att rita upp allting! Rensa ritytan!

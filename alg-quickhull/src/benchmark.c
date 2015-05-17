@@ -20,22 +20,56 @@
 #include "math.h"
 
 #include <stdio.h>
+#include <time.h>
+
+#include <Windows.h>
 
 /*------------------------------------------------
  * CONSTANTS
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Constant: BenchmarkNumIterations
+ * Constant: NumIterations
  *
  * Description:
  *   Antal iterationer som ska köras i benchmarkläge.
  *------------------------------------*/
-#define BenchmarkNumIterations 1000
+#define NumIterations 1000
 
 /*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
+
+LARGE_INTEGER stopwatch;
+
+static void StopwatchStart() {
+    QueryPerformanceCounter(&stopwatch);
+}
+
+static int StopwatchStop() {
+    LARGE_INTEGER freq;
+    QueryPerformanceFrequency(&freq);
+
+    LARGE_INTEGER pc;
+    QueryPerformanceCounter(&pc);
+
+    pc.QuadPart -= stopwatch.QuadPart;
+    pc.QuadPart *= 1000000;
+    pc.QuadPart /= freq.QuadPart;
+
+    return (int)pc.QuadPart;
+}
+
+static benchmarkdataT InitBenchmarkData() {
+    benchmarkdataT bmd = { 0 };
+
+    bmd.minCritOps = INT_MAX;
+    bmd.maxCritOps = INT_MIN;
+    bmd.minTime    = INT_MAX;
+    bmd.maxTime    = INT_MIN;
+
+    return bmd;
+}
 
 /*--------------------------------------
  * Function: RunBenchmark()
@@ -58,16 +92,38 @@ void RunBenchmark(int numPoints) {
     printf("Benchmark will now run.\n");
     printf("Benchmarking...\n");
 
-    for (int i = 1; i <= BenchmarkNumIterations; i++) {
+    benchmarkdataT bmdbf = InitBenchmarkData();
+
+    clock_t start = clock();
+    for (int i = 1; i <= NumIterations; i++) {
         RandomizePoints(ps);
 
-        // Här räknar vi ut det konvexa höljet.
-        BruteforceHull(ps, &hull);
+        StopwatchStart();
+        int numCritOps = BruteforceHull(ps, &hull);
+        int microSecs  = StopwatchStop();
 
-        if ((i % 10)==0)
-            printf("%d/%d iterations done...\n", i, BenchmarkNumIterations);
+        if (numCritOps < bmdbf.minCritOps) bmdbf.minCritOps = numCritOps;
+        if (numCritOps > bmdbf.maxCritOps) bmdbf.maxCritOps = numCritOps;
+
+        if (microSecs < bmdbf.minTime) bmdbf.minTime = microSecs;
+        if (microSecs > bmdbf.maxTime) bmdbf.maxTime = microSecs;
+
+        bmdbf.avgCritOps += (float)numCritOps / NumIterations;
+        bmdbf.avgTime    += (float)microSecs  / NumIterations;
+
+        int benchmarkTime = 1000 * (clock() - start) / CLOCKS_PER_SEC;
+        if (benchmarkTime >= 1000) {
+            printf("%2.1f%%...\n", 100.0f * (float)i / NumIterations);
+            start = clock();
+        }
     }
 
-    FreeHull  (hull);
+    printf("100.0%%. Done!\n\n");
+
+    printf("%f ops, %f usecs\n", bmdbf.avgCritOps, bmdbf.avgTime);
+    FreeHull(hull);
     FreePoints(ps);
+
+    printf("Press ENTER to exit...");
+    getchar();
 }
