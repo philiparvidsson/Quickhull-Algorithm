@@ -17,6 +17,7 @@
  *----------------------------------------------*/
 
 #include "benchmark.h"
+#include "common.h"
 #include "math.h"
 
 #include <stdio.h>
@@ -37,10 +38,38 @@
 #define NumIterations 1000
 
 /*------------------------------------------------
- * FUNCTIONS
+ * GLOBALS
  *----------------------------------------------*/
 
 LARGE_INTEGER stopwatch;
+
+/*------------------------------------------------
+ * FUNCTIONS
+ *----------------------------------------------*/
+
+static benchmarkdataT InitBenchmarkData() {
+    benchmarkdataT bmd = { 0 };
+
+    bmd.minCritOps = INT_MAX;
+    bmd.maxCritOps = INT_MIN;
+    bmd.minTime    = INT_MAX;
+    bmd.maxTime    = INT_MIN;
+
+    return bmd;
+}
+
+static void PrintStatistics(string s, benchmarkdataT *bmd) {
+    printf("STATISTICS (%s)\n"
+           "------------------------------------------------------------\n"
+           "                           Min.       Max.       Avg.\n"
+           " Critical Operations       %-7d    %-7d    %-7d\n"
+           " Memory Allocated (bytes)  0          0          0\n"
+           " Execution Time (usecs)    %-5d      %-5d      %-5d\n"
+           "------------------------------------------------------------\n",
+           s,
+           bmd->minCritOps, bmd->maxCritOps, (int)bmd->avgCritOps,
+           bmd->minTime   , bmd->maxTime   , (int)bmd->avgTime);
+}
 
 static void StopwatchStart() {
     QueryPerformanceCounter(&stopwatch);
@@ -58,17 +87,6 @@ static int StopwatchStop() {
     pc.QuadPart /= freq.QuadPart;
 
     return (int)pc.QuadPart;
-}
-
-static benchmarkdataT InitBenchmarkData() {
-    benchmarkdataT bmd = { 0 };
-
-    bmd.minCritOps = INT_MAX;
-    bmd.maxCritOps = INT_MIN;
-    bmd.minTime    = INT_MAX;
-    bmd.maxTime    = INT_MIN;
-
-    return bmd;
 }
 
 /*--------------------------------------
@@ -120,10 +138,11 @@ void RunBenchmark(int numPoints) {
 
     printf("100.0%%. Done!\n\n");
 
-    printf("%f ops, %f usecs\n", bmdbf.avgCritOps, bmdbf.avgTime);
+    PrintStatistics("Bruteforce", &bmdbf);
+
     FreeHull(hull);
     FreePoints(ps);
 
-    printf("Press ENTER to exit...");
+    printf("\nPress ENTER to exit...");
     getchar();
 }
