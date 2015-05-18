@@ -15,6 +15,12 @@
 #ifndef Benchmark_h
 #define Benchmark_h
 
+/*
+ * Type: benchmarkdataT
+ *
+ * Description:
+ *   Innehåller data om benchmark-körning av en funktion.
+ */
 typedef struct {
     int   minCritOps;
     int   maxCritOps;

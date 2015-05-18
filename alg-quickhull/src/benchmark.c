@@ -122,9 +122,8 @@ void RunBenchmark(int numPoints) {
 
         if (numCritOps < bmdbf.minCritOps) bmdbf.minCritOps = numCritOps;
         if (numCritOps > bmdbf.maxCritOps) bmdbf.maxCritOps = numCritOps;
-
-        if (microSecs < bmdbf.minTime) bmdbf.minTime = microSecs;
-        if (microSecs > bmdbf.maxTime) bmdbf.maxTime = microSecs;
+        if (microSecs  < bmdbf.minTime   ) bmdbf.minTime    = microSecs;
+        if (microSecs  > bmdbf.maxTime   ) bmdbf.maxTime    = microSecs;
 
         bmdbf.avgCritOps += (float)numCritOps / NumIterations;
         bmdbf.avgTime    += (float)microSecs  / NumIterations;

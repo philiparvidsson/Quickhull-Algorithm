@@ -115,7 +115,7 @@
  * Description:
  *   Vindens kraft.
  *------------------------------------*/
-#define Wind 7.0f
+#define Wind 3.0f
 
 /*--------------------------------------
  * Constant: SpringCoefficient
@@ -445,7 +445,7 @@ void RunSandbox(int numPoints) {
     corners.points[2].x = RightEdge; corners.points[2].y = BottomEdge;
     corners.points[3].x =  LeftEdge; corners.points[3].y = BottomEdge;
 
-    Quickhull(corners, &edges, NULL);
+    Quickhull(corners, &edges);
     printf(" done.\n");
 
     PrintInstructions();
@@ -481,8 +481,8 @@ void RunSandbox(int numPoints) {
             UpdatePoints(aps, ps, vps, hull, StepSize);
             dt -= StepSize;
 
-            if (useQuickhull) Quickhull     (ps, &hull, NULL);
-            else              BruteforceHull(ps, &hull, NULL);
+            if (useQuickhull) Quickhull     (ps, &hull);
+            else              BruteforceHull(ps, &hull);
         }
 
         // Dags att rita upp allting! Rensa ritytan!

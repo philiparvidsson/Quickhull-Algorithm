@@ -56,7 +56,7 @@ main() {
 
     printf("Number of points to use? ");
     int numPoints = GetIntFromUser();
-    if (numPoints < 1)    numPoints = 1;
+    if (numPoints < 1   ) numPoints = 1;
     if (numPoints > 1000) numPoints = 1000;
 
     printf("Do you want to run the benchmark? (y/N) ");

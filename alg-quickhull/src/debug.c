@@ -36,7 +36,7 @@
  *   Kraschar programmet med ett meddelande.
  *------------------------------------*/
 void AssertFail(string expr, string funcName, int line) {
-    printf("The assertion '%s' failed in %s() on line %d.\n"
+    printf("\nERROR: The assertion '%s' failed in %s() on line %d.\n\n"
            "This program will now crash.\n"
            "Press ENTER to continue...", expr, funcName, line);
     getchar();
@@ -52,7 +52,9 @@ void AssertFail(string expr, string funcName, int line) {
  *   Kraschar programmet med ett meddelande.
  *------------------------------------*/
 void Error(string msg) {
-    printf("Error: %s\n", msg);
+    printf("\nERROR: %s\n\n"
+           "This program will now crash.\n"
+           "Press ENTER to continue...", msg);
     getchar();
     exit(EXIT_FAILURE);
 }
@@ -67,7 +69,7 @@ void Error(string msg) {
  *   Kraschar programmet med ett meddelande.
  *------------------------------------*/
 void ProgramFail(string funcName, int line) {
-    printf("Program failed in %s() on line %d and will now crash.\n"
+    printf("\nERROR: Program failed in %s() on line %d and will now crash.\n\n"
            "Press ENTER to continue...", funcName, line);
     getchar();
     exit(EXIT_FAILURE);

@@ -144,8 +144,15 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
             // Om alla punkter visade sig vara innanför linjen, så behåller vi
             // den som ett segment i det konvexa höljet.
             if (!outside) {
-                if (hull->numLines >= hull->maxLines)
-                    Error("Hull is not large enough for specified point set.");
+                if (hull->numLines >= hull->maxLines) {
+                    // Segmentet får inte plats i höljets datastruktur. Om det
+                    // här sker så har vi antingen allokerat ett för litet hölje
+                    // eller, om maxLines är detsamma som ps.numPoints, så vet vi
+                    // att höljet egentligen borde få plats. Det innebär att vi
+                    // håller på att lägga in en dubblett. Det innebär att vi
+                    // ändå är klara, så vi kan returnera här.
+                    return numCritOps;
+                }
 
                 hull->lines[hull->numLines].a = a;
                 hull->lines[hull->numLines].b = b;
@@ -155,6 +162,10 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
     }
 
     return numCritOps;
+}
+
+int Quickhull2() {
+    return;
 }
 
 /*--------------------------------------
@@ -168,8 +179,7 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
  *   Quickhull. Returnerar det totala antalet kritiska operationer som utfördes.
  *------------------------------------*/
 int Quickhull(pointsetT ps, hullT *hull) {
-    return BruteforceHull(ps, hull);
-    /*pointT *a = &ps.points[0],
+    pointT *a = &ps.points[0],
            *b = a;
 
     for (int i = 1; i < ps.numPoints; i++) {
@@ -177,7 +187,26 @@ int Quickhull(pointsetT ps, hullT *hull) {
 
         if (p->x < a->x) a = p;
         if (p->x > b->x) b = p;
-    }*/
+    }
+
+    // a och b ska vara med i höljet
+
+    for (int i = 0; i < ps.numPoints; i++) {
+        pointT *c = &ps.points[i];
+
+        float d = (b->x - a->x) * (c->y - a->y)
+                - (b->y - a->y) * (c->x - a->x);
+
+        if (d < 0.0f) {
+            // Set 1
+        }
+        else {
+            // Set 2
+        }
+    }
+
+    //Quickhull2(set1, hull);
+    //Quickhull2(set2, hull);
 }
 
 /*--------------------------------------
