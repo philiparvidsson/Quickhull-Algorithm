@@ -94,7 +94,7 @@ void *ArrayGet(const arrayT *array, int i) {
  * Description:
  *   Returnerar den specificerade arrayens längd.
  *------------------------------------*/
-int Array_Length(const arrayT *array) {
+int ArrayLength(const arrayT *array) {
     return array->numElements;
 }
 

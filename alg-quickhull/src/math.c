@@ -16,6 +16,7 @@
  * INCLUDES
  *----------------------------------------------*/
 
+#include "array.h"
 #include "benchmark.h"
 #include "common.h"
 #include "debug.h"
@@ -164,7 +165,14 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
     return numCritOps;
 }
 
-int Quickhull2() {
+int Quickhull2(arrayT ps) {
+    int numPoints = ArrayLength(&ps);
+
+    if (numPoints == 0)
+        return 0;
+
+
+
     return;
 }
 
@@ -189,7 +197,15 @@ int Quickhull(pointsetT ps, hullT *hull) {
         if (p->x > b->x) b = p;
     }
 
-    // a och b ska vara med i höljet
+    //arrayT hullPoints;
+    //InitArray(&hullPoints);
+
+    //ArrayAdd(&hullPoints, a);
+    //ArrayAdd(&hullPoints, b);
+
+    arrayT set1, set2;
+    InitArray(&set1, sizeof(pointT *));
+    InitArray(&set2, sizeof(pointT *));
 
     for (int i = 0; i < ps.numPoints; i++) {
         pointT *c = &ps.points[i];
@@ -197,12 +213,8 @@ int Quickhull(pointsetT ps, hullT *hull) {
         float d = (b->x - a->x) * (c->y - a->y)
                 - (b->y - a->y) * (c->x - a->x);
 
-        if (d < 0.0f) {
-            // Set 1
-        }
-        else {
-            // Set 2
-        }
+        if (d < 0.0f) ArrayAdd(&set1, c);
+        else          ArrayAdd(&set2, c);
     }
 
     //Quickhull2(set1, hull);
