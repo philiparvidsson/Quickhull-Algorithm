@@ -65,7 +65,8 @@ static void PrintStatistics(string s, benchmarkdataT *bmd) {
            " Critical Operations       %-7d    %-7d    %-7d\n"
            " Memory Allocated (bytes)  0          0          0\n"
            " Execution Time (usecs)    %-5d      %-5d      %-5d\n"
-           "------------------------------------------------------------\n",
+           "------------------------------------------------------------\n"
+           "\n",
            s,
            bmd->minCritOps, bmd->maxCritOps, (int)bmd->avgCritOps,
            bmd->minTime   , bmd->maxTime   , (int)bmd->avgTime);
@@ -110,11 +111,16 @@ void RunBenchmark(int numPoints) {
     printf("Benchmark will now run.\n");
     printf("Benchmarking...\n");
 
-    benchmarkdataT bmdbf = InitBenchmarkData();
+    benchmarkdataT bmdbf = InitBenchmarkData(),
+                   bmdqh = InitBenchmarkData();
 
     clock_t start = clock();
     for (int i = 1; i <= NumIterations; i++) {
         RandomizePoints(ps);
+
+        /*--------------------------------------------------------------------*/
+        /* Bruteforce                                                         */
+        /*--------------------------------------------------------------------*/
 
         StopwatchStart();
         int numCritOps = BruteforceHull(ps, &hull);
@@ -128,6 +134,25 @@ void RunBenchmark(int numPoints) {
         bmdbf.avgCritOps += (float)numCritOps / NumIterations;
         bmdbf.avgTime    += (float)microSecs  / NumIterations;
 
+        /*--------------------------------------------------------------------*/
+        /* Quickhull                                                          */
+        /*--------------------------------------------------------------------*/
+
+        StopwatchStart();
+        numCritOps = Quickhull(ps, &hull);
+        microSecs  = StopwatchStop();
+
+        if (numCritOps < bmdqh.minCritOps) bmdqh.minCritOps = numCritOps;
+        if (numCritOps > bmdqh.maxCritOps) bmdqh.maxCritOps = numCritOps;
+        if (microSecs  < bmdqh.minTime   ) bmdqh.minTime    = microSecs;
+        if (microSecs  > bmdqh.maxTime   ) bmdqh.maxTime    = microSecs;
+
+        bmdqh.avgCritOps += (float)numCritOps / NumIterations;
+        bmdqh.avgTime    += (float)microSecs  / NumIterations;
+
+        // Här ser vi till att skriva ut hur långt i benchmarket vi kommit,
+        // procentuellt sett, en gång varje sekund. Så att användaren inte tror
+        // att programmet hängt sig.
         int benchmarkTime = 1000 * (clock() - start) / CLOCKS_PER_SEC;
         if (benchmarkTime >= 1000) {
             printf("%2.1f%%...\n", 100.0f * (float)i / NumIterations);
@@ -138,6 +163,7 @@ void RunBenchmark(int numPoints) {
     printf("100.0%%. Done!\n\n");
 
     PrintStatistics("Bruteforce", &bmdbf);
+    PrintStatistics("Quickhull", &bmdqh);
 
     FreeHull(hull);
     FreePoints(ps);
