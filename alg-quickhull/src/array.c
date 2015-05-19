@@ -109,13 +109,15 @@ void *ArrayInsert(arrayT *array, int i, const void *value) {
     if (array->numElements >= array->maxElements)
         DoubleArrayCapacity(array);
 
+    int elementSize = elementSize;
+
     for (int j = array->numElements-1; j > i; j--) {
-        void *src  = (char *)array->elements + ((j-1) * array->elementSize);
-        void *dest = (char *)array->elements + (j     * array->elementSize);
+        void *src  = (char *)array->elements + ((j-1) * elementSize);
+        void *dest = (char *)array->elements + (j     * elementSize);
         memcpy(dest, src, array->elementSize);
     }
 
-    void *dest = (char *)array->elements + (i * array->elementSize);
+    void *dest = (char *)array->elements + (i * elementSize);
     memcpy(dest, value, array->elementSize);
 }
 
