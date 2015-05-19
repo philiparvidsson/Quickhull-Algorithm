@@ -62,19 +62,19 @@ void *ArrayAdd(arrayT *array, const void *value);
  * Function: ArrayGet()
  * Parameters:
  *   array  Den array från vilken vi ska läsa ett element.
- *   i      Det index i arrayen från vilket vi ska läsa elementet.
+ *   index  Det index i arrayen från vilket vi ska läsa elementet.
  *
  * Description:
  *   Läser ut och returnerar en pekare till det specificerade elementet i
  *   arrayen.
  *------------------------------------*/
-void *ArrayGet(const arrayT *array, int i);
+void *ArrayGet(const arrayT *array, int index);
 
 /*--------------------------------------
  * Function: ArrayInsert()
  * Parameters:
  *   array  Den array till vilken vi ska lägga ett element.
- *   i      Det index i arrayen där elementet ska sättas in.
+ *   index  Det index i arrayen där elementet ska sättas in.
  *   value  Elementet som ska läggas till i arrayen.
  *
  * Description:

@@ -84,24 +84,24 @@ void *ArrayAdd(arrayT *array, const void *value) {
  *   Läser ut och returnerar en pekare till det specificerade elementet i
  *   arrayen.
  *------------------------------------*/
-void *ArrayGet(const arrayT *array, int i) {
-    Assert(0 <= i && i < array->numElements);
-    return (char *)array->elements + (i * array->elementSize);
+void *ArrayGet(const arrayT *array, int index) {
+    Assert(0 <= index && index < array->numElements);
+    return (char *)array->elements + (index * array->elementSize);
 }
 
 /*--------------------------------------
  * Function: ArrayInsert()
  * Parameters:
  *   array  Den array till vilken vi ska lägga ett element.
- *   i      Det index i arrayen där elementet ska sättas in.
+ *   index  Det index i arrayen där elementet ska sättas in.
  *   value  Elementet som ska läggas till i arrayen.
  *
  * Description:
  *   Lägger in ett element i en array vid det specificerade indexet. Returnerar
  *   minnesadressen där noden lades in.
  *------------------------------------*/
-void *ArrayInsert(arrayT *array, int i, const void *value) {
-    if (i >= ArrayLength(array)) {
+void *ArrayInsert(arrayT *array, int index, const void *value) {
+    if (index >= ArrayLength(array)) {
         ArrayAdd(array, value);
         return;
     }
@@ -111,13 +111,13 @@ void *ArrayInsert(arrayT *array, int i, const void *value) {
 
     int elementSize = elementSize;
 
-    for (int j = array->numElements-1; j > i; j--) {
-        void *src  = (char *)array->elements + ((j-1) * elementSize);
-        void *dest = (char *)array->elements + (j     * elementSize);
+    for (int i = array->numElements-1; i > index; i--) {
+        void *src  = (char *)array->elements + ((i-1) * elementSize);
+        void *dest = (char *)array->elements + ( i    * elementSize);
         memcpy(dest, src, array->elementSize);
     }
 
-    void *dest = (char *)array->elements + (i * elementSize);
+    void *dest = (char *)array->elements + (index * elementSize);
     memcpy(dest, value, array->elementSize);
 }
 
