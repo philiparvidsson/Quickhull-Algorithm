@@ -56,7 +56,7 @@ typedef struct {
  *   Lägger till ett element i en array. Returnerar minnesadressen där noden
  *   lades in.
  *------------------------------------*/
-void* ArrayAdd(arrayT *array, const void *value);
+void *ArrayAdd(arrayT *array, const void *value);
 
 /*--------------------------------------
  * Function: ArrayGet()
