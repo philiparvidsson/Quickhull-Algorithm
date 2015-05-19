@@ -123,7 +123,7 @@
  * Description:
  *   Fjädringskoefficienten. Högre värde ger "stelare" gummiband runt prickarna.
  *------------------------------------*/
-#define SpringCoefficient 20.0f
+#define SpringCoefficient 30.0f
 
 /*--------------------------------------
  * Constant: SpringDamping
@@ -131,7 +131,7 @@
  * Description:
  *   Mjukar sammandragningen och expansionen av gummibandet.
  *------------------------------------*/
-#define SpringDamping 0.4f
+#define SpringDamping 0.6f
 
 /*--------------------------------------
  * Constant: SpringLength
@@ -151,6 +151,7 @@ bool damping      = FALSE;
 bool drawHull     = TRUE;
 bool drawPoints   = TRUE;
 bool gravity      = FALSE;
+bool lockHull     = FALSE;
 bool rubberBand   = FALSE;
 bool slopedFloor  = FALSE;
 bool useQuickhull = TRUE;
@@ -196,6 +197,13 @@ static void ToggleHull(void *arg) {
 
     if (drawHull) printf(":: Hull rendering enabled.\n");
     else          printf(":: Hull rendering disabled.\n");
+}
+
+static void ToggleHullLock(void *arg) {
+    lockHull = !lockHull;
+
+    if (lockHull) printf(":: Hull locked.\n");
+    else          printf(":: Hull unlocked.\n");
 }
 
 static void TogglePoints(void *arg) {
@@ -253,6 +261,7 @@ static void PrintInstructions() {
            "  d    Toggles damping.\n"
            "  g    Toggles gravity.\n"
            "  h    Toggles hull rendering.\n"
+           "  l    Toggles hull lock (locks hull to its current point set).\n"
            "  p    Toggles point rendering.\n"
            "  q    Toggles between bruteforce and quickhull.\n"
            "  r    Toggles rubber band mode (hull becomes a rubber band).\n"
@@ -406,6 +415,10 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
  *   Kör programmet i sandbox-läge.
  *------------------------------------*/
 void RunSandbox(int numPoints) {
+    /*------------------------------------------------------------------------*/
+    /* 1. INITIERING                                                          */
+    /*------------------------------------------------------------------------*/
+
     // Vi skapar uppsättningen med punkter som ska visas på skärmen.
     printf("Creating random points...");
     pointsetT ps = CreatePoints(numPoints);
@@ -445,6 +458,7 @@ void RunSandbox(int numPoints) {
     corners.points[2].x = RightEdge; corners.points[2].y = BottomEdge;
     corners.points[3].x =  LeftEdge; corners.points[3].y = BottomEdge;
 
+    // Klart vi använder quickhull för att räkna ut världens kanter! :-)
     Quickhull(corners, &edges);
     printf(" done.\n");
 
@@ -464,6 +478,7 @@ void RunSandbox(int numPoints) {
     OnKeyPress('f', ToggleSlopedFloor, NULL);
     OnKeyPress('g', ToggleGravity    , NULL);
     OnKeyPress('h', ToggleHull       , NULL);
+    OnKeyPress('l', ToggleHullLock   , NULL);
     OnKeyPress('p', TogglePoints     , NULL);
     OnKeyPress('q', ToggleQuickhull  , NULL);
     OnKeyPress('r', ToggleRubberBand , NULL);
@@ -474,6 +489,10 @@ void RunSandbox(int numPoints) {
     printf(" done.\n");
     printf("Enjoy! :-)\n\n");
 
+    /*------------------------------------------------------------------------*/
+    /* 1. HUVUDLOOP                                                           */
+    /*------------------------------------------------------------------------*/
+
     float dt = 0.0f;
     while (WindowIsOpen()) {
         dt += Speed / FrameRate;
@@ -481,8 +500,10 @@ void RunSandbox(int numPoints) {
             UpdatePoints(aps, ps, vps, hull, StepSize);
             dt -= StepSize;
 
-            if (useQuickhull) Quickhull     (ps, &hull);
-            else              BruteforceHull(ps, &hull);
+            if (!lockHull) {
+                if (useQuickhull) Quickhull(ps, &hull);
+                else              BruteforceHull(ps, &hull);
+            }
         }
 
         // Dags att rita upp allting! Rensa ritytan!
@@ -513,6 +534,10 @@ void RunSandbox(int numPoints) {
         // Fram med allt på skärmen!
         UpdateDisplay();
     }
+
+    /*------------------------------------------------------------------------*/
+    /* 1. AVALLOKERING                                                        */
+    /*------------------------------------------------------------------------*/
 
     printf("Exiting...\n");
 

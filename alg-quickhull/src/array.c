@@ -39,6 +39,20 @@
  * FUNCTIONS
  *----------------------------------------------*/
 
+static void DoubleArrayCapacity(arrayT *array) {
+    // Arrayen är full, så vi dubblar kapaciteten och kopierar över de gamla
+    // elementen till den nya minnesplatsen, sen släpper vi den gamla
+    // arrayen ur minnet.
+
+    void *oldElements    = array->elements;
+    int   oldMaxElements = array->maxElements;
+
+    array->maxElements *= 2;
+    array->elements = malloc(array->maxElements * array->elementSize);
+    memcpy(array->elements, oldElements, oldMaxElements * array->elementSize);
+    free(oldElements);
+}
+
 /*--------------------------------------
  * Function: ArrayAdd()
  * Parameters:
@@ -50,19 +64,8 @@
  *   lades in.
  *------------------------------------*/
 void *ArrayAdd(arrayT *array, const void *value) {
-    if (array->numElements >= array->maxElements) {
-        // Arrayen är full, så vi dubblar kapaciteten och kopierar över de gamla
-        // elementen till den nya minnesplatsen, sen släpper vi den gamla
-        // arrayen ur minnet.
-
-        void *oldElements    = array->elements;
-        int   oldMaxElements = array->maxElements;
-
-        array->maxElements *= 2;
-        array->elements = malloc(array->maxElements * array->elementSize);
-        memcpy(array->elements, oldElements, oldMaxElements * array->elementSize);
-        free(oldElements);
-    }
+    if (array->numElements >= array->maxElements)
+        DoubleArrayCapacity(array);
 
     void *dest = (char *)array->elements + (array->numElements * array->elementSize);
     memcpy(dest, value, array->elementSize);
@@ -84,6 +87,36 @@ void *ArrayAdd(arrayT *array, const void *value) {
 void *ArrayGet(const arrayT *array, int i) {
     Assert(0 <= i && i < array->numElements);
     return (char *)array->elements + (i * array->elementSize);
+}
+
+/*--------------------------------------
+ * Function: ArrayInsert()
+ * Parameters:
+ *   array  Den array till vilken vi ska lägga ett element.
+ *   i      Det index i arrayen där elementet ska sättas in.
+ *   value  Elementet som ska läggas till i arrayen.
+ *
+ * Description:
+ *   Lägger in ett element i en array vid det specificerade indexet. Returnerar
+ *   minnesadressen där noden lades in.
+ *------------------------------------*/
+void *ArrayInsert(arrayT *array, int i, const void *value) {
+    if (i >= ArrayLength(array)) {
+        ArrayAdd(array, value);
+        return;
+    }
+
+    if (array->numElements >= array->maxElements)
+        DoubleArrayCapacity(array);
+
+    for (int j = array->numElements-1; j > i; j--) {
+        void *src  = (char *)array->elements + ((j-1) * array->elementSize);
+        void *dest = (char *)array->elements + (j     * array->elementSize);
+        memcpy(dest, src, array->elementSize);
+    }
+
+    void *dest = (char *)array->elements + (i * array->elementSize);
+    memcpy(dest, value, array->elementSize);
 }
 
 /*--------------------------------------

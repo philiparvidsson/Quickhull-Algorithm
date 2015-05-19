@@ -71,6 +71,19 @@ void *ArrayAdd(arrayT *array, const void *value);
 void *ArrayGet(const arrayT *array, int i);
 
 /*--------------------------------------
+ * Function: ArrayInsert()
+ * Parameters:
+ *   array  Den array till vilken vi ska lägga ett element.
+ *   i      Det index i arrayen där elementet ska sättas in.
+ *   value  Elementet som ska läggas till i arrayen.
+ *
+ * Description:
+ *   Lägger in ett element i en array vid det specificerade indexet. Returnerar
+ *   minnesadressen där noden lades in.
+ *------------------------------------*/
+void *ArrayInsert(arrayT *array, int i, const void *value);
+
+/*--------------------------------------
  * Function: ArrayLength()
  * Parameters:
  *   array  Arrayen vars längd ska läsas ut.
