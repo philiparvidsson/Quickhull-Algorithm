@@ -416,7 +416,7 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
  *------------------------------------*/
 void RunSandbox(int numPoints) {
     /*------------------------------------------------------------------------*/
-    /* 1. INITIERING                                                          */
+    /* 1. Initiering                                                          */
     /*------------------------------------------------------------------------*/
 
     // Vi skapar uppsättningen med punkter som ska visas på skärmen.
@@ -490,7 +490,7 @@ void RunSandbox(int numPoints) {
     printf("Enjoy! :-)\n\n");
 
     /*------------------------------------------------------------------------*/
-    /* 1. HUVUDLOOP                                                           */
+    /* 2. Huvudloop                                                           */
     /*------------------------------------------------------------------------*/
 
     float dt = 0.0f;
@@ -513,7 +513,8 @@ void RunSandbox(int numPoints) {
         SetColor(0.000f, 0.000f, 0.000f, 1.000f);
         DrawHull(edges);
 
-        if (drawHull) DrawHull(hull);
+        if (drawHull)
+            DrawHull(hull);
 
         // Sedan miljögrejer.
         if (slopedFloor) {
@@ -536,7 +537,7 @@ void RunSandbox(int numPoints) {
     }
 
     /*------------------------------------------------------------------------*/
-    /* 1. AVALLOKERING                                                        */
+    /* 3. Avallokering                                                        */
     /*------------------------------------------------------------------------*/
 
     printf("Exiting...\n");

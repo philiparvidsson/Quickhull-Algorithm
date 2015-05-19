@@ -101,7 +101,9 @@ void *ArrayGet(const arrayT *array, int index) {
  *   minnesadressen där noden lades in.
  *------------------------------------*/
 void *ArrayInsert(arrayT *array, int index, const void *value) {
-    if (index >= ArrayLength(array)) {
+    Assert(0 <= index && index <= array->numElements);
+
+    if (index == array->numElements) {
         ArrayAdd(array, value);
         return;
     }
@@ -109,7 +111,7 @@ void *ArrayInsert(arrayT *array, int index, const void *value) {
     if (array->numElements >= array->maxElements)
         DoubleArrayCapacity(array);
 
-    int elementSize = elementSize;
+    int elementSize = array->elementSize;
 
     for (int i = array->numElements-1; i > index; i--) {
         void *src  = (char *)array->elements + ((i-1) * elementSize);
