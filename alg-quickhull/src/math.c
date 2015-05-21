@@ -190,14 +190,14 @@ int Quickhull2(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
 
     int numOps = 0;
 
-    int   index = 0;
+    int   index = -1;
     float max   = -FLT_MAX;
 
     for (int i = 0; i < n; i++) {
         pointT *p = *(pointT **)ArrayGet(subset, i);
 
-        float d = (b->x - a->x) * (p->y - a->y)
-                - (b->y - a->y) * (p->x - a->x);
+        float d = (b->x - a->x) * (a->y - p->y)
+                - (b->y - a->y) * (a->x - p->x);
 
         if (d < 0.0f)
             d = -d;
@@ -306,6 +306,9 @@ int Quickhull(pointsetT ps, hullT *hull) {
     for (int i = 0; i < ps.numPoints; i++) {
         pointT *p = &ps.points[i];
 
+        if (p == lp || p == rp)
+            continue;
+
         float d = (rp->x - lp->x) * (p->y - lp->y)
                 - (rp->y - lp->y) * (p->x - lp->x);
 
@@ -321,7 +324,7 @@ int Quickhull(pointsetT ps, hullT *hull) {
      *
      *------------------------------------------------------------------------*/
 
-    int numOps = ps.numPoints;
+    int numOps = ps.numPoints
                + Quickhull2(&hullPoints, lp, rp, &subsetA)
                + Quickhull2(&hullPoints, rp, lp, &subsetB);
 
