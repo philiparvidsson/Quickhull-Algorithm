@@ -230,7 +230,7 @@ int Quickhull2(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
                  - (b->y - p->y) * (q->x - p->x);
 
         if (d2 > 0.0f) {
-            ArrayAdd(&subsetA, &q);
+            ArrayAdd(&subsetB, &q);
         }
 
         numOps++;
