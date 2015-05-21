@@ -35,7 +35,7 @@
  * Description:
  *   Antal iterationer som ska köras i benchmarkläge.
  *------------------------------------*/
-#define NumIterations 1000
+#define NumIterations 5000
 
 /*------------------------------------------------
  * GLOBALS

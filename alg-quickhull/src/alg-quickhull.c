@@ -27,6 +27,18 @@
 #include <time.h>
 
 /*------------------------------------------------
+ * CONSTANTS
+ *----------------------------------------------*/
+
+/*--------------------------------------
+ * Constant: MaxPoints
+ *
+ * Description:
+ *   Maximalt antal punkter.
+ *------------------------------------*/
+#define MaxPoints 10000
+
+/*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
 
@@ -56,8 +68,8 @@ main() {
 
     printf("Number of points to use? ");
     int numPoints = GetIntFromUser();
-    if (numPoints < 1   ) numPoints = 1;
-    if (numPoints > 1000) numPoints = 1000;
+    if (numPoints < 1        ) numPoints = 1;
+    if (numPoints > MaxPoints) numPoints = MaxPoints;
 
     printf("Do you want to run the benchmark? (y/N) ");
     bool benchmark = GetBoolFromUser(FALSE);

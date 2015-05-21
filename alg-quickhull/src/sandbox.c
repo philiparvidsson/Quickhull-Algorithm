@@ -99,7 +99,7 @@
  * Description:
  *   Dämpningskoefficient.
  *------------------------------------*/
-#define DampingCoefficient 1.3f
+#define DampingCoefficient 0.7f
 
 /*--------------------------------------
  * Constant: Gravity
@@ -202,7 +202,9 @@ static void ToggleHull(void *arg) {
 static void ToggleHullLock(void *arg) {
     lockHull = !lockHull;
 
-    if (lockHull) printf(":: Hull locked.\n");
+    hullT *hull = (hullT *)arg;
+
+    if (lockHull) printf(":: Hull locked (%d points).\n", hull->numLines);
     else          printf(":: Hull unlocked.\n");
 }
 
@@ -340,7 +342,7 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
 
         if (blackHole) {
             float r = (float)sqrt(p->x*p->x + p->y*p->y);
-            // Vi använder en linjär modell för gravitationen, inte inverse
+            // Vi använder en linjär modell för dragningskraften, inte inverse
             // square law. Den funkar uselt med Euler-integrering oavsett.
             if (r > 0.000001f) {
                 a->x -= p->x*BlackHoleForce/r;
@@ -376,6 +378,7 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
 
         // Ett lutande golv behöver lite specialbehandling.
         if (slopedFloor) {
+            // Lerp från vänster till höger för att räkna ut golvets höjd vid x.
             float x     = (p->x-LeftEdge) / (RightEdge-LeftEdge);
             float floor = -0.9f * (1.0f-x) - 0.3f * x;
 
@@ -478,7 +481,7 @@ void RunSandbox(int numPoints) {
     OnKeyPress('f', ToggleSlopedFloor, NULL);
     OnKeyPress('g', ToggleGravity    , NULL);
     OnKeyPress('h', ToggleHull       , NULL);
-    OnKeyPress('l', ToggleHullLock   , NULL);
+    OnKeyPress('l', ToggleHullLock   , &hull);
     OnKeyPress('p', TogglePoints     , NULL);
     OnKeyPress('q', ToggleQuickhull  , NULL);
     OnKeyPress('r', ToggleRubberBand , NULL);
@@ -501,7 +504,7 @@ void RunSandbox(int numPoints) {
             dt -= StepSize;
 
             if (!lockHull) {
-                if (useQuickhull) Quickhull(ps, &hull);
+                if (useQuickhull) Quickhull     (ps, &hull);
                 else              BruteforceHull(ps, &hull);
             }
         }

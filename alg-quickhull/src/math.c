@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "math.h"
 
+#include <float.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -105,7 +106,8 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
     int numCritOps = 0;
 
     // For-looparna med i och j används för att konstruera alla tänkbara
-    // kombinationer av par bland punkterna.
+    // kombinationer av par bland punkterna. Vi konstruerar dem åt båda håll,
+    // d.v.s. både (a,b) och (b,a).
 
     hull->numLines = 0;
     for (int i = 0; i < ps.numPoints; i++) {
@@ -158,6 +160,7 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
                 hull->lines[hull->numLines].a = a;
                 hull->lines[hull->numLines].b = b;
                 hull->numLines++;
+                break;
             }
         }
     }
@@ -165,15 +168,81 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
     return numCritOps;
 }
 
-int Quickhull2(arrayT ps) {
-    int numPoints = ArrayLength(&ps);
+int Quickhull2(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
 
-    if (numPoints == 0)
+    int n = ArrayLength(subset);
+
+    if (n == 0)
         return 0;
 
+    if (n == 1) {
+        ArrayAdd(hull, ArrayGet(subset, 0));
+        return 1;
+        for (int i = 0; i < ArrayLength(hull); i++) {
+            if (*(pointT **)ArrayGet(hull, i) == a) {
+                ArrayInsert(hull, i, ArrayGet(subset, 0));
+                return i;
+            }
+        }
 
+        Fail();
+    }
 
-    return;
+    int numOps = 0;
+
+    int   index = 0;
+    float max   = -FLT_MAX;
+
+    for (int i = 0; i < n; i++) {
+        pointT *p = *(pointT **)ArrayGet(subset, i);
+
+        float d = (b->x - a->x) * (p->y - a->y)
+                - (b->y - a->y) * (p->x - a->x);
+
+        if (d < 0.0f)
+            d = -d;
+
+        if (d > max) {
+            index = i;
+            max   = d;
+        }
+
+        numOps++;
+    }
+
+    pointT *p = *(pointT **)ArrayGet(subset, index);
+
+    arrayT subsetA, subsetB;
+    InitArray(&subsetA, sizeof(pointT *));
+    InitArray(&subsetB, sizeof(pointT *));
+
+    for (int i = 0; i < n; i++) {
+        pointT *q = *(pointT **)ArrayGet(subset, i);
+
+        float d1 = (p->x - a->x) * (q->y - a->y)
+                 - (p->y - a->y) * (q->x - a->x);
+
+        if (d1 > 0.0f) {
+            ArrayAdd(&subsetA, &q);
+        }
+
+        float d2 = (b->x - p->x) * (q->y - p->y)
+                 - (b->y - p->y) * (q->x - p->x);
+
+        if (d2 > 0.0f) {
+            ArrayAdd(&subsetA, &q);
+        }
+
+        numOps++;
+    }
+
+    numOps += Quickhull2(hull, a, p, &subsetA)
+           +  Quickhull2(hull, p, b, &subsetB);
+
+    FreeArray(&subsetA);
+    FreeArray(&subsetB);
+
+    return numOps;
 }
 
 /*--------------------------------------
@@ -184,41 +253,101 @@ int Quickhull2(arrayT ps) {
  *
  * Description:
  *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
- *   Quickhull. Returnerar det totala antalet kritiska operationer som utfördes.
+ *   quickhull. Returnerar det totala antalet kritiska operationer som utfördes.
  *------------------------------------*/
 int Quickhull(pointsetT ps, hullT *hull) {
-    pointT *a = &ps.points[0],
-           *b = a;
+    /*--------------------------------------------------------------------------
+     * 1. INITIERING AV VARIABLER OCH DATA
+     *
+     *   Här allokerar vi minne och arrayer/vektorer som vi behöver för att
+     *   lagra information om höljet och de 'subset' punkter (två "halvor" av
+     *   höljet) som vi ska jobba med.
+     *
+     *------------------------------------------------------------------------*/
+
+    // Vi initierar både lp (left point) och rp (right point) till den första
+    // punkten i uppsättningen, bara för att inte behöva hantera null-pekare.
+    pointT *lp = &ps.points[0],
+           *rp = lp;
+
+    // Efter att algoritmen är klar kommer hullPoints innehålla alla punkter i
+    // höljer i medurs ordning.
+    arrayT hullPoints, subsetA, subsetB;
+    InitArray(&hullPoints, sizeof(pointT *));
+    InitArray(&subsetA   , sizeof(pointT *));
+    InitArray(&subsetB   , sizeof(pointT *));
+
+    /*--------------------------------------------------------------------------
+     * 2. SÖKNING EFTER EXTREMPUNKTER
+     *
+     *   Vi letar upp vänstra och högra extrempunkterna. Dessa är garanterat en
+     *   del av det konvexa höljet, och läggs därför in i punktlistan omgående.
+     *
+     *------------------------------------------------------------------------*/
 
     for (int i = 1; i < ps.numPoints; i++) {
         pointT *p = &ps.points[i];
 
-        if (p->x < a->x) a = p;
-        if (p->x > b->x) b = p;
+        if (p->x < lp->x) lp = p;
+        if (p->x > rp->x) rp = p;
     }
 
-    //arrayT hullPoints;
-    //InitArray(&hullPoints);
+    ArrayAdd(&hullPoints, &lp);
+    ArrayAdd(&hullPoints, &rp);
 
-    //ArrayAdd(&hullPoints, a);
-    //ArrayAdd(&hullPoints, b);
-
-    arrayT set1, set2;
-    InitArray(&set1, sizeof(pointT *));
-    InitArray(&set2, sizeof(pointT *));
+    /*--------------------------------------------------------------------------
+     * 3. UPPDELNING I TVÅ HALVOR
+     *
+     *   Vi drar en linje mellan extrempunkterna. Punkterna på de två sidorna om
+     *   linjen hamnar i varsina punktsamlingar; subsetA och subsetB.
+     *
+     *------------------------------------------------------------------------*/
 
     for (int i = 0; i < ps.numPoints; i++) {
-        pointT *c = &ps.points[i];
+        pointT *p = &ps.points[i];
 
-        float d = (b->x - a->x) * (c->y - a->y)
-                - (b->y - a->y) * (c->x - a->x);
+        float d = (rp->x - lp->x) * (p->y - lp->y)
+                - (rp->y - lp->y) * (p->x - lp->x);
 
-        if (d < 0.0f) ArrayAdd(&set1, c);
-        else          ArrayAdd(&set2, c);
+        if (d < 0.0f) ArrayAdd(&subsetA, &p); // Övre "halva."
+        else          ArrayAdd(&subsetB, &p); // Nedra "halva."
     }
 
-    //Quickhull2(set1, hull);
-    //Quickhull2(set2, hull);
+    /*--------------------------------------------------------------------------
+     * 4. REKURSION
+     *
+     *   Här hanterar vi de två punktsamlingarna rekursivt, vilket är quickhull-
+     *   algoritmens kärna.
+     *
+     *------------------------------------------------------------------------*/
+
+    int numOps = ps.numPoints;
+               + Quickhull2(&hullPoints, lp, rp, &subsetA)
+               + Quickhull2(&hullPoints, rp, lp, &subsetB);
+
+    /*--------------------------------------------------------------------------
+     * 5. AVALLOKERING
+     *
+     *   Här rensar vi upp minnet efter oss.
+     *
+     *------------------------------------------------------------------------*/
+
+    hull->numLines = 0;
+    for (int i = 0; i < ArrayLength(&hullPoints); i++) {
+        if (hull->numLines >= hull->maxLines)
+            break;
+
+        hull->lines[i].a = *(pointT **)ArrayGet(&hullPoints, i);
+        hull->lines[i].b = *(pointT **)ArrayGet(&hullPoints, (i+1) % ArrayLength(&hullPoints));
+
+        hull->numLines++;
+    }
+
+    FreeArray(&hullPoints);
+    FreeArray(&subsetA);
+    FreeArray(&subsetB);
+
+    return 0;
 }
 
 /*--------------------------------------

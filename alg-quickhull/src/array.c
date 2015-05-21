@@ -104,8 +104,7 @@ void *ArrayInsert(arrayT *array, int index, const void *value) {
     Assert(0 <= index && index <= array->numElements);
 
     if (index == array->numElements) {
-        ArrayAdd(array, value);
-        return;
+        return ArrayAdd(array, value);
     }
 
     if (array->numElements >= array->maxElements)
@@ -121,6 +120,8 @@ void *ArrayInsert(arrayT *array, int index, const void *value) {
 
     void *dest = (char *)array->elements + (index * elementSize);
     memcpy(dest, value, array->elementSize);
+
+    return dest;
 }
 
 /*--------------------------------------
