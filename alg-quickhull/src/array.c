@@ -103,23 +103,23 @@ void *ArrayGet(const arrayT *array, int index) {
 void *ArrayInsert(arrayT *array, int index, const void *value) {
     Assert(0 <= index && index <= array->numElements);
 
-    if (index == array->numElements) {
+    if (index == array->numElements)
         return ArrayAdd(array, value);
-    }
 
     if (array->numElements >= array->maxElements)
         DoubleArrayCapacity(array);
 
     int elementSize = array->elementSize;
 
+    char *base = (char *)array->elements;
     for (int i = array->numElements-1; i > index; i--) {
-        void *src  = (char *)array->elements + ((i-1) * elementSize);
-        void *dest = (char *)array->elements + ( i    * elementSize);
-        memcpy(dest, src, array->elementSize);
+        void *src  = base + ((i-1) * elementSize);
+        void *dest = base + ( i    * elementSize);
+        memcpy(dest, src, elementSize);
     }
 
-    void *dest = (char *)array->elements + (index * elementSize);
-    memcpy(dest, value, array->elementSize);
+    void *dest = base + (index * elementSize);
+    memcpy(dest, value, elementSize);
 
     return dest;
 }

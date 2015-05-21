@@ -175,10 +175,14 @@ int Quickhull2(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
         return 0;
 
     if (n == 1) {
+        ArrayInsert(hull, 0, ArrayGet(subset, 0));
+        return 0;
+        //ArrayAdd(hull, ArrayGet(subset, 0));
+        //return 1;
         for (int i = 0; i < ArrayLength(hull); i++) {
-            pointT* qq = *(pointT **)ArrayGet(hull, i);
-            if (qq==b) {
-                ArrayInsert(hull, i, ArrayGet(subset, 0));
+            if (*(pointT **)ArrayGet(hull, i) == b) {
+                //ArrayInsert(hull, i, ArrayGet(subset, 0));
+                ArrayAdd(hull, ArrayGet(subset, 0));
                 return i;
             }
         }
@@ -208,9 +212,7 @@ int Quickhull2(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
         numOps++;
     }
 
-    bool lol = FALSE;
     pointT *p = *(pointT **)ArrayGet(subset, index);
-
     ArrayAdd(hull, &p);
 
     arrayT subsetA, subsetB;
