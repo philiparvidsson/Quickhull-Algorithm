@@ -169,17 +169,15 @@ int BruteforceHull(pointsetT ps, hullT *hull) {
 }
 
 int Quickhull2(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
-
     int n = ArrayLength(subset);
 
     if (n == 0)
         return 0;
 
     if (n == 1) {
-        ArrayAdd(hull, ArrayGet(subset, 0));
-        return 1;
         for (int i = 0; i < ArrayLength(hull); i++) {
-            if (*(pointT **)ArrayGet(hull, i) == a) {
+            pointT* qq = *(pointT **)ArrayGet(hull, i);
+            if (qq==b) {
                 ArrayInsert(hull, i, ArrayGet(subset, 0));
                 return i;
             }
@@ -210,7 +208,10 @@ int Quickhull2(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
         numOps++;
     }
 
+    bool lol = FALSE;
     pointT *p = *(pointT **)ArrayGet(subset, index);
+
+    ArrayAdd(hull, &p);
 
     arrayT subsetA, subsetB;
     InitArray(&subsetA, sizeof(pointT *));

@@ -462,7 +462,7 @@ void RunSandbox(int numPoints) {
     corners.points[3].x =  LeftEdge; corners.points[3].y = BottomEdge;
 
     // Klart vi använder quickhull för att räkna ut världens kanter! :-)
-    BruteforceHull(corners, &edges);
+    Quickhull(corners, &edges);
     printf(" done.\n");
 
     PrintInstructions();
