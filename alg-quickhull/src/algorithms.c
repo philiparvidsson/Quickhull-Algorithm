@@ -114,7 +114,7 @@ algorithmdataT BruteforceHull(pointsetT ps, hullT *hull) {
  *   Hanterar punkter och löser det konvexa höljet med hjälp av den rekursiva
  *   algoritmen quickhull.
  *------------------------------------*/
-algorithmdataT QH(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
+algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
     algorithmdataT algo = { 0 };
 
     int numPoints = ArrayLength(subset);
@@ -142,6 +142,7 @@ algorithmdataT QH(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
         for (int i = 0; i < n; i++) {
             pointT *point = *(pointT **)ArrayGet(hull, i);
             if (point == b) {
+                // Här stoppar vi in punkten mellan a och b.
                 ArrayInsert(hull, i, ArrayGet(subset, 0));
 
                 algo.numOps = i;
@@ -170,9 +171,7 @@ algorithmdataT QH(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
 
         float d = (b->x - a->x) * (point->y - a->y)
                 - (b->y - a->y) * (point->x - a->x);
-
-        if (d < 0.0f)
-            d = -d;
+        if (d < 0.0f) d = -d;
 
         if (d > dMax) {
             index = i;
@@ -190,6 +189,7 @@ algorithmdataT QH(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
     for (int i = 0; i < numHullPoints; i++) {
         pointT *point = *(pointT **)ArrayGet(hull, i);
         if (point == b) {
+            // Här stoppar vi in farPoint mellan a och b.
             ArrayInsert(hull, i, &farPoint);
             algo.numOps += i;
             break;
@@ -205,26 +205,21 @@ algorithmdataT QH(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
      *   punkter på varsin sida om triangeln rekursivt.
      *------------------------------------------------------------------------*/
 
-    arrayT subsetA, subsetB;
-    InitArray(&subsetA, sizeof(pointT *));
-    InitArray(&subsetB, sizeof(pointT *));
+    arrayADT subsetA = NewArray(sizeof(pointT *)),
+             subsetB = NewArray(sizeof(pointT *));
 
     algo.numAllocs += 2;
 
     for (int i = 0; i < numPoints; i++) {
         pointT *point = *(pointT **)ArrayGet(subset, i);
 
-        float d1 = (farPoint->x - a->x) * (point->y - a->y)
+        float dA = (farPoint->x - a->x) * (point->y - a->y)
                  - (farPoint->y - a->y) * (point->x - a->x);
+        if (dA < 0.0f) ArrayAdd(subsetA, &point);
 
-        if (d1 < 0.0f)
-            ArrayAdd(&subsetA, &point);
-
-        float d2 = (b->x - farPoint->x) * (point->y - farPoint->y)
+        float dB = (b->x - farPoint->x) * (point->y - farPoint->y)
                  - (b->y - farPoint->y) * (point->x - farPoint->x);
-
-        if (d2 < 0.0f)
-            ArrayAdd(&subsetB, &point);
+        if (dB < 0.0f) ArrayAdd(subsetB, &point);
     }
 
     algo.numOps += numPoints;
@@ -246,13 +241,13 @@ algorithmdataT QH(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
      *          a            b
      *------------------------------------------------------------------------*/
 
-    algorithmdataT algoA = QH(hull, a       , farPoint, &subsetA);
-    algorithmdataT algoB = QH(hull, farPoint, b       , &subsetB);
+    algorithmdataT algoA = QH(hull, a       , farPoint, subsetA);
+    algorithmdataT algoB = QH(hull, farPoint, b       , subsetB);
 
-    algo.numOps    += algoA.numOps         + algoB.numOps        ;
-    algo.numAllocs += algoA.numAllocs      + algoB.numAllocs     ;
-    algo.numBytes  += algoA.numBytes       + algoB.numBytes      ;
-    algo.numBytes  += ArrayBytes(&subsetA) + ArrayBytes(&subsetB);
+    algo.numOps    += algoA.numOps        + algoB.numOps        ;
+    algo.numAllocs += algoA.numAllocs     + algoB.numAllocs     ;
+    algo.numBytes  += algoA.numBytes      + algoB.numBytes      ;
+    algo.numBytes  += ArrayBytes(subsetA) + ArrayBytes(subsetB);
 
     /*--------------------------------------------------------------------------
      * 4. DEALLOKERING
@@ -260,8 +255,8 @@ algorithmdataT QH(arrayT* hull, pointT *a, pointT *b, arrayT *subset) {
      *   Dags att rensa upp minnet.
      *------------------------------------------------------------------------*/
 
-    FreeArray(&subsetA);
-    FreeArray(&subsetB);
+    FreeArray(subsetA);
+    FreeArray(subsetB);
 
     return algo;
 }
@@ -295,10 +290,9 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
 
     // Efter att algoritmen är klar kommer hullPoints innehålla alla punkter i
     // höljer i medurs ordning.
-    arrayT hullPoints, subsetA, subsetB;
-    InitArray(&hullPoints, sizeof(pointT *));
-    InitArray(&subsetA   , sizeof(pointT *));
-    InitArray(&subsetB   , sizeof(pointT *));
+    arrayADT hullPoints = NewArray(sizeof(pointT *)),
+             subsetA    = NewArray(sizeof(pointT *)),
+             subsetB    = NewArray(sizeof(pointT *));
 
     // Tre allokeringar ovan.
     algo.numOps += 3;
@@ -317,8 +311,8 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
         if (point->x > rightPoint->x) rightPoint = point;
     }
 
-    ArrayAdd(&hullPoints, &leftPoint );
-    ArrayAdd(&hullPoints, &rightPoint);
+    ArrayAdd(hullPoints, &leftPoint );
+    ArrayAdd(hullPoints, &rightPoint);
 
     algo.numOps += pointset.numPoints-1;
 
@@ -339,8 +333,8 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
         float d = (rightPoint->x - leftPoint->x) * (point->y - leftPoint->y)
                 - (rightPoint->y - leftPoint->y) * (point->x - leftPoint->x);
 
-        if (d < 0.0f) ArrayAdd(&subsetA, &point); // Övre "halva."
-        else          ArrayAdd(&subsetB, &point); // Nedra "halva."
+        if (d < 0.0f) ArrayAdd(subsetA, &point); // Övre "halva."
+        else          ArrayAdd(subsetB, &point); // Nedra "halva."
     }
 
     algo.numOps += pointset.numPoints;
@@ -352,8 +346,8 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
      *   algoritmens rekursiva kärna.
      *------------------------------------------------------------------------*/
 
-    algorithmdataT algoA = QH(&hullPoints, leftPoint , rightPoint, &subsetA);
-    algorithmdataT algoB = QH(&hullPoints, rightPoint, leftPoint , &subsetB);
+    algorithmdataT algoA = QH(hullPoints, leftPoint , rightPoint, subsetA);
+    algorithmdataT algoB = QH(hullPoints, rightPoint, leftPoint , subsetB);
 
     algo.numOps    += algoA.numOps    +  algoB.numOps   ;
     algo.numAllocs += algoA.numAllocs +  algoB.numAllocs;
@@ -368,13 +362,13 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
      *------------------------------------------------------------------------*/
 
     hull->numLines = 0;
-    int numHullPoints = ArrayLength(&hullPoints);
+    int numHullPoints = ArrayLength(hullPoints);
     for (int i = 0; i < numHullPoints; i++) {
         if (hull->numLines >= hull->maxLines)
             Fail();
 
-        hull->lines[i].a = *(pointT **)ArrayGet(&hullPoints, i);
-        hull->lines[i].b = *(pointT **)ArrayGet(&hullPoints, (i+1) % numHullPoints);
+        hull->lines[i].a = *(pointT **)ArrayGet(hullPoints, i);
+        hull->lines[i].b = *(pointT **)ArrayGet(hullPoints, (i+1) % numHullPoints);
         hull->numLines++;
     }
 
@@ -386,13 +380,13 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
      *   Här rensar vi upp minnet efter oss.
      *------------------------------------------------------------------------*/
 
-    algo.numBytes += ArrayBytes(&hullPoints)
-                  +  ArrayBytes(&subsetA   )
-                  +  ArrayBytes(&subsetB   );
+    algo.numBytes += ArrayBytes(hullPoints)
+                  +  ArrayBytes(subsetA   )
+                  +  ArrayBytes(subsetB   );
 
-    FreeArray(&hullPoints);
-    FreeArray(&subsetA);
-    FreeArray(&subsetB);
+    FreeArray(hullPoints);
+    FreeArray(subsetA);
+    FreeArray(subsetB);
 
     return algo;
 }

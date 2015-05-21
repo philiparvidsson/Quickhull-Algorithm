@@ -28,6 +28,23 @@
  *----------------------------------------------*/
 
 /*--------------------------------------
+ * Type: arrayCDT
+ *
+ * Description:
+ *   Representerar en dynamisk array med objekt i.
+ *------------------------------------*/
+typedef struct arrayCDT {
+    void  *elements;
+    int    numElements;
+    int    maxElements;
+    size_t elementSize;
+} arrayCDT;
+
+/*------------------------------------------------
+ * CONSTANTS
+ *----------------------------------------------*/
+
+/*--------------------------------------
  * Constant: InitialMaxElements
  *
  * Description:
@@ -39,7 +56,7 @@
  * FUNCTIONS
  *----------------------------------------------*/
 
-static void DoubleArrayCapacity(arrayT *array) {
+static void DoubleArrayCapacity(arrayADT array) {
     // Arrayen är full, så vi dubblar kapaciteten och kopierar över de gamla
     // elementen till den nya minnesplatsen, sen släpper vi den gamla
     // arrayen ur minnet.
@@ -63,7 +80,7 @@ static void DoubleArrayCapacity(arrayT *array) {
  *   Lägger till ett element i en array. Returnerar minnesadressen där noden
  *   lades in.
  *------------------------------------*/
-void *ArrayAdd(arrayT *array, const void *value) {
+void *ArrayAdd(arrayADT array, const void *value) {
     if (array->numElements >= array->maxElements)
         DoubleArrayCapacity(array);
 
@@ -82,8 +99,8 @@ void *ArrayAdd(arrayT *array, const void *value) {
  * Description:
  *   Returnerar den specificerade arrayens minnesanvändning, i antal bytes.
  *------------------------------------*/
-int ArrayBytes(const arrayT *array) {
-    return sizeof(arrayT) + array->maxElements*array->elementSize;
+int ArrayBytes(arrayADT array) {
+    return sizeof(arrayCDT) + array->maxElements*array->elementSize;
 }
 
 /*--------------------------------------
@@ -96,7 +113,7 @@ int ArrayBytes(const arrayT *array) {
  *   Läser ut och returnerar en pekare till det specificerade elementet i
  *   arrayen.
  *------------------------------------*/
-void *ArrayGet(const arrayT *array, int index) {
+void *ArrayGet(arrayADT array, int index) {
     Assert(0 <= index && index < array->numElements);
     return (char *)array->elements + (index * array->elementSize);
 }
@@ -112,7 +129,7 @@ void *ArrayGet(const arrayT *array, int index) {
  *   Lägger in ett element i en array vid det specificerade indexet. Returnerar
  *   minnesadressen där noden lades in.
  *------------------------------------*/
-void *ArrayInsert(arrayT *array, int index, const void *value) {
+void *ArrayInsert(arrayADT array, int index, const void *value) {
     Assert(0 <= index && index <= array->numElements);
 
     if (index == array->numElements)
@@ -145,7 +162,7 @@ void *ArrayInsert(arrayT *array, int index, const void *value) {
  * Description:
  *   Returnerar den specificerade arrayens längd.
  *------------------------------------*/
-int ArrayLength(const arrayT *array) {
+int ArrayLength(arrayADT array) {
     return array->numElements;
 }
 
@@ -157,29 +174,29 @@ int ArrayLength(const arrayT *array) {
  * Description:
  *   Släpper en array ur minnet.
  *------------------------------------*/
-void FreeArray(arrayT *array) {
+void FreeArray(arrayADT array) {
     Assert(array->elements != NULL);
 
     free(array->elements);
-
-    array->elements    = NULL;
-    array->numElements = 0;
-    array->maxElements = 0;
-    array->elementSize = 0;
+    free(array);
 }
 
 /*--------------------------------------
- * Function: InitArray()
+ * Function: NewArray()
  * Parameters:
- *   array  Den array som ska initieras.
+ *   elementSize  Storleken, i bytes, på arrayens element.
  *
  * Description:
- *   Initialiserar och allokerar en array.
+ *   Initierar och allokerar en array.
  *------------------------------------*/
-void InitArray(arrayT *array, size_t elementSize) {
+arrayADT NewArray(size_t elementSize) {
+    arrayADT array = malloc(sizeof(arrayCDT));
+
     array->numElements = 0;
     array->maxElements = InitialMaxElements;
     array->elementSize = elementSize;
 
     array->elements = malloc(array->maxElements * array->elementSize);
+
+    return array;
 }

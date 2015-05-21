@@ -30,17 +30,12 @@
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Type: Array
+ * Type: arrayADT
  *
  * Description:
  *   Representerar en dynamisk array med objekt i.
  *------------------------------------*/
-typedef struct {
-    void  *elements;
-    int    numElements;
-    int    maxElements;
-    size_t elementSize;
-} arrayT;
+typedef struct arrayCDT *arrayADT;
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -56,7 +51,7 @@ typedef struct {
  *   Lägger till ett element i en array. Returnerar minnesadressen där noden
  *   lades in.
  *------------------------------------*/
-void *ArrayAdd(arrayT *array, const void *value);
+void *ArrayAdd(arrayADT array, const void *value);
 
 /*--------------------------------------
  * Function: ArrayBytes()
@@ -66,7 +61,7 @@ void *ArrayAdd(arrayT *array, const void *value);
  * Description:
  *   Returnerar den specificerade arrayens minnesanvändning, i antal bytes.
  *------------------------------------*/
-int ArrayBytes(const arrayT *array);
+int ArrayBytes(arrayADT array);
 
 /*--------------------------------------
  * Function: ArrayGet()
@@ -78,7 +73,7 @@ int ArrayBytes(const arrayT *array);
  *   Läser ut och returnerar en pekare till det specificerade elementet i
  *   arrayen.
  *------------------------------------*/
-void *ArrayGet(const arrayT *array, int index);
+void *ArrayGet(arrayADT array, int index);
 
 /*--------------------------------------
  * Function: ArrayInsert()
@@ -91,7 +86,7 @@ void *ArrayGet(const arrayT *array, int index);
  *   Lägger in ett element i en array vid det specificerade indexet. Returnerar
  *   minnesadressen där noden lades in.
  *------------------------------------*/
-void *ArrayInsert(arrayT *array, int i, const void *value);
+void *ArrayInsert(arrayADT array, int i, const void *value);
 
 /*--------------------------------------
  * Function: ArrayLength()
@@ -101,7 +96,7 @@ void *ArrayInsert(arrayT *array, int i, const void *value);
  * Description:
  *   Returnerar den specificerade arrayens längd.
  *------------------------------------*/
-int ArrayLength(const arrayT *array);
+int ArrayLength(arrayADT array);
 
 /*--------------------------------------
  * Function: FreeArray()
@@ -111,16 +106,16 @@ int ArrayLength(const arrayT *array);
  * Description:
  *   Släpper en array ur minnet.
  *------------------------------------*/
-void FreeArray(arrayT *array);
+void FreeArray(arrayADT array);
 
 /*--------------------------------------
- * Function: InitArray()
+ * Function: NewArray()
  * Parameters:
- *   array  Den array som ska initieras.
+ *   elementSize  Storleken, i bytes, på arrayens element.
  *
  * Description:
- *   Initialiserar och allokerar en array.
+ *   Initierar och allokerar en array.
  *------------------------------------*/
-void InitArray(arrayT *array, size_t elementSize);
+arrayADT NewArray(size_t elementSize);
 
 #endif // _array_h_

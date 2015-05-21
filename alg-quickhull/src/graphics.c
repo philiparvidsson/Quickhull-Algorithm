@@ -419,8 +419,13 @@ void DrawPoint(pointT p) {
  *   Ritar en uppsättning punkter.
  *------------------------------------*/
 void DrawPoints(pointsetT ps) {
-    for (int i = 0; i < ps.numPoints; i++)
-        DrawPoint(ps.points[i]);
+    for (int i = 0; i < ps.numPoints; i++) {
+        pointT *p = &ps.points[i];
+
+        glBegin   (GL_POINTS);
+        glVertex2f(p->x, p->y);
+        glEnd     ();
+    }
 }
 
 /*--------------------------------------
