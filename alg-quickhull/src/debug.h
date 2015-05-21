@@ -14,8 +14,8 @@
  *   * Ändrade DEBUG_PRINT()-makrot så att det visar rad i programkoden.
  *----------------------------------------------------------------------------*/
 
-#ifndef Debug_h
-#define Debug_h
+#ifndef _debug_h_
+#define _debug_h_
 
 /*------------------------------------------------
  * INCLUDES
@@ -72,4 +72,4 @@ void Error(string msg);
  *------------------------------------*/
 void ProgramFail(string funcName, int line);
 
-#endif // Debug_h
+#endif // _debug_h_

@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: benchmark.c
  * Created: May 16, 2015
- * Last changed: May 16, 2015
+ * Last changed: May 21, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
@@ -16,6 +16,7 @@
  * INCLUDES
  *----------------------------------------------*/
 
+#include "algorithms.h"
 #include "benchmark.h"
 #include "common.h"
 #include "math.h"
@@ -26,16 +27,44 @@
 #include <Windows.h>
 
 /*------------------------------------------------
+ * TYPES
+ *----------------------------------------------*/
+
+/*
+ * Type: benchmarkdataT
+ *
+ * Description:
+ *   Innehåller data om benchmark-körning av en funktion.
+ */
+typedef struct {
+    int   minOps;
+    int   maxOps;
+    float avgOps;
+
+    int   minAllocs;
+    int   maxAllocs;
+    float avgAllocs;
+
+    int   minBytes;
+    int   maxBytes;
+    float avgBytes;
+
+    int   minTime;
+    int   maxTime;
+    float avgTime;
+} benchmarkdataT;
+
+/*------------------------------------------------
  * CONSTANTS
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Constant: NumIterations
+ * Constant: NumSeconds
  *
  * Description:
- *   Antal iterationer som ska köras i benchmarkläge.
+ *   Antal sekunder som ska benchmark ska köras.
  *------------------------------------*/
-#define NumIterations 5000
+#define NumSeconds 10
 
 /*------------------------------------------------
  * GLOBALS
@@ -50,26 +79,33 @@ LARGE_INTEGER stopwatch;
 static benchmarkdataT InitBenchmarkData() {
     benchmarkdataT bmd = { 0 };
 
-    bmd.minCritOps = INT_MAX;
-    bmd.maxCritOps = INT_MIN;
-    bmd.minTime    = INT_MAX;
-    bmd.maxTime    = INT_MIN;
+    bmd.minOps    = INT_MAX;
+    bmd.maxOps    = INT_MIN;
+    bmd.minAllocs = INT_MAX;
+    bmd.maxAllocs = INT_MIN;
+    bmd.minBytes  = INT_MAX;
+    bmd.maxBytes  = INT_MIN;
+    bmd.minTime   = INT_MAX;
+    bmd.maxTime   = INT_MIN;
 
     return bmd;
 }
 
 static void PrintStatistics(string s, benchmarkdataT *bmd) {
     printf("STATISTICS (%s)\n"
-           "------------------------------------------------------------\n"
-           "                           Min.       Max.       Avg.\n"
-           " Critical Operations       %-7d    %-7d    %-7d\n"
-           " Memory Allocated (bytes)  0          0          0\n"
-           " Execution Time (usecs)    %-5d      %-5d      %-5d\n"
-           "------------------------------------------------------------\n"
+           "-----------------------------------------------------------------\n"
+           "                         Min.          Max.          Avg.\n"
+           " Critical Operations     %-10d    %-10d    %-10d\n"
+           " Number of Allocations   %-4d          %-4d          %-4d\n"
+           " Memory Used (bytes)     %-7d       %-7d       %-7d\n"
+           " Execution Time (usecs)  %-7d       %-7d       %-7d\n"
+           "-----------------------------------------------------------------\n"
            "\n",
            s,
-           bmd->minCritOps, bmd->maxCritOps, (int)bmd->avgCritOps,
-           bmd->minTime   , bmd->maxTime   , (int)bmd->avgTime);
+           bmd->minOps   , bmd->maxOps   , (int)bmd->avgOps,
+           bmd->minAllocs, bmd->maxAllocs, (int)bmd->avgAllocs,
+           bmd->minBytes , bmd->maxBytes , (int)bmd->avgBytes,
+           bmd->minTime  , bmd->maxTime  , (int)bmd->avgTime);
 }
 
 static void StopwatchStart() {
@@ -114,8 +150,13 @@ void RunBenchmark(int numPoints) {
     benchmarkdataT bmdbf = InitBenchmarkData(),
                    bmdqh = InitBenchmarkData();
 
+    int numSecs = 0;
+    int numIterations = 0;
+
     clock_t start = clock();
-    for (int i = 1; i <= NumIterations; i++) {
+    while (TRUE) {
+        numIterations++;
+
         RandomizePoints(ps);
 
         /*--------------------------------------------------------------------*/
@@ -123,42 +164,68 @@ void RunBenchmark(int numPoints) {
         /*--------------------------------------------------------------------*/
 
         StopwatchStart();
-        int numCritOps = BruteforceHull(ps, &hull);
-        int microSecs  = StopwatchStop();
+        algorithmdataT bf = BruteforceHull(ps, &hull);
+        int microSecs = StopwatchStop();
 
-        if (numCritOps < bmdbf.minCritOps) bmdbf.minCritOps = numCritOps;
-        if (numCritOps > bmdbf.maxCritOps) bmdbf.maxCritOps = numCritOps;
-        if (microSecs  < bmdbf.minTime   ) bmdbf.minTime    = microSecs;
-        if (microSecs  > bmdbf.maxTime   ) bmdbf.maxTime    = microSecs;
+        if (bf.numOps    < bmdbf.minOps   ) bmdbf.minOps    = bf.numOps   ;
+        if (bf.numOps    > bmdbf.maxOps   ) bmdbf.maxOps    = bf.numOps   ;
+        if (bf.numAllocs < bmdbf.minAllocs) bmdbf.minAllocs = bf.numAllocs;
+        if (bf.numAllocs > bmdbf.maxAllocs) bmdbf.maxAllocs = bf.numAllocs;
+        if (bf.numBytes  < bmdbf.minBytes ) bmdbf.minBytes  = bf.numBytes ;
+        if (bf.numBytes  > bmdbf.maxBytes ) bmdbf.maxBytes  = bf.numBytes ;
+        if (microSecs    < bmdbf.minTime  ) bmdbf.minTime   = microSecs   ;
+        if (microSecs    > bmdbf.maxTime  ) bmdbf.maxTime   = microSecs   ;
 
-        bmdbf.avgCritOps += (float)numCritOps / NumIterations;
-        bmdbf.avgTime    += (float)microSecs  / NumIterations;
+        bmdbf.avgOps    += bf.numOps   ;
+        bmdbf.avgAllocs += bf.numAllocs;
+        bmdbf.avgBytes  += bf.numBytes ;
+        bmdbf.avgTime   += microSecs   ;
 
         /*--------------------------------------------------------------------*/
         /* Quickhull                                                          */
         /*--------------------------------------------------------------------*/
 
         StopwatchStart();
-        numCritOps = Quickhull(ps, &hull);
-        microSecs  = StopwatchStop();
+        algorithmdataT qh = Quickhull(ps, &hull);
+        microSecs = StopwatchStop();
 
-        if (numCritOps < bmdqh.minCritOps) bmdqh.minCritOps = numCritOps;
-        if (numCritOps > bmdqh.maxCritOps) bmdqh.maxCritOps = numCritOps;
-        if (microSecs  < bmdqh.minTime   ) bmdqh.minTime    = microSecs;
-        if (microSecs  > bmdqh.maxTime   ) bmdqh.maxTime    = microSecs;
+        if (qh.numOps    < bmdqh.minOps   ) bmdqh.minOps    = qh.numOps   ;
+        if (qh.numOps    > bmdqh.maxOps   ) bmdqh.maxOps    = qh.numOps   ;
+        if (qh.numAllocs < bmdqh.minAllocs) bmdqh.minAllocs = qh.numAllocs;
+        if (qh.numAllocs > bmdqh.maxAllocs) bmdqh.maxAllocs = qh.numAllocs;
+        if (qh.numBytes  < bmdqh.minBytes ) bmdqh.minBytes  = qh.numBytes ;
+        if (qh.numBytes  > bmdqh.maxBytes ) bmdqh.maxBytes  = qh.numBytes ;
+        if (microSecs    < bmdqh.minTime  ) bmdqh.minTime   = microSecs   ;
+        if (microSecs    > bmdqh.maxTime  ) bmdqh.maxTime   = microSecs   ;
 
-        bmdqh.avgCritOps += (float)numCritOps / NumIterations;
-        bmdqh.avgTime    += (float)microSecs  / NumIterations;
+        bmdqh.avgOps    += qh.numOps   ;
+        bmdqh.avgAllocs += qh.numAllocs;
+        bmdqh.avgBytes  += qh.numBytes ;
+        bmdqh.avgTime   += microSecs   ;
 
         // Här ser vi till att skriva ut hur långt i benchmarket vi kommit,
         // procentuellt sett, en gång varje sekund. Så att användaren inte tror
         // att programmet hängt sig.
         int benchmarkTime = 1000 * (clock() - start) / CLOCKS_PER_SEC;
         if (benchmarkTime >= 1000) {
-            printf("%2.1f%%...\n", 100.0f * (float)i / NumIterations);
+            if (numSecs++ >= NumSeconds)
+                break;
+
+            printf("%2.1f%%...\n", 100.0f * (float)numSecs / NumSeconds);
             start = clock();
+
         }
     }
+
+    bmdbf.avgOps    /= numIterations;
+    bmdbf.avgAllocs /= numIterations;
+    bmdbf.avgBytes  /= numIterations;
+    bmdbf.avgTime   /= numIterations;
+
+    bmdqh.avgOps    /= numIterations;
+    bmdqh.avgAllocs /= numIterations;
+    bmdqh.avgBytes  /= numIterations;
+    bmdqh.avgTime   /= numIterations;
 
     printf("100.0%%. Done!\n\n");
 

@@ -75,6 +75,18 @@ void *ArrayAdd(arrayT *array, const void *value) {
 }
 
 /*--------------------------------------
+ * Function: ArrayBytes()
+ * Parameters:
+ *   array  Arrayen vars minnesanvändning ska räknas ut.
+ *
+ * Description:
+ *   Returnerar den specificerade arrayens minnesanvändning, i antal bytes.
+ *------------------------------------*/
+int ArrayBytes(const arrayT *array) {
+    return sizeof(arrayT) + array->maxElements*array->elementSize;
+}
+
+/*--------------------------------------
  * Function: ArrayGet()
  * Parameters:
  *   array  Den array från vilken vi ska läsa ett element.
@@ -112,7 +124,7 @@ void *ArrayInsert(arrayT *array, int index, const void *value) {
     int elementSize = array->elementSize;
 
     char *base = (char *)array->elements;
-    for (int i = array->numElements-1; i > index; i--) {
+    for (int i = array->numElements; i > index; i--) {
         void *src  = base + ((i-1) * elementSize);
         void *dest = base + ( i    * elementSize);
         memcpy(dest, src, elementSize);
@@ -121,6 +133,7 @@ void *ArrayInsert(arrayT *array, int index, const void *value) {
     void *dest = base + (index * elementSize);
     memcpy(dest, value, elementSize);
 
+    array->numElements++;
     return dest;
 }
 

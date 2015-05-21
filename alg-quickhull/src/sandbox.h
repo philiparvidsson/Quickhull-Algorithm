@@ -12,8 +12,8 @@
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef Sandbox_h
-#define Sandbox_h
+#ifndef _sandbox_h_
+#define _sandbox_h_
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -29,4 +29,4 @@
  *------------------------------------*/
 void RunSandbox(int numPoints);
 
-#endif // Sandbox_h
+#endif // _sandbox_h_

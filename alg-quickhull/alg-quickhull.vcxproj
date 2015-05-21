@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\alg-quickhull.c" />
+    <ClCompile Include="src\algorithms.c" />
     <ClCompile Include="src\array.c" />
     <ClCompile Include="src\benchmark.c" />
     <ClCompile Include="src\debug.c" />
@@ -93,6 +94,7 @@
     <ClCompile Include="src\math.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\algorithms.h" />
     <ClInclude Include="src\array.h" />
     <ClInclude Include="src\benchmark.h" />
     <ClInclude Include="src\common.h" />

@@ -13,8 +13,8 @@
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef Graphics_h
-#define Graphics_h
+#ifndef _graphics_h_
+#define _graphics_h_
 
 /*------------------------------------------------
  * INCLUDES
@@ -165,4 +165,4 @@ void UpdateDisplay();
  *------------------------------------*/
 void OnKeyPress(char c, actionT cb, void *arg);
 
-#endif // Graphics_h
+#endif // _graphics_h_

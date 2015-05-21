@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: math.h
  * Created: May 15, 2015
- * Last changed: May 15, 2015
+ * Last changed: May 21, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
@@ -12,8 +12,8 @@
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef Math_h
-#define Math_h
+#ifndef _math_h_
+#define _math_h_
 
 /*------------------------------------------------
  * INCLUDES
@@ -109,30 +109,6 @@ hullT InitHull(pointsetT ps);
 void FreeHull(hullT hull);
 
 /*--------------------------------------
- * Function: BruteforceHull()
- * Parameters:
- *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
- *   hull  En pekare till höljet.
- *
- * Description:
- *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
- *   sökning. Returnerar det totala antalet kritiska operationer som utfördes.
- *------------------------------------*/
-int BruteforceHull(pointsetT ps, hullT *hull);
-
-/*--------------------------------------
- * Function: Quickhull()
- * Parameters:
- *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
- *   hull  En pekare till höljet.
- *
- * Description:
- *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
- *   Quickhull. Returnerar det totala antalet kritiska operationer som utfördes.
- *------------------------------------*/
-int Quickhull(pointsetT ps, hullT *hull);
-
-/*--------------------------------------
  * Function: RandomizePoints()
  * Parameters:
  *   ps    Punktuppsättningen vars positioner ska slumpas.
@@ -154,4 +130,4 @@ void RandomizePoints(pointsetT ps);
  *------------------------------------*/
 pointT Reflect(pointT d, pointT n);
 
-#endif // Math_h
+#endif // _math_h_

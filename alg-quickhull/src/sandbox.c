@@ -16,6 +16,7 @@
  * INCLUDES
  *----------------------------------------------*/
 
+#include "algorithms.h"
 #include "common.h"
 #include "graphics.h"
 #include "math.h"

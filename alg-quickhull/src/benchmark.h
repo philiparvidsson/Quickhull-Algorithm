@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: benchmark.h
  * Created: May 16, 2015
- * Last changed: May 16, 2015
+ * Last changed: May 21, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
@@ -12,24 +12,8 @@
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef Benchmark_h
-#define Benchmark_h
-
-/*
- * Type: benchmarkdataT
- *
- * Description:
- *   Innehåller data om benchmark-körning av en funktion.
- */
-typedef struct {
-    int   minCritOps;
-    int   maxCritOps;
-    float avgCritOps;
-
-    int   minTime;
-    int   maxTime;
-    float avgTime;
-} benchmarkdataT;
+#ifndef _benchmark_h_
+#define _benchmark_h_
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -46,4 +30,4 @@ typedef struct {
  *------------------------------------*/
 void RunBenchmark(int numPoints);
 
-#endif // Benchmark_h
+#endif // _benchmark_h_

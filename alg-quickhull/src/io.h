@@ -12,8 +12,8 @@
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef IO_h
-#define IO_h
+#ifndef _io_h_
+#define _io_h_
 
 /*------------------------------------------------
  * INCLUDES
@@ -54,4 +54,4 @@ int GetIntFromUser();
  *------------------------------------*/
 string GetStringFromUser();
 
-#endif // IO_h
+#endif // _io_h_

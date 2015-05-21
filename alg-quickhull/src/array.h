@@ -13,8 +13,8 @@
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef Array_h
-#define Array_h
+#ifndef _array_h_
+#define _array_h_
 
 /*------------------------------------------------
  * INCLUDES
@@ -57,6 +57,16 @@ typedef struct {
  *   lades in.
  *------------------------------------*/
 void *ArrayAdd(arrayT *array, const void *value);
+
+/*--------------------------------------
+ * Function: ArrayBytes()
+ * Parameters:
+ *   array  Arrayen vars minnesanvändning ska räknas ut.
+ *
+ * Description:
+ *   Returnerar den specificerade arrayens minnesanvändning, i antal bytes.
+ *------------------------------------*/
+int ArrayBytes(const arrayT *array);
 
 /*--------------------------------------
  * Function: ArrayGet()
@@ -113,4 +123,4 @@ void FreeArray(arrayT *array);
  *------------------------------------*/
 void InitArray(arrayT *array, size_t elementSize);
 
-#endif // Array_h
+#endif // _array_h_
