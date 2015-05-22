@@ -139,7 +139,7 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
      * 1a. INGA PUNKTER
      *
      *   Om vi inte fick några punkter så är linjen a---b ett segment i höljet,
-     *   så vi behöver inte göra något här.
+     *   så vi behöver inte göra något mer här.
      *------------------------------------------------------------------------*/
 
     if (numPoints == 0)
