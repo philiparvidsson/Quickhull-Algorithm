@@ -365,9 +365,9 @@ algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
     algorithmdataT algoA = QH(hullPoints, leftPoint , rightPoint, subsetA);
     algorithmdataT algoB = QH(hullPoints, rightPoint, leftPoint , subsetB);
 
-    algo.numOps    += algoA.numOps    +  algoB.numOps   ;
-    algo.numAllocs += algoA.numAllocs +  algoB.numAllocs;
-    algo.numBytes  += algoA.numBytes  +  algoB.numBytes ;
+    algo.numOps    += algoA.numOps    + algoB.numOps   ;
+    algo.numAllocs += algoA.numAllocs + algoB.numAllocs;
+    algo.numBytes  += algoA.numBytes  + algoB.numBytes ;
 
     /*--------------------------------------------------------------------------
      * 5. IHOPSÄTTNING AV HÖLJE
