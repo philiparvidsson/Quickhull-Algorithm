@@ -280,14 +280,14 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
 /*--------------------------------------
  * Function: Quickhull()
  * Parameters:
- *   pointset  Punktuppsättningen för vilken ett hölje ska genereras.
- *   hull      En pekare till höljet.
+ *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
+ *   hull  En pekare till höljet.
  *
  * Description:
  *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
  *   quickhull. Returnerar data om algoritmens arbete.
  *------------------------------------*/
-algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
+algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
     algorithmdataT algo = { 0 };
 
     /*--------------------------------------------------------------------------
@@ -301,7 +301,7 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
 
     // Vi initierar både left point och right point till den första punkten i
     // uppsättningen, bara för att inte behöva hantera null-pekare.
-    pointT *leftPoint  = &pointset.points[0],
+    pointT *leftPoint  = &ps.points[0],
            *rightPoint = leftPoint;
 
     // Efter att algoritmen är klar kommer hullPoints innehålla alla punkter i
@@ -320,8 +320,8 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
      *   del av det konvexa höljet, och läggs därför in i punktlistan omgående.
      *------------------------------------------------------------------------*/
 
-    for (int i = 1; i < pointset.numPoints; i++) {
-        pointT *point = &pointset.points[i];
+    for (int i = 1; i < ps.numPoints; i++) {
+        pointT *point = &ps.points[i];
 
         if (point->x < leftPoint ->x) leftPoint  = point;
         if (point->x > rightPoint->x) rightPoint = point;
@@ -330,7 +330,7 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
     ArrayAdd(hullPoints, &leftPoint );
     ArrayAdd(hullPoints, &rightPoint);
 
-    algo.numOps += pointset.numPoints-1;
+    algo.numOps += ps.numPoints - 1;
 
     /*--------------------------------------------------------------------------
      * 3. UPPDELNING I TVÅ HALVOR
@@ -339,8 +339,8 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
      *   linjen hamnar i varsina punktsamlingar; subsetA och subsetB.
      *------------------------------------------------------------------------*/
 
-    for (int i = 0; i < pointset.numPoints; i++) {
-        pointT *point = &pointset.points[i];
+    for (int i = 0; i < ps.numPoints; i++) {
+        pointT *point = &ps.points[i];
 
         // Vänster och höger extrempunkter har vi redan hanterat.
         if (point==leftPoint || point==rightPoint)
@@ -353,7 +353,7 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
         else          ArrayAdd(subsetB, &point); // Nedra "halva."
     }
 
-    algo.numOps += pointset.numPoints;
+    algo.numOps += ps.numPoints;
 
     /*--------------------------------------------------------------------------
      * 4. REKURSION

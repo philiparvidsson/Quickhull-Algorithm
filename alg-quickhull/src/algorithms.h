@@ -57,13 +57,13 @@ algorithmdataT BruteforceHull(pointsetT ps, hullT *hull);
 /*--------------------------------------
  * Function: Quickhull()
  * Parameters:
- *   pointset  Punktuppsättningen för vilken ett hölje ska genereras.
- *   hull      En pekare till höljet.
+ *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
+ *   hull  En pekare till höljet.
  *
  * Description:
  *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
  *   quickhull. Returnerar data om algoritmens arbete.
  *------------------------------------*/
-algorithmdataT Quickhull(pointsetT pointset, hullT *hull);
+algorithmdataT Quickhull(pointsetT ps, hullT *hull);
 
 #endif // _algorithms_h_
