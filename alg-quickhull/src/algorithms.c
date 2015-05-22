@@ -260,16 +260,17 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
     algorithmdataT algoA = QH(hull, a       , farPoint, subsetA);
     algorithmdataT algoB = QH(hull, farPoint, b       , subsetB);
 
-    algo.numOps    += algoA.numOps        + algoB.numOps        ;
-    algo.numAllocs += algoA.numAllocs     + algoB.numAllocs     ;
-    algo.numBytes  += algoA.numBytes      + algoB.numBytes      ;
-    algo.numBytes  += ArrayBytes(subsetA) + ArrayBytes(subsetB);
+    algo.numOps    += algoA.numOps        + algoB.numOps   ;
+    algo.numAllocs += algoA.numAllocs     + algoB.numAllocs;
+    algo.numBytes  += algoA.numBytes      + algoB.numBytes ;
 
     /*--------------------------------------------------------------------------
      * 4. DEALLOKERING
      *
      *   Dags att rensa upp minnet.
      *------------------------------------------------------------------------*/
+
+    algo.numBytes += ArrayBytes(subsetA) + ArrayBytes(subsetB);
 
     FreeArray(subsetA);
     FreeArray(subsetB);
