@@ -44,41 +44,41 @@ typedef struct arrayCDT *arrayADT;
 /*--------------------------------------
  * Function: ArrayAdd()
  * Parameters:
- *   array  Den array till vilken vi ska lägga ett element.
+ *   a      Den array till vilken vi ska lägga ett element.
  *   value  Elementet som ska läggas till i arrayen.
  *
  * Description:
  *   Lägger till ett element i en array. Returnerar minnesadressen där noden
  *   lades in.
  *------------------------------------*/
-void *ArrayAdd(arrayADT array, const void *value);
+void *ArrayAdd(arrayADT a, const void *value);
 
 /*--------------------------------------
  * Function: ArrayBytes()
  * Parameters:
- *   array  Arrayen vars minnesanvändning ska räknas ut.
+ *   a  Arrayen vars minnesanvändning ska räknas ut.
  *
  * Description:
  *   Returnerar den specificerade arrayens minnesanvändning, i antal bytes.
  *------------------------------------*/
-int ArrayBytes(arrayADT array);
+int ArrayBytes(arrayADT a);
 
 /*--------------------------------------
  * Function: ArrayGet()
  * Parameters:
- *   array  Den array från vilken vi ska läsa ett element.
+ *   a      Den array från vilken vi ska läsa ett element.
  *   index  Det index i arrayen från vilket vi ska läsa elementet.
  *
  * Description:
  *   Läser ut och returnerar en pekare till det specificerade elementet i
  *   arrayen.
  *------------------------------------*/
-void *ArrayGet(arrayADT array, int index);
+void *ArrayGet(arrayADT a, int index);
 
 /*--------------------------------------
  * Function: ArrayInsert()
  * Parameters:
- *   array  Den array till vilken vi ska lägga ett element.
+ *   a      Den array till vilken vi ska lägga ett element.
  *   index  Det index i arrayen där elementet ska sättas in.
  *   value  Elementet som ska läggas till i arrayen.
  *
@@ -86,27 +86,27 @@ void *ArrayGet(arrayADT array, int index);
  *   Lägger in ett element i en array vid det specificerade indexet. Returnerar
  *   minnesadressen där noden lades in.
  *------------------------------------*/
-void *ArrayInsert(arrayADT array, int i, const void *value);
+void *ArrayInsert(arrayADT a, int i, const void *value);
 
 /*--------------------------------------
  * Function: ArrayLength()
  * Parameters:
- *   array  Arrayen vars längd ska läsas ut.
+ *   a  Arrayen vars längd ska läsas ut.
  *
  * Description:
  *   Returnerar den specificerade arrayens längd.
  *------------------------------------*/
-int ArrayLength(arrayADT array);
+int ArrayLength(arrayADT a);
 
 /*--------------------------------------
  * Function: FreeArray()
  * Parameters:
- *   array  Den array som ska avallokeras.
+ *   a  Den array som ska avallokeras.
  *
  * Description:
  *   Släpper en array ur minnet.
  *------------------------------------*/
-void FreeArray(arrayADT array);
+void FreeArray(arrayADT a);
 
 /*--------------------------------------
  * Function: NewArray()

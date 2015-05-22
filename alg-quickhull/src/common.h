@@ -12,8 +12,8 @@
  *
  *----------------------------------------------------------------------------*/
 
-#ifndef Common_h
-#define Common_h
+#ifndef _common_h_
+#define _common_h_
 
 /*------------------------------------------------
  * CONSTANTS
@@ -33,7 +33,7 @@
  * Description:
  *   Programmets version.
  *------------------------------------*/
-#define ProgramVersion "0.14"
+#define ProgramVersion "0.21"
 
 /*------------------------------------------------
  * TYPES
@@ -65,4 +65,4 @@ typedef enum {
  *------------------------------------*/
 typedef char *string;
 
-#endif // Common_h
+#endif // _common_h_

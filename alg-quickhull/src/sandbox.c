@@ -231,10 +231,17 @@ static void ToggleWind(void *arg) {
 }
 
 static void ToggleSlopedFloor(void *arg) {
-    slopedFloor = !slopedFloor;
+    pointsetT *corners = arg;
 
-    if (slopedFloor) printf(":: Sloped floor enabled.\n");
-    else             printf(":: Sloped floor disabled.\n");
+    slopedFloor = !slopedFloor;
+    if (slopedFloor) {
+        printf(":: Sloped floor enabled.\n");
+        corners->points[2].y = -0.3f;
+    }
+    else {
+        printf(":: Sloped floor disabled.\n");
+        corners->points[2].y = BottomEdge;
+    }
 }
 
 static void ToggleQuickhull(void *arg) {
@@ -477,18 +484,18 @@ void RunSandbox(int numPoints) {
 
     // Här ställer vi in lite roliga knappar så att sandbox blir lite mer
     // interaktiv och rolig.
-    OnKeyPress('b', ToggleBlackHole  , NULL);
-    OnKeyPress('d', ToggleDamping    , NULL);
-    OnKeyPress('f', ToggleSlopedFloor, NULL);
-    OnKeyPress('g', ToggleGravity    , NULL);
-    OnKeyPress('h', ToggleHull       , NULL);
-    OnKeyPress('l', ToggleHullLock   , &hull);
-    OnKeyPress('p', TogglePoints     , NULL);
-    OnKeyPress('q', ToggleQuickhull  , NULL);
-    OnKeyPress('r', ToggleRubberBand , NULL);
-    OnKeyPress('w', ToggleWind       , NULL);
-    OnKeyPress('x', RandomizePS      , &vps);
-    OnKeyPress('z', RandomizePS      , &ps);
+    OnKeyPress('b', ToggleBlackHole  , NULL    );
+    OnKeyPress('d', ToggleDamping    , NULL    );
+    OnKeyPress('f', ToggleSlopedFloor, &corners);
+    OnKeyPress('g', ToggleGravity    , NULL    );
+    OnKeyPress('h', ToggleHull       , NULL    );
+    OnKeyPress('l', ToggleHullLock   , &hull   );
+    OnKeyPress('p', TogglePoints     , NULL    );
+    OnKeyPress('q', ToggleQuickhull  , NULL    );
+    OnKeyPress('r', ToggleRubberBand , NULL    );
+    OnKeyPress('w', ToggleWind       , NULL    );
+    OnKeyPress('x', RandomizePS      , &vps    );
+    OnKeyPress('z', RandomizePS      , &ps     );
 
     printf(" done.\n");
     printf("Enjoy! :-)\n\n");
@@ -519,16 +526,6 @@ void RunSandbox(int numPoints) {
 
         if (drawHull)
             DrawHull(hull);
-
-        // Sedan miljögrejer.
-        if (slopedFloor) {
-            pointT a = {  LeftEdge, -0.9f },
-                   b = { RightEdge, -0.3f };
-
-            lineT floor = { &a, &b };
-
-            DrawLine(floor);
-        }
 
         if (drawPoints) {
             // Sedan prickarna (så att de ligger ovanpå höljet).

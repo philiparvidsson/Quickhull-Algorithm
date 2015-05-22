@@ -153,8 +153,8 @@ void RunBenchmark(int numPoints) {
     int numSecs = 0;
     int numIterations = 0;
 
-    clock_t start = clock();
-    while (TRUE) {
+    clock_t start = clock(), lastUpdate = start;
+    while ((clock() - start) < NumSeconds * CLOCKS_PER_SEC) {
         numIterations++;
 
         RandomizePoints(ps);
@@ -206,14 +206,10 @@ void RunBenchmark(int numPoints) {
         // Här ser vi till att skriva ut hur långt i benchmarket vi kommit,
         // procentuellt sett, en gång varje sekund. Så att användaren inte tror
         // att programmet hängt sig.
-        int benchmarkTime = 1000 * (clock() - start) / CLOCKS_PER_SEC;
+        int benchmarkTime = 1000 * (clock() - lastUpdate) / CLOCKS_PER_SEC;
         if (benchmarkTime >= 1000) {
-            if (numSecs++ >= NumSeconds)
-                break;
-
-            printf("%2.1f%%...\n", 100.0f * (float)numSecs / NumSeconds);
-            start = clock();
-
+            printf("%2.1f%%...\n", 100.0f * (float)(clock()-start) / NumSeconds);
+            lastUpdate = clock();
         }
     }
 

@@ -1,3 +1,17 @@
+/*------------------------------------------------------------------------------
+ * File: algorithms.c
+ * Created: May 21, 2015
+ * Last changed: May 21, 2015
+ *
+ * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
+ *
+ * Description:
+ *   Innehåller algoritmerna för att lösa det konvexa höljet.
+ *
+ * Changes:
+ *
+ *----------------------------------------------------------------------------*/
+
 /*------------------------------------------------
  * INCLUDES
  *----------------------------------------------*/
@@ -92,6 +106,8 @@ algorithmdataT BruteforceHull(pointsetT ps, hullT *hull) {
 
     return algo;
 }
+
+//------------------------------------------------------------------------------
 
 /*********************************************
  *              _      _    _           _ _  *
@@ -390,3 +406,5 @@ algorithmdataT Quickhull(pointsetT pointset, hullT *hull) {
 
     return algo;
 }
+
+//------------------------------------------------------------------------------
