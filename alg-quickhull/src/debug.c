@@ -40,6 +40,7 @@ void AssertFail(string expr, string funcName, int line) {
            "This program will now crash.\n"
            "Press ENTER to continue...", expr, funcName, line);
     getchar();
+    __debugbreak();
     exit(EXIT_FAILURE);
 }
 
@@ -56,6 +57,7 @@ void Error(string msg) {
            "This program will now crash.\n"
            "Press ENTER to continue...", msg);
     getchar();
+    __debugbreak();
     exit(EXIT_FAILURE);
 }
 
@@ -72,5 +74,6 @@ void ProgramFail(string funcName, int line) {
     printf("\nERROR: Program failed in %s() on line %d and will now crash.\n\n"
            "Press ENTER to continue...", funcName, line);
     getchar();
+    __debugbreak();
     exit(EXIT_FAILURE);
 }

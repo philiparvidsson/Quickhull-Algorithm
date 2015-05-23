@@ -22,6 +22,7 @@
 #include "common.h"
 #include "debug.h"
 #include "math.h"
+#include "queue.h"
 
 #include <float.h>
 
@@ -117,6 +118,24 @@ algorithmdataT BruteforceHull(pointsetT ps, hullT *hull) {
  *  \__, |\__,_|_|\___|_|\_\_| |_|\__,_|_|_| *
  *     |_|                                   *
  *********************************************/
+
+static queueADT arrayPool;
+
+arrayADT GetArray() {
+    if (!arrayPool)
+        arrayPool = NewQueue(32);
+
+    if (QueueIsEmpty(arrayPool))
+        return NewArray(sizeof(pointT *));
+
+    return Dequeue(arrayPool);
+}
+
+void ReleaseArray(arrayADT a) {
+    ResetArray(a);
+
+    Enqueue(arrayPool, a);
+}
 
 /*--------------------------------------
  * Function: QH()
@@ -221,8 +240,8 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
      *   punkter på varsin sida om triangeln rekursivt.
      *------------------------------------------------------------------------*/
 
-    arrayADT subsetA = NewArray(sizeof(pointT *)),
-             subsetB = NewArray(sizeof(pointT *));
+    arrayADT subsetA = GetArray(),//NewArray(sizeof(pointT *)),
+             subsetB = GetArray();//NewArray(sizeof(pointT *));
 
     algo.numAllocs += 2;
 
@@ -272,8 +291,8 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
 
     algo.numBytes += ArrayBytes(subsetA) + ArrayBytes(subsetB);
 
-    FreeArray(subsetA);
-    FreeArray(subsetB);
+    ReleaseArray(subsetA);//FreeArray(subsetA);
+    ReleaseArray(subsetB);//FreeArray(subsetB);
 
     return algo;
 }
@@ -307,9 +326,9 @@ algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
 
     // Efter att algoritmen är klar kommer hullPoints innehålla alla punkter i
     // höljer i medurs ordning.
-    arrayADT hullPoints = NewArray(sizeof(pointT *)),
-             subsetA    = NewArray(sizeof(pointT *)),
-             subsetB    = NewArray(sizeof(pointT *));
+    arrayADT hullPoints = GetArray(),//NewArray(sizeof(pointT *)),
+             subsetA    = GetArray(),//NewArray(sizeof(pointT *)),
+             subsetB    = GetArray();//NewArray(sizeof(pointT *));
 
     // Tre allokeringar ovan.
     algo.numOps += 3;
@@ -401,9 +420,9 @@ algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
                   +  ArrayBytes(subsetA   )
                   +  ArrayBytes(subsetB   );
 
-    FreeArray(hullPoints);
-    FreeArray(subsetA);
-    FreeArray(subsetB);
+    ReleaseArray(hullPoints);//FreeArray(hullPoints);
+    ReleaseArray(subsetA);//FreeArray(subsetA);
+    ReleaseArray(subsetB);//FreeArray(subsetB);
 
     return algo;
 }

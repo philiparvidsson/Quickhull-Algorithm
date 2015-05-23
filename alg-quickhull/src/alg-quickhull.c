@@ -56,6 +56,8 @@ static void PrintIntroMessage() {
            ProgramVersion, ProgramAuthors);
 }
 
+#include "queue.h"
+
 /*--------------------------------------
  * Function: main()
  * Parameters:
@@ -64,6 +66,7 @@ static void PrintIntroMessage() {
  *   Programmets huvudfunktion.
  *------------------------------------*/
 main() {
+    
     PrintIntroMessage();
 
     printf("Number of points to use? ");

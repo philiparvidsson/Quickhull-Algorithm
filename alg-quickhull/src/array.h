@@ -118,4 +118,6 @@ void FreeArray(arrayADT a);
  *------------------------------------*/
 arrayADT NewArray(size_t elementSize);
 
+void ResetArray(arrayADT array);
+
 #endif // _array_h_

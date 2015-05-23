@@ -39,10 +39,10 @@
     <ClCompile Include="src\array.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\list.c">
+    <ClCompile Include="src\algorithms.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\algorithms.c">
+    <ClCompile Include="src\queue.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,10 +71,10 @@
     <ClInclude Include="src\array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\list.h">
+    <ClInclude Include="src\algorithms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\algorithms.h">
+    <ClInclude Include="src\queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

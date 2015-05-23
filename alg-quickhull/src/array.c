@@ -34,10 +34,10 @@
  *   Representerar en dynamisk array med objekt i.
  *------------------------------------*/
 typedef struct arrayCDT {
-    void  *elements;
-    int    numElements;
-    int    maxElements;
-    size_t elementSize;
+    void  *data;
+    int    numElems;
+    int    maxElems;
+    size_t elemSize;
 } arrayCDT;
 
 /*------------------------------------------------
@@ -45,12 +45,12 @@ typedef struct arrayCDT {
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Constant: InitialMaxElements
+ * Constant: InitialMaxElems
  *
  * Description:
  *   Det initiala antalet element som minne ska allokeras för i Array_Init().
  *------------------------------------*/
-#define InitialMaxElements 8 // 8 är nog lagom.
+#define InitialMaxElems 8 // 8 är nog lagom.
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -61,13 +61,15 @@ static void DoubleArrayCapacity(arrayADT a) {
     // elementen till den nya minnesplatsen, sen släpper vi den gamla
     // arrayen ur minnet.
 
-    void *oldElements    = a->elements;
-    int   oldMaxElements = a->maxElements;
+    void *oldData = a->data;
+    int   oldMaxElems = a->maxElems;
 
-    a->maxElements *= 2;
-    a->elements = malloc(a->maxElements * a->elementSize);
-    memcpy(a->elements, oldElements, oldMaxElements * a->elementSize);
-    free(oldElements);
+    a->maxElems *= 2;
+    a->data     = malloc(a->maxElems*a->elemSize);
+
+    memcpy(a->data, oldData, oldMaxElems*a->elemSize);
+
+    free(oldData);
 }
 
 /*--------------------------------------
@@ -81,13 +83,13 @@ static void DoubleArrayCapacity(arrayADT a) {
  *   lades in.
  *------------------------------------*/
 void *ArrayAdd(arrayADT a, const void *value) {
-    if (a->numElements >= a->maxElements)
+    if (a->numElems >= a->maxElems)
         DoubleArrayCapacity(a);
 
-    void *dest = (char *)a->elements + (a->numElements * a->elementSize);
-    memcpy(dest, value, a->elementSize);
+    void *dest = (char *)a->data + (a->numElems*a->elemSize);
+    memcpy(dest, value, a->elemSize);
 
-    a->numElements++;
+    a->numElems++;
     return dest;
 }
 
@@ -100,7 +102,7 @@ void *ArrayAdd(arrayADT a, const void *value) {
  *   Returnerar den specificerade arrayens minnesanvändning, i antal bytes.
  *------------------------------------*/
 int ArrayBytes(arrayADT a) {
-    return sizeof(arrayCDT) + a->maxElements*a->elementSize;
+    return sizeof(arrayCDT) + a->maxElems*a->elemSize;
 }
 
 /*--------------------------------------
@@ -114,8 +116,8 @@ int ArrayBytes(arrayADT a) {
  *   arrayen.
  *------------------------------------*/
 void *ArrayGet(arrayADT a, int index) {
-    Assert(0 <= index && index < a->numElements);
-    return (char *)a->elements + (index * a->elementSize);
+    Assert(0 <= index && index < a->numElems);
+    return (char *)a->data + (index*a->elemSize);
 }
 
 /*--------------------------------------
@@ -130,27 +132,28 @@ void *ArrayGet(arrayADT a, int index) {
  *   minnesadressen där noden lades in.
  *------------------------------------*/
 void *ArrayInsert(arrayADT a, int index, const void *value) {
-    Assert(0 <= index && index <= a->numElements);
+    Assert(0 <= index && index <= a->numElems);
 
-    if (index == a->numElements)
+    if (index == a->numElems)
         return ArrayAdd(a, value);
 
-    if (a->numElements >= a->maxElements)
+    if (a->numElems >= a->maxElems)
         DoubleArrayCapacity(a);
+    
+    char *basePtr  = a->data;
+    int   elemSize = a->elemSize;
 
-    int elementSize = a->elementSize;
+    for (int i = a->numElems; i > index; i--) {
+        void *src  = basePtr + ((i-1) * elemSize);
+        void *dest = basePtr + ( i    * elemSize);
 
-    char *base = (char *)a->elements;
-    for (int i = a->numElements; i > index; i--) {
-        void *src  = base + ((i-1) * elementSize);
-        void *dest = base + ( i    * elementSize);
-        memcpy(dest, src, elementSize);
+        memcpy(dest, src, elemSize);
     }
 
-    void *dest = base + (index*elementSize);
-    memcpy(dest, value, elementSize);
+    void *dest = basePtr + (index*elemSize);
+    memcpy(dest, value, elemSize);
 
-    a->numElements++;
+    a->numElems++;
     return dest;
 }
 
@@ -163,7 +166,7 @@ void *ArrayInsert(arrayADT a, int index, const void *value) {
  *   Returnerar den specificerade arrayens längd.
  *------------------------------------*/
 int ArrayLength(arrayADT a) {
-    return a->numElements;
+    return a->numElems;
 }
 
 /*--------------------------------------
@@ -175,28 +178,32 @@ int ArrayLength(arrayADT a) {
  *   Släpper en array ur minnet.
  *------------------------------------*/
 void FreeArray(arrayADT a) {
-    Assert(a->elements != NULL);
+    Assert(a->data != NULL);
 
-    free(a->elements);
+    free(a->data);
     free(a);
 }
 
 /*--------------------------------------
  * Function: NewArray()
  * Parameters:
- *   elementSize  Storleken, i bytes, på arrayens element.
+ *   elemSize  Storleken, i bytes, på arrayens element.
  *
  * Description:
  *   Initierar och allokerar en array.
  *------------------------------------*/
-arrayADT NewArray(size_t elementSize) {
+arrayADT NewArray(size_t elemSize) {
     arrayADT array = malloc(sizeof(arrayCDT));
 
-    array->numElements = 0;
-    array->maxElements = InitialMaxElements;
-    array->elementSize = elementSize;
+    array->numElems = 0;
+    array->maxElems = InitialMaxElems;
+    array->elemSize = elemSize;
 
-    array->elements = malloc(array->maxElements * array->elementSize);
+    array->data = malloc(array->maxElems * array->elemSize);
 
     return array;
+}
+
+void ResetArray(arrayADT array) {
+    array->numElems = 0;
 }
