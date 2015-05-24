@@ -118,6 +118,14 @@ void FreeArray(arrayADT a);
  *------------------------------------*/
 arrayADT NewArray(size_t elementSize);
 
+/*--------------------------------------
+ * Function: ResetArray()
+ * Parameters:
+ *   a  Arrayen som ska nollställas.
+ *
+ * Description:
+ *   Nollställer arrayens elementantal till noll. OBS: Nollar inte minnet.
+ *------------------------------------*/
 void ResetArray(arrayADT array);
 
 #endif // _array_h_

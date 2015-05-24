@@ -119,9 +119,24 @@ algorithmdataT BruteforceHull(pointsetT ps, hullT *hull) {
  *     |_|                                   *
  *********************************************/
 
+/*--------------------------------------
+ * Variable: arrayPool
+ *
+ * Description:
+ *   En kö där vi poolar arrayer för att slippa omallokeringar. Vi återanvänder
+ *   helt enkelt minne istället.
+ *------------------------------------*/
 static queueADT arrayPool;
 
-arrayADT GetArray() {
+/*--------------------------------------
+ * Function: GetPointArray()
+ * Parameters:
+ *
+ * Description:
+ *   Returnerar en array med pekare till punkter. Antingen skapar funktionen en
+ *   ny array, eller så återanvänder den en array från poolen.
+ *------------------------------------*/
+arrayADT GetPointArray() {
     if (!arrayPool)
         arrayPool = NewQueue(32);
 
@@ -131,9 +146,22 @@ arrayADT GetArray() {
     return Dequeue(arrayPool);
 }
 
+/*--------------------------------------
+ * Function: ReleaseArray()
+ * Parameters:
+ *   a  Arrayen som ska släppas tillbaka till array-poolen.
+ *
+ * Description:
+ *   Släpper tillbaka en array till poolen.
+ *------------------------------------*/
 void ReleaseArray(arrayADT a) {
-    ResetArray(a);
+    if (QueueIsFull(arrayPool)) {
+        FreeArray(a);
+        printf("Warning: Array pool is not big enough.\n");
+        return;
+    }
 
+    ResetArray(a);
     Enqueue(arrayPool, a);
 }
 
@@ -240,8 +268,8 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
      *   punkter på varsin sida om triangeln rekursivt.
      *------------------------------------------------------------------------*/
 
-    arrayADT subsetA = GetArray(),//NewArray(sizeof(pointT *)),
-             subsetB = GetArray();//NewArray(sizeof(pointT *));
+    arrayADT subsetA = GetPointArray(),
+             subsetB = GetPointArray();
 
     algo.numAllocs += 2;
 
@@ -291,8 +319,8 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
 
     algo.numBytes += ArrayBytes(subsetA) + ArrayBytes(subsetB);
 
-    ReleaseArray(subsetA);//FreeArray(subsetA);
-    ReleaseArray(subsetB);//FreeArray(subsetB);
+    ReleaseArray(subsetA);
+    ReleaseArray(subsetB);
 
     return algo;
 }
@@ -326,12 +354,12 @@ algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
 
     // Efter att algoritmen är klar kommer hullPoints innehålla alla punkter i
     // höljer i medurs ordning.
-    arrayADT hullPoints = GetArray(),//NewArray(sizeof(pointT *)),
-             subsetA    = GetArray(),//NewArray(sizeof(pointT *)),
-             subsetB    = GetArray();//NewArray(sizeof(pointT *));
+    arrayADT hullPoints = GetPointArray(),
+             subsetA    = GetPointArray(),
+             subsetB    = GetPointArray();;
 
     // Tre allokeringar ovan.
-    algo.numOps += 3;
+    algo.numAllocs += 3;
 
     /*--------------------------------------------------------------------------
      * 2. SÖKNING EFTER EXTREMPUNKTER
@@ -420,9 +448,9 @@ algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
                   +  ArrayBytes(subsetA   )
                   +  ArrayBytes(subsetB   );
 
-    ReleaseArray(hullPoints);//FreeArray(hullPoints);
-    ReleaseArray(subsetA);//FreeArray(subsetA);
-    ReleaseArray(subsetB);//FreeArray(subsetB);
+    ReleaseArray(hullPoints);
+    ReleaseArray(subsetA   );
+    ReleaseArray(subsetB   );
 
     return algo;
 }

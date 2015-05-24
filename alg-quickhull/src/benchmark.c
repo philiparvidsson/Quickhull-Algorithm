@@ -163,7 +163,7 @@ void RunBenchmark(int numPoints) {
         /* Bruteforce                                                         */
         /*--------------------------------------------------------------------*/
 
-        /*StopwatchStart();
+        StopwatchStart();
         algorithmdataT bf = BruteforceHull(ps, &hull);
         int microSecs = StopwatchStop();
 
@@ -179,7 +179,7 @@ void RunBenchmark(int numPoints) {
         bmdbf.avgOps    += bf.numOps   ;
         bmdbf.avgAllocs += bf.numAllocs;
         bmdbf.avgBytes  += bf.numBytes ;
-        bmdbf.avgTime   += microSecs   ;*/
+        bmdbf.avgTime   += microSecs   ;
 
         /*--------------------------------------------------------------------*/
         /* Quickhull                                                          */
@@ -187,7 +187,7 @@ void RunBenchmark(int numPoints) {
 
         StopwatchStart();
         algorithmdataT qh = Quickhull(ps, &hull);
-        int microSecs = StopwatchStop();
+        microSecs = StopwatchStop();
 
         if (qh.numOps    < bmdqh.minOps   ) bmdqh.minOps    = qh.numOps   ;
         if (qh.numOps    > bmdqh.maxOps   ) bmdqh.maxOps    = qh.numOps   ;
@@ -225,7 +225,7 @@ void RunBenchmark(int numPoints) {
 
     printf("100.0%%. Done!\n\n");
 
-    //PrintStatistics("Bruteforce", &bmdbf);
+    PrintStatistics("Bruteforce", &bmdbf);
     PrintStatistics("Quickhull", &bmdqh);
 
     FreeHull(hull);

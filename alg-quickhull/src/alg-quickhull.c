@@ -66,7 +66,6 @@ static void PrintIntroMessage() {
  *   Programmets huvudfunktion.
  *------------------------------------*/
 main() {
-    
     PrintIntroMessage();
 
     printf("Number of points to use? ");

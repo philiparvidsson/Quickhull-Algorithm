@@ -204,6 +204,14 @@ arrayADT NewArray(size_t elemSize) {
     return array;
 }
 
+/*--------------------------------------
+ * Function: ResetArray()
+ * Parameters:
+ *   a  Arrayen som ska nollställas.
+ *
+ * Description:
+ *   Nollställer arrayens elementantal till noll. OBS: Nollar inte minnet.
+ *------------------------------------*/
 void ResetArray(arrayADT array) {
     array->numElems = 0;
 }
