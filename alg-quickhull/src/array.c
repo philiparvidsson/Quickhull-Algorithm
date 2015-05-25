@@ -56,16 +56,24 @@ typedef struct arrayCDT {
  * FUNCTIONS
  *----------------------------------------------*/
 
+/*--------------------------------------
+ * Function: DoubleArrayCapacity()
+ * Parameters:
+ *   a  Arrayen vars kapacitet ska dubblas.
+ *
+ * Description:
+ *   Dubblar en arrays kapacitet genom att omallokera den och kopiera över
+ *   de gamla elementen.
+ *------------------------------------*/
 static void DoubleArrayCapacity(arrayADT a) {
-    // Arrayen är full, så vi dubblar kapaciteten och kopierar över de gamla
-    // elementen till den nya minnesplatsen, sen släpper vi den gamla
-    // arrayen ur minnet.
+    // Vi dubblar kapaciteten och kopierar över de gamla elementen till den nya
+    // minnesplatsen, sen släpper vi den gamla arrayen ur minnet.
 
-    void *oldData = a->data;
+    void *oldData     = a->data;
     int   oldMaxElems = a->maxElems;
 
     a->maxElems *= 2;
-    a->data     = malloc(a->maxElems*a->elemSize);
+    a->data      = malloc(a->maxElems*a->elemSize);
 
     memcpy(a->data, oldData, oldMaxElems*a->elemSize);
 

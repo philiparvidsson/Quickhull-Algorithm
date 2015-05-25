@@ -7,7 +7,7 @@
  *
  * Description:
  *   Erbjuder en kö-struktur. Implementationen använder sig av en cirkulär
- *   buffer för att slippa omallokeringar.
+ *   vektor för att slippa omallokeringar.
  *
  * Changes:
  *
@@ -35,7 +35,7 @@
  *------------------------------------*/
 typedef struct queueCDT {
     void **data;
-    int    first, last;
+    int    head, tail;
     int    size;
 } queueCDT;
 
@@ -49,20 +49,22 @@ typedef struct queueCDT {
  *   size  Det maximala antalet objekt som kön kan innehålla.
  *
  * Description:
- *   Sakapar en ny kö av den givna storleken.
+ *   Skapar en ny kö av den givna storleken.
  *------------------------------------*/
 queueADT NewQueue(int size) {
     Assert(size > 0);
 
     // Vi ökar storleken med ett eftersom vi behöver ett tomt element i vektorn.
+    // Anledningen är att vi har en cirkelbuffert. Utan ett extra, tomt element
+    // kan vi inte skilja på full och tom kö.
     size++;
 
     queueADT queue = malloc(sizeof(queueCDT));
 
-    queue->data  = malloc(sizeof(void *) * (size));
-    queue->first = 0;
-    queue->last  = 0;
-    queue->size  = size;
+    queue->data = malloc(sizeof(void *) * (size));
+    queue->head = 0;
+    queue->tail = 0;
+    queue->size = size;
 
     return queue;
 }
@@ -82,32 +84,66 @@ void FreeQueue(queueADT queue) {
     free(queue);
 }
 
+/*--------------------------------------
+ * Function: Enqueue()
+ * Parameters:
+ *   queue  Kön till vilket ett värde ska läggas.
+ *   value  Värdet som ska läggas till i kön.
+ *
+ * Description:
+ *   Lägger till ett värde i en kö.
+ *------------------------------------*/
 void Enqueue(queueADT queue, const void *value) {
     Assert(!QueueIsFull(queue));
 
-    queue->data[queue->last] = value;
+    queue->data[queue->tail] = value;
 
-    queue->last++;
-    if (queue->last >= queue->size)
-        queue->last = 0;
+    queue->tail++;
+    if (queue->tail >= queue->size)
+        queue->tail = 0;
 }
 
+/*--------------------------------------
+ * Function: Dequeue()
+ * Parameters:
+ *   queue  Kön från vilket ett värde ska tas.
+ *
+ * Description:
+ *   Tar ut det första värdet i kön och returnerar det.
+ *------------------------------------*/
 void *Dequeue(queueADT queue) {
     Assert(!QueueIsEmpty(queue));
 
-    void *value = queue->data[queue->first];
+    void *value = queue->data[queue->head];
 
-    queue->first++;
-    if (queue->first >= queue->size)
-        queue->first = 0;
+    queue->head++;
+    if (queue->head >= queue->size)
+        queue->head = 0;
 
     return value;
 }
 
+
+/*--------------------------------------
+ * Function: QueueIsEmpty()
+ * Parameters:
+ *   queue  Kön som ska kontrolleras.
+ *
+ * Description:
+ *   Returnerar sant om den specificerade kön är tom.
+ *------------------------------------*/
 bool QueueIsEmpty(queueADT queue) {
-    return queue->first==queue->last;
+    return (queue->head == queue->tail);
 }
 
+/*--------------------------------------
+ * Function: QueueIsFull()
+ * Parameters:
+ *   queue  Kön som ska kontrolleras.
+ *
+ * Description:
+ *   Returnerar sant om den specificerade kön är full.
+ *------------------------------------*/
 bool QueueIsFull(queueADT queue) {
-    return queue->first==((queue->last+1) % queue->size);
+    return (queue->head == ((queue->tail+1) % queue->size));
 }

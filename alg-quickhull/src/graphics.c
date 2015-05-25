@@ -50,19 +50,8 @@
 #define WindowTitle _T("Quickhull Sandbox")
 
 /*------------------------------------------------
- * TYPES
- *----------------------------------------------*/
-
-typedef struct {
-    actionT keyPressCB[UCHAR_MAX];
-    actionT keyPressArg[UCHAR_MAX];
-} graphicsT;
-
-/*------------------------------------------------
  * GLOBALS
  *----------------------------------------------*/
-
-graphicsT graphics;
 
 /*--------------------------------------
  * Variable: frameInterval
@@ -70,7 +59,7 @@ graphicsT graphics;
  * Description:
  *   Används för att lagra intervallet i vilket bildrutor ska visas.
  *------------------------------------*/
-int frameInterval;
+static int frameInterval;
 
 /*--------------------------------------
  * Variable: hdc
@@ -78,7 +67,7 @@ int frameInterval;
  * Description:
  *   Grafikfönstrets DC (device context).
  *------------------------------------*/
-HDC hdc;
+static HDC hdc;
 
 /*--------------------------------------
  * Variable: hwnd
@@ -86,7 +75,7 @@ HDC hdc;
  * Description:
  *   Grafikfönstrets fönster-handtag (kommentarer på svenska äger).
  *------------------------------------*/
-HWND hwnd;
+static HWND hwnd;
 
 /*--------------------------------------
  * Variable: initialized
@@ -94,7 +83,23 @@ HWND hwnd;
  * Description:
  *   Indikerar om grafiksystemet är initierat.
  *------------------------------------*/
-bool initialized;
+static bool initialized;
+
+/*--------------------------------------
+ * Variable: keyPressCB
+ *
+ * Description:
+ *   Callback-funktioner för olika knapptryck.
+ *------------------------------------*/
+static actionT keyPressCB[UCHAR_MAX];
+
+/*--------------------------------------
+ * Variable: keyPressArg
+ *
+ * Description:
+ *   Argumentet till de olika callback-funktionerna.
+ *------------------------------------*/
+static void *keyPressArg[UCHAR_MAX];
 
 /*--------------------------------------
  * Variable: lastUpdate
@@ -102,7 +107,7 @@ bool initialized;
  * Description:
  *   Tidsstämpel då senaste uppdateringen av ritytan gjordes.
  *------------------------------------*/
-LARGE_INTEGER lastUpdate;
+static LARGE_INTEGER lastUpdate;
 
 /*--------------------------------------
  * Variable: windowOpen
@@ -110,7 +115,7 @@ LARGE_INTEGER lastUpdate;
  * Description:
  *   Indikerar om grafikfönstret är öppet.
  *------------------------------------*/
-bool windowOpen;
+static bool windowOpen;
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -139,9 +144,9 @@ LRESULT CALLBACK WindowProc(_In_ HWND   hwnd,
         bool repeated = lParam & 0x40000000;
         if (!repeated) {
             char    c  = tolower(wParam);
-            actionT cb = graphics.keyPressCB[c];
+            actionT cb = keyPressCB[c];
             if (cb)
-                cb(graphics.keyPressArg[c]);
+                cb(keyPressArg[c]);
         }
     }
 
@@ -476,6 +481,6 @@ void UpdateDisplay() {
 void OnKeyPress(char c, actionT cb, void *arg) {
     CheckInitGraphics();
 
-    graphics.keyPressCB [c] = cb;
-    graphics.keyPressArg[c] = arg;
+    keyPressCB [c] = cb;
+    keyPressArg[c] = arg;
 }

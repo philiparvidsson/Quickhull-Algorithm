@@ -49,8 +49,8 @@
  *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
  *   sökning. Returnerar information om algoritmens arbete.
  *------------------------------------*/
-algorithmdataT BruteforceHull(pointsetT ps, hullT *hull) {
-    algorithmdataT algo = { 0 };
+algorithmDataT BruteforceHull(pointsetT ps, hullT *hull) {
+    algorithmDataT algo = { 0 };
 
     // For-looparna med i och j används för att konstruera alla tänkbara
     // kombinationer av par bland punkterna. Vi konstruerar dem åt båda håll,
@@ -136,7 +136,7 @@ static queueADT arrayPool;
  *   Returnerar en array med pekare till punkter. Antingen skapar funktionen en
  *   ny array, eller så återanvänder den en array från poolen.
  *------------------------------------*/
-arrayADT GetPointArray() {
+static arrayADT GetPointArray() {
     if (!arrayPool)
         arrayPool = NewQueue(32);
 
@@ -154,7 +154,7 @@ arrayADT GetPointArray() {
  * Description:
  *   Släpper tillbaka en array till poolen.
  *------------------------------------*/
-void ReleaseArray(arrayADT a) {
+static void ReleaseArray(arrayADT a) {
     if (QueueIsFull(arrayPool)) {
         FreeArray(a);
         printf("Warning: Array pool is not big enough.\n");
@@ -177,8 +177,8 @@ void ReleaseArray(arrayADT a) {
  *   Hanterar punkter och löser det konvexa höljet med hjälp av den rekursiva
  *   algoritmen quickhull.
  *------------------------------------*/
-algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
-    algorithmdataT algo = { 0 };
+static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
+    algorithmDataT algo = { 0 };
 
     int numPoints = ArrayLength(subset);
 
@@ -304,8 +304,8 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
      *          a            b
      *------------------------------------------------------------------------*/
 
-    algorithmdataT algoA = QH(hull, a       , farPoint, subsetA);
-    algorithmdataT algoB = QH(hull, farPoint, b       , subsetB);
+    algorithmDataT algoA = QH(hull, a       , farPoint, subsetA);
+    algorithmDataT algoB = QH(hull, farPoint, b       , subsetB);
 
     algo.numOps    += algoA.numOps        + algoB.numOps   ;
     algo.numAllocs += algoA.numAllocs     + algoB.numAllocs;
@@ -335,8 +335,8 @@ algorithmdataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
  *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
  *   quickhull. Returnerar data om algoritmens arbete.
  *------------------------------------*/
-algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
-    algorithmdataT algo = { 0 };
+algorithmDataT Quickhull(pointsetT ps, hullT *hull) {
+    algorithmDataT algo = { 0 };
 
     /*--------------------------------------------------------------------------
      * 1. INITIERING AV VARIABLER OCH DATA
@@ -410,8 +410,8 @@ algorithmdataT Quickhull(pointsetT ps, hullT *hull) {
      *   algoritmens rekursiva kärna.
      *------------------------------------------------------------------------*/
 
-    algorithmdataT algoA = QH(hullPoints, leftPoint , rightPoint, subsetA);
-    algorithmdataT algoB = QH(hullPoints, rightPoint, leftPoint , subsetB);
+    algorithmDataT algoA = QH(hullPoints, leftPoint , rightPoint, subsetA);
+    algorithmDataT algoB = QH(hullPoints, rightPoint, leftPoint , subsetB);
 
     algo.numOps    += algoA.numOps    + algoB.numOps   ;
     algo.numAllocs += algoA.numAllocs + algoB.numAllocs;

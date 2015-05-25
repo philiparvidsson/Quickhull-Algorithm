@@ -7,7 +7,7 @@
  *
  * Description:
  *   Erbjuder en kö-struktur. Implementationen använder sig av en cirkulär
- *   buffer för att slippa omallokeringar.
+ *   vektor för att slippa omallokeringar.
  *
  * Changes:
  *
@@ -38,7 +38,7 @@ typedef struct queueCDT *queueADT;
  *   size  Det maximala antalet objekt som kön kan innehålla.
  *
  * Description:
- *   Sakapar en ny kö av den givna storleken och returnerar den.
+ *   Skapar en ny kö av den givna storleken och returnerar den.
  *------------------------------------*/
 queueADT NewQueue(int size);
 
@@ -52,10 +52,45 @@ queueADT NewQueue(int size);
  *------------------------------------*/
 void FreeQueue(queueADT queue);
 
+/*--------------------------------------
+ * Function: Enqueue()
+ * Parameters:
+ *   queue  Kön till vilket ett värde ska läggas.
+ *   value  Värdet som ska läggas till i kön.
+ *
+ * Description:
+ *   Lägger till ett värde i en kö.
+ *------------------------------------*/
 void Enqueue(queueADT queue, void *value);
+
+/*--------------------------------------
+ * Function: Dequeue()
+ * Parameters:
+ *   queue  Kön från vilket ett värde ska tas.
+ *
+ * Description:
+ *   Tar ut det första värdet i kön och returnerar det.
+ *------------------------------------*/
 void *Dequeue(queueADT queue);
 
+/*--------------------------------------
+ * Function: QueueIsEmpty()
+ * Parameters:
+ *   queue  Kön som ska kontrolleras.
+ *
+ * Description:
+ *   Returnerar sant om den specificerade kön är tom.
+ *------------------------------------*/
 bool QueueIsEmpty(queueADT queue);
+
+/*--------------------------------------
+ * Function: QueueIsFull()
+ * Parameters:
+ *   queue  Kön som ska kontrolleras.
+ *
+ * Description:
+ *   Returnerar sant om den specificerade kön är full.
+ *------------------------------------*/
 bool QueueIsFull(queueADT queue);
 
 #endif // _queue_h_

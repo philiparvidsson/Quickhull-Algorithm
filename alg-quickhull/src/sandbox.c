@@ -147,16 +147,16 @@
  *----------------------------------------------*/
 
 // Dessa variabler förklaras i instruktionerna vid körning.
-bool blackHole    = FALSE;
-bool damping      = FALSE;
-bool drawHull     = TRUE;
-bool drawPoints   = TRUE;
-bool gravity      = FALSE;
-bool lockHull     = FALSE;
-bool rubberBand   = FALSE;
-bool slopedFloor  = FALSE;
-bool useQuickhull = TRUE;
-bool wind         = FALSE;
+static bool blackHole    = FALSE;
+static bool damping      = FALSE;
+static bool drawHull     = TRUE;
+static bool drawPoints   = TRUE;
+static bool gravity      = FALSE;
+static bool lockHull     = FALSE;
+static bool rubberBand   = FALSE;
+static bool slopedFloor  = FALSE;
+static bool useQuickhull = TRUE;
+static bool wind         = FALSE;
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -164,7 +164,7 @@ bool wind         = FALSE;
 
 /*----------------------------------------------------------------------------*/
 /* Nedan är ett gäng funktioner som hanterar knapptryckningar, för att sätta  */
-/* och stänga av olika switchar, etc.                                         */
+/* på och stänga av olika switchar, etc.                                         */
 /*----------------------------------------------------------------------------*/
 
 static void RandomizePS(void *arg) {

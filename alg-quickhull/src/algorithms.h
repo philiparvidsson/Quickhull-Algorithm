@@ -26,7 +26,7 @@
  *----------------------------------------------*/
 
 /*
- * Type: algorithmdataT
+ * Type: algorithmDataT
  *
  * Description:
  *   Innehåller data om en algoritms arbete.
@@ -35,7 +35,7 @@ typedef struct {
     int numOps;
     int numAllocs;
     int numBytes;
-} algorithmdataT;
+} algorithmDataT;
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -51,7 +51,7 @@ typedef struct {
  *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
  *   sökning. Returnerar information om algoritmens arbete.
  *------------------------------------*/
-algorithmdataT BruteforceHull(pointsetT ps, hullT *hull);
+algorithmDataT BruteforceHull(pointsetT ps, hullT *hull);
 
 /*--------------------------------------
  * Function: Quickhull()
@@ -63,6 +63,6 @@ algorithmdataT BruteforceHull(pointsetT ps, hullT *hull);
  *   Genererar att konvext hölje för punktuppsättningen med hjälp av algoritmen
  *   quickhull. Returnerar data om algoritmens arbete.
  *------------------------------------*/
-algorithmdataT Quickhull(pointsetT ps, hullT *hull);
+algorithmDataT Quickhull(pointsetT ps, hullT *hull);
 
 #endif // _algorithms_h_
