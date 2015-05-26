@@ -22,6 +22,8 @@
 #include "debug.h"
 #include "math.h"
 
+#include <math.h>
+
 /*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
@@ -98,9 +100,8 @@ void FreeHull(hullT hull) {
  *------------------------------------*/
 void RandomizePoints(pointsetT ps) {
     for (int i = 0; i < ps.numPoints; i++) {
-        // Positionskomponenterna slumpas i intervallet [-0.5, 0.5).
         ps.points[i].x = (float)rand()/RAND_MAX - 0.5f;
-        ps.points[i].y = (float)rand()/RAND_MAX - 0.5f;
+        ps.points[i].y = (float)rand() / RAND_MAX - 0.5f;
     }
 }
 

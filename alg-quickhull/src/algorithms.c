@@ -95,7 +95,7 @@ algorithmDataT BruteforceHull(pointsetT ps, hullT *hull) {
             // den som ett segment i det konvexa höljet.
             if (!outside) {
                 if (hull->numLines >= hull->maxLines)
-                    Fail();
+                    return algo;
 
                 hull->lines[hull->numLines].a = a;
                 hull->lines[hull->numLines].b = b;
@@ -285,7 +285,7 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
         if (dB < 0.0f) ArrayAdd(subsetB, &point);
     }
 
-    algo.numOps += numPoints;
+    algo.numOps += 2 * numPoints;
 
     /*--------------------------------------------------------------------------
      * 3. REKURSION
@@ -307,9 +307,9 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
     algorithmDataT algoA = QH(hull, a       , farPoint, subsetA);
     algorithmDataT algoB = QH(hull, farPoint, b       , subsetB);
 
-    algo.numOps    += algoA.numOps        + algoB.numOps   ;
-    algo.numAllocs += algoA.numAllocs     + algoB.numAllocs;
-    algo.numBytes  += algoA.numBytes      + algoB.numBytes ;
+    algo.numOps    += algoA.numOps    + algoB.numOps   ;
+    algo.numAllocs += algoA.numAllocs + algoB.numAllocs;
+    algo.numBytes  += algoA.numBytes  + algoB.numBytes ;
 
     /*--------------------------------------------------------------------------
      * 4. DEALLOKERING

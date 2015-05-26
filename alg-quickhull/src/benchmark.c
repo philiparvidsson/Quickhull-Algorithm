@@ -179,7 +179,7 @@ void RunBenchmark(int numPoints) {
 
         RandomizePoints(ps);
 
-        BenchmarkAlgo(ps,&hull,&bmdbf, BruteforceHull );
+        //BenchmarkAlgo(ps,&hull,&bmdbf, BruteforceHull );
         BenchmarkAlgo(ps,&hull,&bmdqh, Quickhull      );
 
 
