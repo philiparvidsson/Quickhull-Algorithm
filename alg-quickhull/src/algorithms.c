@@ -166,6 +166,32 @@ static void ReleaseArray(arrayADT a) {
 }
 
 /*--------------------------------------
+ * Function: InsertBefore()
+ * Parameters:
+ *   a  Array med höljets punkter.
+ *   p  Den punkt som ska sättas in i a framför q.
+ *   q  Den punkt i a som p ska sättas in framför.
+ *
+ * Description:
+ *   Sätter in punkten p framför q, i a.
+ *------------------------------------*/
+static int InsertBefore(arrayADT a, pointT *p, pointT *q) {
+    int n = ArrayLength(a);
+    for (int i = 0; i < n; i++) {
+        pointT *point = *(pointT **)ArrayGet(a, i);
+        if (point == q) {
+            // Här stoppar vi in punkten i a, innan p.
+            ArrayInsert(a, i, p);
+            return i;
+        }
+    }
+
+    // Det här får aldrig hända.
+    Fail();
+    return -1;
+}
+
+/*--------------------------------------
  * Function: QH()
  * Parameters:
  *   hull    Array med höljets punkter.
@@ -201,20 +227,8 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
      *------------------------------------------------------------------------*/
 
     if (numPoints == 1) {
-        int n = ArrayLength(hull);
-        for (int i = 0; i < n; i++) {
-            pointT *point = *(pointT **)ArrayGet(hull, i);
-            if (point == b) {
-                // Här stoppar vi in punkten mellan a och b.
-                ArrayInsert(hull, i, ArrayGet(subset, 0));
-
-                algo.numOps = i;
-                return algo;
-            }
-        }
-
-        // Hit kommer vi aldrig.
-        Fail();
+        algo.numOps = InsertBefore(hull, ArrayGet(subset, 0), b);
+        return algo;
     }
 
     /*--------------------------------------------------------------------------
@@ -234,6 +248,9 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
 
         float d = (b->x - a->x) * (point->y - a->y)
                 - (b->y - a->y) * (point->x - a->x);
+
+        // Vi vill mäta max avstånd oavsett sida om linjen här, så om d är
+        // negativ så ser vi till att variabeln får ett positivt värde istället.
         if (d < 0.0f) d = -d;
 
         if (d > dMax) {
@@ -248,16 +265,7 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
     // bort från linjen a---b.
     pointT *farPoint = *(pointT **)ArrayGet(subset, index);
 
-    int numHullPoints = ArrayLength(hull);
-    for (int i = 0; i < numHullPoints; i++) {
-        pointT *point = *(pointT **)ArrayGet(hull, i);
-        if (point == b) {
-            // Här stoppar vi in farPoint mellan a och b.
-            ArrayInsert(hull, i, &farPoint);
-            algo.numOps += i;
-            break;
-        }
-    }
+    algo.numOps += InsertBefore(hull, &farPoint, b);
 
     /*--------------------------------------------------------------------------
      * 2. ANDRA PUNKTER
