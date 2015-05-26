@@ -356,7 +356,7 @@ algorithmDataT Quickhull(pointsetT ps, hullT *hull) {
     // höljer i medurs ordning.
     arrayADT hullPoints = GetPointArray(),
              subsetA    = GetPointArray(),
-             subsetB    = GetPointArray();;
+             subsetB    = GetPointArray();
 
     // Tre allokeringar ovan.
     algo.numAllocs += 3;
