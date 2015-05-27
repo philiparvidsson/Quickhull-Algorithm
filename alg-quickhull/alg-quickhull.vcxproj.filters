@@ -21,9 +21,6 @@
     <ClCompile Include="src\alg-quickhull.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\assignment\algorithms.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\assignment\benchmark.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,11 +45,14 @@
     <ClCompile Include="src\core\collections\queue.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\assignment\bruteforce.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\assignment\quickhull.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\assignment\algorithms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\assignment\benchmark.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,6 +78,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\collections\queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assignment\bruteforce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assignment\quickhull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assignment\algorithmdata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

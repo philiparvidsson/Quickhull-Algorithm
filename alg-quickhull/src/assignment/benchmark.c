@@ -21,7 +21,8 @@
 #include "core/common.h"
 #include "core/math.h"
 
-#include "assignment/algorithms.h"
+#include "assignment/bruteforce.h"
+#include "assignment/quickhull.h"
 
 #include <stdio.h>
 #include <time.h>
