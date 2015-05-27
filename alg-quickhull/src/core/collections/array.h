@@ -20,8 +20,8 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "common.h"
-#include "debug.h"
+#include "core/common.h"
+#include "core/debug.h"
 
 #include <stdlib.h>
 

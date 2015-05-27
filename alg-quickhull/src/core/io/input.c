@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
- * File: io.c
+ * File: input.c
  * Created: May 15, 2015
  * Last changed: May 15, 2015
  *
@@ -16,8 +16,9 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "common.h"
-#include "io.h"
+#include "input.h"
+
+#include "core/common.h"
 
 #include <ctype.h>
 #include <stdio.h>

@@ -17,10 +17,12 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "benchmark.h"
-#include "common.h"
-#include "io.h"
-#include "sandbox.h"
+#include "core/common.h"
+#include "core/io/input.h"
+
+#include "assignment/benchmark.h"
+
+#include "extra/sandbox.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,8 +57,6 @@ static void PrintIntroMessage() {
            " - The most awesome Quickhull sandbox/benchmark ever made!\n\n",
            ProgramVersion, ProgramAuthors);
 }
-
-#include "queue.h"
 
 /*--------------------------------------
  * Function: main()

@@ -16,10 +16,12 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "algorithms.h"
 #include "benchmark.h"
-#include "common.h"
-#include "math.h"
+
+#include "core/common.h"
+#include "core/math.h"
+
+#include "assignment/algorithms.h"
 
 #include <stdio.h>
 #include <time.h>

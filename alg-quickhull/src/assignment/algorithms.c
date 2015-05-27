@@ -17,11 +17,12 @@
  *----------------------------------------------*/
 
 #include "algorithms.h"
-#include "array.h"
-#include "common.h"
-#include "debug.h"
-#include "math.h"
-#include "queue.h"
+
+#include "core/common.h"
+#include "core/debug.h"
+#include "core/math.h"
+#include "core/collections/array.h"
+#include "core/collections/queue.h"
 
 #include <float.h>
 

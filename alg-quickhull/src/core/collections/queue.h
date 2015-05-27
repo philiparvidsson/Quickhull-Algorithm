@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------
- * File: queue.c
+ * File: queue.h
  * Created: May 23, 2015
  * Last changed: May 24, 2015
  *
@@ -13,31 +13,26 @@
  *
  *----------------------------------------------------------------------------*/
 
+#ifndef _queue_h_
+#define _queue_h_
+
 /*------------------------------------------------
  * INCLUDES
  *----------------------------------------------*/
 
-#include "common.h"
-#include "debug.h"
-#include "queue.h"
-
-#include <stdlib.h>
+#include "core/common.h"
 
 /*------------------------------------------------
  * TYPES
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Type: queueCDT
+ * Type: queueADT
  *
  * Description:
  *   Representerar en kö med objekt i.
  *------------------------------------*/
-typedef struct queueCDT {
-    void **data;
-    int    head, tail;
-    int    size;
-} queueCDT;
+typedef struct queueCDT *queueADT;
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -49,25 +44,9 @@ typedef struct queueCDT {
  *   size  Det maximala antalet objekt som kön kan innehålla.
  *
  * Description:
- *   Skapar en ny kö av den givna storleken.
+ *   Skapar en ny kö av den givna storleken och returnerar den.
  *------------------------------------*/
-queueADT NewQueue(int size) {
-    Assert(size > 0);
-
-    // Vi ökar storleken med ett eftersom vi behöver ett tomt element i vektorn.
-    // Anledningen är att vi har en cirkelbuffert. Utan ett extra, tomt element
-    // kan vi inte skilja på full och tom kö.
-    size++;
-
-    queueADT queue = malloc(sizeof(queueCDT));
-
-    queue->data = malloc(sizeof(void *) * size);
-    queue->head = 0;
-    queue->tail = 0;
-    queue->size = size;
-
-    return queue;
-}
+queueADT NewQueue(int size);
 
 /*--------------------------------------
  * Function: FreeQueue()
@@ -77,12 +56,7 @@ queueADT NewQueue(int size) {
  * Description:
  *   Frigör den specificerade kön från minnet.
  *------------------------------------*/
-void FreeQueue(queueADT queue) {
-    while (!QueueIsEmpty(queue))
-        Dequeue(queue);
-
-    free(queue);
-}
+void FreeQueue(queueADT queue);
 
 /*--------------------------------------
  * Function: Enqueue()
@@ -93,15 +67,7 @@ void FreeQueue(queueADT queue) {
  * Description:
  *   Lägger till ett värde i en kö.
  *------------------------------------*/
-void Enqueue(queueADT queue, const void *value) {
-    Assert(!QueueIsFull(queue));
-
-    queue->data[queue->tail] = value;
-
-    queue->tail++;
-    if (queue->tail >= queue->size)
-        queue->tail = 0;
-}
+void Enqueue(queueADT queue, void *value);
 
 /*--------------------------------------
  * Function: Dequeue()
@@ -111,18 +77,7 @@ void Enqueue(queueADT queue, const void *value) {
  * Description:
  *   Tar ut det första värdet i kön och returnerar det.
  *------------------------------------*/
-void *Dequeue(queueADT queue) {
-    Assert(!QueueIsEmpty(queue));
-
-    void *value = queue->data[queue->head];
-
-    queue->head++;
-    if (queue->head >= queue->size)
-        queue->head = 0;
-
-    return value;
-}
-
+void *Dequeue(queueADT queue);
 
 /*--------------------------------------
  * Function: QueueIsEmpty()
@@ -132,9 +87,7 @@ void *Dequeue(queueADT queue) {
  * Description:
  *   Returnerar sant om den specificerade kön är tom.
  *------------------------------------*/
-bool QueueIsEmpty(queueADT queue) {
-    return (queue->head == queue->tail);
-}
+bool QueueIsEmpty(queueADT queue);
 
 /*--------------------------------------
  * Function: QueueIsFull()
@@ -144,6 +97,6 @@ bool QueueIsEmpty(queueADT queue) {
  * Description:
  *   Returnerar sant om den specificerade kön är full.
  *------------------------------------*/
-bool QueueIsFull(queueADT queue) {
-    return (queue->head == ((queue->tail+1) % queue->size));
-}
+bool QueueIsFull(queueADT queue);
+
+#endif // _queue_h_

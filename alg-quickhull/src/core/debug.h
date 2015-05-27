@@ -19,7 +19,7 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "common.h"
+#include "core/common.h"
 
 #include <stdio.h>
 

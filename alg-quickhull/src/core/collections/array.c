@@ -18,7 +18,8 @@
  *----------------------------------------------*/
 
 #include "array.h"
-#include "debug.h"
+
+#include "core/debug.h"
 
 #include <stdlib.h>
 #include <string.h> // memcpy(), memmove()

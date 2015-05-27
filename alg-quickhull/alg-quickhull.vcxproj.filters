@@ -13,72 +13,80 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Documentation Files">
+      <UniqueIdentifier>{050edc64-2312-499e-ae54-32e63a7ebc38}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\alg-quickhull.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\io.c">
+    <ClCompile Include="src\assignment\algorithms.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\math.c">
+    <ClCompile Include="src\assignment\benchmark.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics.c">
+    <ClCompile Include="src\extra\sandbox.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\debug.c">
+    <ClCompile Include="src\extra\graphics.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\benchmark.c">
+    <ClCompile Include="src\core\debug.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\sandbox.c">
+    <ClCompile Include="src\core\math.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\array.c">
+    <ClCompile Include="src\core\io\input.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\algorithms.c">
+    <ClCompile Include="src\core\collections\array.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\queue.c">
+    <ClCompile Include="src\core\collections\queue.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\common.h">
+    <ClInclude Include="src\assignment\algorithms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\io.h">
+    <ClInclude Include="src\assignment\benchmark.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\math.h">
+    <ClInclude Include="src\extra\sandbox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics.h">
+    <ClInclude Include="src\extra\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\debug.h">
+    <ClInclude Include="src\core\common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\benchmark.h">
+    <ClInclude Include="src\core\debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\sandbox.h">
+    <ClInclude Include="src\core\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\array.h">
+    <ClInclude Include="src\core\io\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\algorithms.h">
+    <ClInclude Include="src\core\collections\array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\queue.h">
+    <ClInclude Include="src\core\collections\queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="doc\IndUppg_Algoritmer_vt15.pdf" />
+    <None Include="doc\IndUppg_Algoritmer_vt15.pdf">
+      <Filter>Documentation Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="LICENSE.txt" />
   </ItemGroup>
 </Project>

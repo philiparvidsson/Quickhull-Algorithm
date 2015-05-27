@@ -16,10 +16,9 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "array.h"
 #include "math.h"
 
-#include <math.h>
+#include <stdlib.h>
 
 /*------------------------------------------------
  * FUNCTIONS

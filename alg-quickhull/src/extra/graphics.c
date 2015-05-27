@@ -17,10 +17,12 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "common.h"
-#include "debug.h"
 #include "graphics.h"
-#include "sandbox.h"
+
+#include "core/common.h"
+#include "core/debug.h"
+
+#include "extra/sandbox.h"
 
 #include <tchar.h>
 #include <Windows.h>

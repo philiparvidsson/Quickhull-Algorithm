@@ -20,8 +20,8 @@
  * INCLUDES
  *----------------------------------------------*/
 
-#include "common.h"
-#include "math.h"
+#include "core/common.h"
+#include "core/math.h"
 
 /*------------------------------------------------
  * FUNCTIONS
