@@ -96,16 +96,15 @@ static void PrintStatistics(string s, benchmarkDataT *bmd) {
            "-----------------------------------------------------------------\n"
            "                         Min.          Max.          Avg.\n"
            " Critical Operations     %-10d    %-10d    %-10d\n"
-           " Number of Allocations   %-4d          %-4d          %-4d\n"
-           " Memory Used (bytes)     %-7d       %-7d       %-7d\n"
-           " Execution Time (usecs)  %-7d       %-7d       %-7d\n"
+           " Number of Allocations   %-10d    %-10d    %-10d\n"
+           " Memory Used (bytes)     %-10d    %-10d    %-10d\n"
+           " Execution Time (\xe6s)     %-10d    %-10d    %-10d\n"
            "-----------------------------------------------------------------\n"
            "\n",
-           s,
-           bmd->minOps   , bmd->maxOps   , (int)bmd->avgOps,
-           bmd->minAllocs, bmd->maxAllocs, (int)bmd->avgAllocs,
-           bmd->minBytes , bmd->maxBytes , (int)bmd->avgBytes,
-           bmd->minTime  , bmd->maxTime  , (int)bmd->avgTime);
+           s, bmd->minOps   , bmd->maxOps   , (int)bmd->avgOps   ,
+              bmd->minAllocs, bmd->maxAllocs, (int)bmd->avgAllocs,
+              bmd->minBytes , bmd->maxBytes , (int)bmd->avgBytes ,
+              bmd->minTime  , bmd->maxTime  , (int)bmd->avgTime  );
 }
 
 static void StopwatchStart() {
@@ -179,7 +178,7 @@ void RunBenchmark(int numPoints) {
 
         RandomizePoints(ps);
 
-        //BenchmarkAlgo(ps,&hull,&bmdbf, BruteforceHull );
+        BenchmarkAlgo(ps,&hull,&bmdbf, BruteforceHull );
         BenchmarkAlgo(ps,&hull,&bmdqh, Quickhull      );
 
 

@@ -95,7 +95,7 @@ algorithmDataT BruteforceHull(pointsetT ps, hullT *hull) {
             // den som ett segment i det konvexa höljet.
             if (!outside) {
                 if (hull->numLines >= hull->maxLines)
-                    return algo;
+                    Fail();
 
                 hull->lines[hull->numLines].a = a;
                 hull->lines[hull->numLines].b = b;

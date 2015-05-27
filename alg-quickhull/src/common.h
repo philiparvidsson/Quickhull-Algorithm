@@ -33,7 +33,7 @@
  * Description:
  *   Programmets version.
  *------------------------------------*/
-#define ProgramVersion "0.21"
+#define ProgramVersion "0.22"
 
 /*------------------------------------------------
  * TYPES
