@@ -17,9 +17,6 @@
  *----------------------------------------------*/
 
 #include "array.h"
-#include "benchmark.h"
-#include "common.h"
-#include "debug.h"
 #include "math.h"
 
 #include <math.h>
@@ -101,7 +98,7 @@ void FreeHull(hullT hull) {
 void RandomizePoints(pointsetT ps) {
     for (int i = 0; i < ps.numPoints; i++) {
         ps.points[i].x = (float)rand()/RAND_MAX - 0.5f;
-        ps.points[i].y = (float)rand() / RAND_MAX - 0.5f;
+        ps.points[i].y = (float)rand()/RAND_MAX - 0.5f;
     }
 }
 

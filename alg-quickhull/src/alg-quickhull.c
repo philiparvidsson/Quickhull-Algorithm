@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: alg-quickhull.c
  * Created: May 15, 2015
- * Last changed: May 16, 2015
+ * Last changed: May 26, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *

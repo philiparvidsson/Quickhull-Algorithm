@@ -21,7 +21,7 @@
 #include "debug.h"
 
 #include <stdlib.h>
-#include <string.h> // memcpy()
+#include <string.h> // memcpy(), memmove()
 
 /*------------------------------------------------
  * CONSTANTS
@@ -50,7 +50,7 @@ typedef struct arrayCDT {
  * Description:
  *   Det initiala antalet element som minne ska allokeras för i Array_Init().
  *------------------------------------*/
-#define InitialMaxElems 8 // 8 är nog lagom.
+#define InitialMaxElems 8 // Åtta är nog lagom.
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -150,16 +150,10 @@ void *ArrayInsert(arrayADT a, int index, const void *value) {
     
     char *basePtr  = a->data;
     int   elemSize = a->elemSize;
+    char *dest     = basePtr + index*elemSize;
 
-    for (int i = a->numElems; i > index; i--) {
-        void *src  = basePtr + ((i-1) * elemSize);
-        void *dest = basePtr + ( i    * elemSize);
-
-        memcpy(dest, src, elemSize);
-    }
-
-    void *dest = basePtr + (index*elemSize);
-    memcpy(dest, value, elemSize);
+    memmove(dest+elemSize, dest , (a->numElems - index)*elemSize);
+    memcpy (dest         , value, elemSize);
 
     a->numElems++;
     return dest;

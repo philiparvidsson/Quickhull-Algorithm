@@ -61,7 +61,7 @@ queueADT NewQueue(int size) {
 
     queueADT queue = malloc(sizeof(queueCDT));
 
-    queue->data = malloc(sizeof(void *) * (size));
+    queue->data = malloc(sizeof(void *) * size);
     queue->head = 0;
     queue->tail = 0;
     queue->size = size;

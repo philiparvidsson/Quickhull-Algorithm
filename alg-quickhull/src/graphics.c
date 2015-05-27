@@ -154,10 +154,8 @@ LRESULT CALLBACK WindowProc(_In_ HWND   hwnd,
 }
 
 static void CheckInitGraphics() {
-#ifdef _DEBUG
     if (!initialized)
         Error("InitGraphics() must be called first");
-#endif
 }
 
 static void InitOpenGL() {
@@ -273,10 +271,8 @@ static void InitWindow() {
  *   Initierar grafikbiblioteket.
  *------------------------------------*/
 void InitGraphics() {
-    // TODO: Bör vi anropa Error() om man försöker köra InitGraphics() mer än en
-    //       gång?
     if (initialized)
-        return;
+        Error("Graphics already initialized");
 
     InitWindow     ();
     InitPixelFormat();

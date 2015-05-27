@@ -9,9 +9,7 @@
  *   Makron och funktioner för debugging.
  *
  * Changes:
- *   * Lade till () efter funktionsnamnet som skrivs ut i DEBUG_PRINT.
- *   * Skapade makrot ASSERT med tillhörande funktion.
- *   * Ändrade DEBUG_PRINT()-makrot så att det visar rad i programkoden.
+ *
  *----------------------------------------------------------------------------*/
 
 #ifndef _debug_h_

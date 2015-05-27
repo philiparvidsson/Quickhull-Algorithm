@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: algorithms.c
  * Created: May 21, 2015
- * Last changed: May 21, 2015
+ * Last changed: May 27, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
@@ -18,7 +18,6 @@
 
 #include "algorithms.h"
 #include "array.h"
-#include "benchmark.h"
 #include "common.h"
 #include "debug.h"
 #include "math.h"
@@ -95,7 +94,7 @@ algorithmDataT BruteforceHull(pointsetT ps, hullT *hull) {
             // den som ett segment i det konvexa höljet.
             if (!outside) {
                 if (hull->numLines >= hull->maxLines)
-                    Fail();
+                    Error("Hull is too small");
 
                 hull->lines[hull->numLines].a = a;
                 hull->lines[hull->numLines].b = b;
@@ -175,7 +174,7 @@ static void ReleaseArray(arrayADT a) {
  * Description:
  *   Sätter in punkten p framför q, i a.
  *------------------------------------*/
-static int InsertBefore(arrayADT a, pointT *p, pointT *q) {
+static int InsertBefore(arrayADT a, pointT **p, pointT *q) {
     int n = ArrayLength(a);
     for (int i = 0; i < n; i++) {
         pointT *point = *(pointT **)ArrayGet(a, i);
@@ -437,7 +436,7 @@ algorithmDataT Quickhull(pointsetT ps, hullT *hull) {
     int numHullPoints = ArrayLength(hullPoints);
     for (int i = 0; i < numHullPoints; i++) {
         if (hull->numLines >= hull->maxLines)
-            Fail();
+            Error("Hull is too small");
 
         hull->lines[i].a = *(pointT **)ArrayGet(hullPoints, i);
         hull->lines[i].b = *(pointT **)ArrayGet(hullPoints, (i+1) % numHullPoints);
