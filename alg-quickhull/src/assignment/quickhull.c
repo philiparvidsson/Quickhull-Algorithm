@@ -120,7 +120,7 @@ static int InsertBefore(pointT **p, pointT *q, arrayADT a) {
     }
 
     // Det här får aldrig hända.
-    Fail();
+    Error("This should not happen");
     return -1;
 }
 

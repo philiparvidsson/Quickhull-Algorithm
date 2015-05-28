@@ -31,7 +31,8 @@
                          AssertFail(#expr, __FUNCTION__, __LINE__); \
                      }
 
-#define Fail() ProgramFail(__FUNCTION__, __LINE__)
+#define Error(msg) Crash(msg, __FUNCTION__, __LINE__)
+
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -50,24 +51,15 @@
 void AssertFail(string expr, string funcName, int line);
 
 /*--------------------------------------
- * Function: Error()
+ * Function: Crash()
  * Parameters:
  *   msg  Meddelandet som ska visas.
- *
- * Description:
- *   Kraschar programmet med ett meddelande.
- *------------------------------------*/
-void Error(string msg);
-
-/*--------------------------------------
- * Function: ProgramFail()
- * Parameters:
  *   funcName  Namnet på den funktion som programmet kraschade i.
  *   line      Den rad i koden som programmet kraschade på.
  *
  * Description:
  *   Kraschar programmet med ett meddelande.
  *------------------------------------*/
-void ProgramFail(string funcName, int line);
+void Crash(string msg, string funcName, int line);
 
 #endif // _debug_h_

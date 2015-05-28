@@ -45,34 +45,19 @@ void AssertFail(string expr, string funcName, int line) {
 }
 
 /*--------------------------------------
- * Function: Error()
+ * Function: Crash()
  * Parameters:
  *   msg  Meddelandet som ska visas.
- *
- * Description:
- *   Kraschar programmet med ett meddelande.
- *------------------------------------*/
-void Error(string msg) {
-    printf("\nERROR: %s\n\n"
-           "This program will now crash.\n"
-           "Press ENTER to continue...", msg);
-    getchar();
-    __debugbreak();
-    exit(EXIT_FAILURE);
-}
-
-/*--------------------------------------
- * Function: ProgramFail()
- * Parameters:
  *   funcName  Namnet på den funktion som programmet kraschade i.
  *   line      Den rad i koden som programmet kraschade på.
  *
  * Description:
  *   Kraschar programmet med ett meddelande.
  *------------------------------------*/
-void ProgramFail(string funcName, int line) {
-    printf("\nERROR: Program failed in %s() on line %d and will now crash.\n\n"
-           "Press ENTER to continue...", funcName, line);
+void Crash(string msg, string funcName, int line) {
+    printf("\nERROR: %s in %s() on line %d.\n\n"
+           "This program will now crash.\n"
+           "Press ENTER to continue...", msg, funcName, line);
     getchar();
     __debugbreak();
     exit(EXIT_FAILURE);

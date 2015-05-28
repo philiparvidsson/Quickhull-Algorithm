@@ -75,7 +75,7 @@ int StopwatchElapsed(int id) {
  *   Konverterar från sekunder till mikrosekunder.
  *------------------------------------*/
 int SecsToMicrosecs(float secs) {
-    return secs * MicrosecsPerSec;
+    return (int)(secs * MicrosecsPerSec);
 }
 
 /*--------------------------------------
