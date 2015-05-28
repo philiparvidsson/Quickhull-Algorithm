@@ -19,6 +19,7 @@
 #include "core/common.h"
 #include "core/math.h"
 
+#include "assignment/akl-toussaint.h"
 #include "assignment/bruteforce.h"
 #include "assignment/quickhull.h"
 
@@ -273,13 +274,13 @@ static void PrintInstructions() {
            "Key    Effect\n\n"
            "  b    Toggles black hole (gravity towards center).\n"
            "  d    Toggles damping.\n"
+           "  f    Toggles sloped floor.\n"
            "  g    Toggles gravity.\n"
            "  h    Toggles hull rendering.\n"
            "  l    Toggles hull lock (locks hull to its current point set).\n"
            "  p    Toggles point rendering.\n"
            "  q    Toggles between bruteforce and quickhull.\n"
            "  r    Toggles rubber band mode (hull becomes a rubber band).\n"
-           "  s    Toggles sloped floor.\n"
            "  w    Toggles wind.\n"
            "  x    Randomizes point velocities.\n"
            "  z    Randomizes point positions.\n"
@@ -488,18 +489,18 @@ void RunSandbox(int numPoints) {
 
     // Här ställer vi in lite roliga knappar så att sandbox blir lite mer
     // interaktiv och rolig.
-    OnKeyPress('b', ToggleBlackHole  , NULL    );
-    OnKeyPress('d', ToggleDamping    , NULL    );
-    OnKeyPress('f', ToggleSlopedFloor, &corners);
-    OnKeyPress('g', ToggleGravity    , NULL    );
-    OnKeyPress('h', ToggleHull       , NULL    );
-    OnKeyPress('l', ToggleHullLock   , &hull   );
-    OnKeyPress('p', TogglePoints     , NULL    );
-    OnKeyPress('q', ToggleQuickhull  , NULL    );
-    OnKeyPress('r', ToggleRubberBand , NULL    );
-    OnKeyPress('w', ToggleWind       , NULL    );
-    OnKeyPress('x', RandomizePS      , &vps    );
-    OnKeyPress('z', RandomizePS      , &ps     );
+    OnKeyPress('b', ToggleBlackHole   , NULL    );
+    OnKeyPress('d', ToggleDamping     , NULL    );
+    OnKeyPress('f', ToggleSlopedFloor , &corners);
+    OnKeyPress('g', ToggleGravity     , NULL    );
+    OnKeyPress('h', ToggleHull        , NULL    );
+    OnKeyPress('l', ToggleHullLock    , &hull   );
+    OnKeyPress('p', TogglePoints      , NULL    );
+    OnKeyPress('q', ToggleQuickhull   , NULL    );
+    OnKeyPress('r', ToggleRubberBand  , NULL    );
+    OnKeyPress('w', ToggleWind        , NULL    );
+    OnKeyPress('x', RandomizePS       , &vps    );
+    OnKeyPress('z', RandomizePS       , &ps     );
 
     printf(" done.\n");
     printf("Enjoy! :-)\n\n");
@@ -515,9 +516,11 @@ void RunSandbox(int numPoints) {
             UpdatePoints(aps, ps, vps, hull, StepSize);
             dt -= StepSize;
 
+            pointsetT ps2 = ps;
+
             if (!lockHull) {
-                if (useQuickhull) Quickhull     (ps, &hull);
-                else              BruteforceHull(ps, &hull);
+                if (useQuickhull) Quickhull     (ps2, &hull);
+                else              BruteforceHull(ps2, &hull);
             }
         }
 

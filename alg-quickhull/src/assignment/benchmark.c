@@ -22,6 +22,7 @@
 #include "core/math.h"
 #include "core/stopwatch.h"
 
+#include "assignment/akl-toussaint.h"
 #include "assignment/bruteforce.h"
 #include "assignment/quickhull.h"
 
@@ -95,7 +96,7 @@ typedef struct {
  * Description:
  *   Antal sekunder som ska benchmark ska köras.
  *------------------------------------*/
-#define NumSeconds 10
+#define NumSeconds 30
 
 /*------------------------------------------------
  * FUNCTIONS
@@ -156,6 +157,13 @@ static void BenchmarkAlgo(pointsetT ps, hullT *hull, benchmarkDataT *bmd,
     bmd->avgTime   += microSecs     ;
 }
 
+algorithmDataT BruteforceAklToussaint(pointsetT ps, hullT *hull) {
+    ps = AklToussaintHeuristic(ps);
+    algorithmDataT algo = BruteforceHull(ps, hull);
+    FreePoints(ps);
+    return algo;
+}
+
 /*--------------------------------------
  * Function: RunBenchmark()
  * Parameters:
@@ -177,8 +185,9 @@ void RunBenchmark(int numPoints) {
     printf("Benchmark will now run.\n");
     printf("Benchmarking...\n");
 
-    benchmarkDataT bmdbf = InitBenchmarkData(),
-                   bmdqh = InitBenchmarkData();
+    benchmarkDataT bf   = InitBenchmarkData(),
+                   qh   = InitBenchmarkData(),
+                   bfat = InitBenchmarkData();
 
     int numSecs       = 0;
     int numIterations = 0;
@@ -188,8 +197,9 @@ void RunBenchmark(int numPoints) {
     while (StopwatchElapsed(BenchmarkStopwatchID) < SecsToMicrosecs(NumSeconds)) {
         RandomizePoints(ps);
 
-        BenchmarkAlgo(ps,&hull,&bmdbf, BruteforceHull );
-        BenchmarkAlgo(ps,&hull,&bmdqh, Quickhull      );
+        BenchmarkAlgo(ps,&hull,&bf  , BruteforceHull         );
+        BenchmarkAlgo(ps,&hull,&bfat, BruteforceAklToussaint );
+        BenchmarkAlgo(ps,&hull,&qh  , Quickhull              );
 
         numIterations++;
 
@@ -210,20 +220,26 @@ void RunBenchmark(int numPoints) {
     FreeHull  (hull);
     FreePoints(ps);
 
-    bmdbf.avgOps    /= numIterations;
-    bmdbf.avgAllocs /= numIterations;
-    bmdbf.avgBytes  /= numIterations;
-    bmdbf.avgTime   /= numIterations;
+    bf.avgOps    /= numIterations;
+    bf.avgAllocs /= numIterations;
+    bf.avgBytes  /= numIterations;
+    bf.avgTime   /= numIterations;
 
-    bmdqh.avgOps    /= numIterations;
-    bmdqh.avgAllocs /= numIterations;
-    bmdqh.avgBytes  /= numIterations;
-    bmdqh.avgTime   /= numIterations;
+    qh.avgOps    /= numIterations;
+    qh.avgAllocs /= numIterations;
+    qh.avgBytes  /= numIterations;
+    qh.avgTime   /= numIterations;
+
+    bfat.avgOps    /= numIterations;
+    bfat.avgAllocs /= numIterations;
+    bfat.avgBytes  /= numIterations;
+    bfat.avgTime   /= numIterations;
 
     printf("100.0%%. Done!\n\n");
 
-    PrintStatistics("Bruteforce", &bmdbf);
-    PrintStatistics("Quickhull" , &bmdqh);
+    PrintStatistics("Bruteforce"                , &bf);
+    PrintStatistics("Bruteforce + Akl-Toussaint", &bfat);
+    PrintStatistics("Quickhull"                 , &qh);
 
     printf("\nPress ENTER to exit...");
     getchar();

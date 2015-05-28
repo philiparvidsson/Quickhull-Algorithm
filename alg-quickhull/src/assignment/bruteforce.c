@@ -24,6 +24,7 @@
 #include "core/collections/array.h"
 #include "core/collections/queue.h"
 
+#include "assignment/akl-toussaint.h"
 #include "assignment/algorithmdata.h"
 
 /*------------------------------------------------

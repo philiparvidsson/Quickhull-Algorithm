@@ -56,6 +56,9 @@
     <ClCompile Include="src\arch\win32\graphics_win32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\assignment\akl-toussaint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assignment\algorithmdata.h">
@@ -95,6 +98,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\assignment\akl-toussaint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
