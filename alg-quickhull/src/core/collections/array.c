@@ -196,15 +196,15 @@ void FreeArray(arrayADT a) {
  *   Initierar och allokerar en array.
  *------------------------------------*/
 arrayADT NewArray(size_t elemSize) {
-    arrayADT array = malloc(sizeof(arrayCDT));
+    arrayADT a = malloc(sizeof(arrayCDT));
 
-    array->numElems = 0;
-    array->maxElems = InitialMaxElems;
-    array->elemSize = elemSize;
+    a->numElems = 0;
+    a->maxElems = InitialMaxElems;
+    a->elemSize = elemSize;
 
-    array->data = malloc(array->maxElems * array->elemSize);
+    a->data = malloc(a->maxElems * a->elemSize);
 
-    return array;
+    return a;
 }
 
 /*--------------------------------------
@@ -215,6 +215,6 @@ arrayADT NewArray(size_t elemSize) {
  * Description:
  *   Nollställer arrayens elementantal till noll. OBS: Nollar inte minnet.
  *------------------------------------*/
-void ResetArray(arrayADT array) {
-    array->numElems = 0;
+void ResetArray(arrayADT a) {
+    a->numElems = 0;
 }

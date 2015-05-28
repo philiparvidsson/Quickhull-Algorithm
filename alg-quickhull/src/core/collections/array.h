@@ -126,6 +126,6 @@ arrayADT NewArray(size_t elementSize);
  * Description:
  *   Nollställer arrayens elementantal till noll. OBS: Nollar inte minnet.
  *------------------------------------*/
-void ResetArray(arrayADT array);
+void ResetArray(arrayADT a);
 
 #endif // _array_h_
