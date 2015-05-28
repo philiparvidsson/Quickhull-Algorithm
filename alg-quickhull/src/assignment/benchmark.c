@@ -32,8 +32,30 @@
  * CONSTANTS
  *----------------------------------------------*/
 
-#define AlgorithmStopwatchID 1
-#define BenchmarkStopwatchID 2
+/*--------------------------------------
+ * Constant: AlgorithmStopwatchID
+ *
+ * Description:
+ *   Tidtagaruret som används för att mäta hur snabbt algoritmer exekveras.
+ *------------------------------------*/
+#define AlgorithmStopwatchID 61
+
+/*--------------------------------------
+ * Constant: BenchmarkStopwatchID
+ *
+ * Description:
+ *   Tidtagaruret som används för att mäta hur lång tid benchmark-läget körts.
+ *------------------------------------*/
+#define BenchmarkStopwatchID 14
+
+/*--------------------------------------
+ * Constant: ProgressStopwatchID
+ *
+ * Description:
+ *   Tidtagaruret som används för att skriva ut hur procent för benchmark-läget
+ *   med jämna mellanrum.
+ *------------------------------------*/
+#define ProgressStopwatchID 79
 
 /*------------------------------------------------
  * TYPES
@@ -112,7 +134,9 @@ static void PrintStatistics(string s, benchmarkDataT *bmd) {
 
 
 
-static void BenchmarkAlgo(pointsetT ps, hullT *hull, benchmarkDataT *bmd, algorithmDataT (*fn)(pointsetT ps, hullT *hull)) {
+static void BenchmarkAlgo(pointsetT ps, hullT *hull, benchmarkDataT *bmd,
+                          algorithmDataT (*fn)(pointsetT ps, hullT *hull))
+{
     ResetStopwatch(AlgorithmStopwatchID);
     algorithmDataT algo = fn(ps, hull);
     int microSecs = StopwatchElapsed(AlgorithmStopwatchID);
@@ -160,6 +184,7 @@ void RunBenchmark(int numPoints) {
     int numIterations = 0;
 
     ResetStopwatch(BenchmarkStopwatchID);
+    ResetStopwatch(ProgressStopwatchID);
     while (StopwatchElapsed(BenchmarkStopwatchID) < 1000000*NumSeconds) {
         RandomizePoints(ps);
 
@@ -171,15 +196,14 @@ void RunBenchmark(int numPoints) {
         // Här ser vi till att skriva ut hur långt i benchmarket vi kommit,
         // procentuellt sett, en gång varje sekund. Så att användaren inte tror
         // att programmet hängt sig.
-        /*int benchmarkTime = 1000 * (clock() - lastUpdate) / CLOCKS_PER_SEC;
-        if (benchmarkTime >= 1000) {
-            printf("%2.1f%%...\n", 100.0f * (float)(clock()-start) / (NumSeconds*CLOCKS_PER_SEC));
-            lastUpdate = clock();
+        if (StopwatchElapsed(ProgressStopwatchID) >= 1000000) {
+            float p = (float)StopwatchElapsed(BenchmarkStopwatchID) / (NumSeconds*1000000);
+            printf("%2.1f%%...\n", 100.0f*p);
+            ResetStopwatch(ProgressStopwatchID);
         }
-        */
     }
 
-    FreeHull(hull);
+    FreeHull  (hull);
     FreePoints(ps);
 
     bmdbf.avgOps    /= numIterations;
