@@ -118,7 +118,7 @@
     <None Include="doc\IndUppg_Algoritmer_vt15.pdf" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="asd.txt" />
+    <Text Include="license.txt" />
     <Text Include="readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
