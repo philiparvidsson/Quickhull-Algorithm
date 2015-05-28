@@ -108,6 +108,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="LICENSE.txt" />
+    <Text Include="asd.txt" />
+    <Text Include="readme.txt" />
   </ItemGroup>
 </Project>
