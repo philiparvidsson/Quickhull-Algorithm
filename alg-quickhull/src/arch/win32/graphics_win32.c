@@ -19,6 +19,7 @@
  *----------------------------------------------*/
 
 #include "core/common.h"
+#include "core/debug.h"
 
 #include <limits.h>
 
