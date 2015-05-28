@@ -49,7 +49,7 @@ typedef struct arrayCDT {
  * Constant: InitialMaxElems
  *
  * Description:
- *   Det initiala antalet element som minne ska allokeras för i Array_Init().
+ *   Det initiala antalet element som minne ska allokeras för i NewArray().
  *------------------------------------*/
 #define InitialMaxElems 8 // Åtta är nog lagom.
 
