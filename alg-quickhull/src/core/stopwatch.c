@@ -29,6 +29,12 @@ extern int  StopwatchElapsedImpl(int id);
  * CONSTANTS
  *----------------------------------------------*/
 
+/*--------------------------------------
+ * Constant: MicrosecsPerSec
+ *
+ * Description:
+ *   Antal mikrosekunder per sekund.
+ *------------------------------------*/
 #define MicrosecsPerSec 1000000
 
 /*------------------------------------------------
