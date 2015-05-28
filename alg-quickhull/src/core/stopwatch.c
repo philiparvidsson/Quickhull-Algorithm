@@ -6,7 +6,7 @@
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
  * Description:
- *   Win32-implementation av tidtagarur.
+ *   Erbjuder funktioner för tidsmätning.
  *
  * Changes:
  *
