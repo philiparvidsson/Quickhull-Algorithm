@@ -26,8 +26,15 @@
  *   Innehåller data om en algoritms arbete.
  */
 typedef struct {
+    // Antal "kritska operationer" som algoritmen utfört. Detta är menat för att
+    // förstå en algoritms komplexitet, inte för att jämföra två olika
+    // algoritmer.
     int numOps;
+
+    // Antalet minnesallokeringar som algoritmen gjort.
     int numAllocs;
+
+    // Den totala mängd minne som algoritmen använt, i bytes.
     int numBytes;
 } algorithmDataT;
 

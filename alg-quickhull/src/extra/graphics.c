@@ -21,63 +21,42 @@
 
 #include "core/common.h"
 #include "core/debug.h"
+#include "core/stopwatch.h"
 
 #include "extra/sandbox.h"
 
-#include <tchar.h>
-#include <Windows.h>
-
-#include <gl/GL.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
 
 #pragma comment(lib, "opengl32.lib")
+
+/*------------------------------------------------
+ * EXTERNALS
+ *----------------------------------------------*/
+
+extern void  InitGraphicsImpl();
+extern void    OnKeyPressImpl(char c, actionT cb, void *arg);
+extern void UpdateDisplayImpl();
+extern bool  WindowIsOpenImpl();
 
 /*------------------------------------------------
  * CONSTANTS
  *----------------------------------------------*/
 
 /*--------------------------------------
- * Constant: ClassName
+ * Constant: FrameRateStopwatchID
  *
  * Description:
- *   Namnet på klassen som används för att skapa grafikfönstret.
+ *   ID för tidtagaruret som används för att synkronisera antalet bildrutor som
+ *   visas varje sekund.
  *------------------------------------*/
-#define ClassName _T("alg-quickhull")
-
-/*--------------------------------------
- * Constant: WindowTitle
- *
- * Description:
- *   Grafikfönstrets titel.
- *------------------------------------*/
-#define WindowTitle _T("Quickhull Sandbox")
+#define FrameRateStopwatchID 93
 
 /*------------------------------------------------
  * GLOBALS
  *----------------------------------------------*/
-
-/*--------------------------------------
- * Variable: frameInterval
- *
- * Description:
- *   Används för att lagra intervallet i vilket bildrutor ska visas.
- *------------------------------------*/
-static int frameInterval;
-
-/*--------------------------------------
- * Variable: hdc
- *
- * Description:
- *   Grafikfönstrets DC (device context).
- *------------------------------------*/
-static HDC hdc;
-
-/*--------------------------------------
- * Variable: hwnd
- *
- * Description:
- *   Grafikfönstrets fönster-handtag (kommentarer på svenska äger).
- *------------------------------------*/
-static HWND hwnd;
 
 /*--------------------------------------
  * Variable: initialized
@@ -88,87 +67,37 @@ static HWND hwnd;
 static bool initialized;
 
 /*--------------------------------------
- * Variable: keyPressCB
+ * Variable: microSecsPerFrame
  *
  * Description:
- *   Callback-funktioner för olika knapptryck.
+ *   Antal mikrosekunder som varje bildruta ska visas.
  *------------------------------------*/
-static actionT keyPressCB[UCHAR_MAX];
-
-/*--------------------------------------
- * Variable: keyPressArg
- *
- * Description:
- *   Argumentet till de olika callback-funktionerna.
- *------------------------------------*/
-static void *keyPressArg[UCHAR_MAX];
-
-/*--------------------------------------
- * Variable: lastUpdate
- *
- * Description:
- *   Tidsstämpel då senaste uppdateringen av ritytan gjordes.
- *------------------------------------*/
-static LARGE_INTEGER lastUpdate;
-
-/*--------------------------------------
- * Variable: windowOpen
- *
- * Description:
- *   Indikerar om grafikfönstret är öppet.
- *------------------------------------*/
-static bool windowOpen;
+static int microSecsPerFrame;
 
 /*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
 
-/*----------------------------------------------------------------------------*/
-/* Privata funktioner som bara används internet av philgraph-biblioteket.     */
-/*----------------------------------------------------------------------------*/
-
 /*--------------------------------------
- * Function: WindowProc()
+ * Function: CheckInitGraphics()
  * Parameters:
  *
  * Description:
- *   http://en.wikipedia.org/wiki/WindowProc
+ *   Anropar Error()-funktionen om grafibiblioteket inte är initierat.
  *------------------------------------*/
-LRESULT CALLBACK WindowProc(_In_ HWND   hwnd,
-                            _In_ UINT   uMsg,
-                            _In_ WPARAM wParam,
-                            _In_ LPARAM lParam)
-{
-    if (uMsg == WM_CLOSE)
-        windowOpen = FALSE;
-
-    if (uMsg == WM_CHAR) {
-        bool repeated = lParam & 0x40000000;
-        if (!repeated) {
-            char    c  = tolower(wParam);
-            actionT cb = keyPressCB[c];
-            if (cb)
-                cb(keyPressArg[c]);
-        }
-    }
-
-    return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}
-
 static void CheckInitGraphics() {
     if (!initialized)
         Error("InitGraphics() must be called first");
 }
 
+/*--------------------------------------
+ * Function: InitOpenGL()
+ * Parameters:
+ *
+ * Description:
+ *   Initierar OpenGL.
+ *------------------------------------*/
 static void InitOpenGL() {
-    HGLRC hglrc = wglCreateContext(hdc);
-
-    if (!hglrc)
-        Error("wglCreateContext() failed");
-
-    if (!wglMakeCurrent(hdc, hglrc))
-        Error("wglMakeCurrent() failed");
-
     // Utan GL_BLEND fungerar inte kantutjämningen för linjer.
     glEnable   (GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -183,82 +112,6 @@ static void InitOpenGL() {
     glHint     (GL_LINE_SMOOTH_HINT, GL_NICEST);
     glLineWidth(2.0f);
 }
-
-static void InitPixelFormat() {
-    PIXELFORMATDESCRIPTOR pfd;
-
-    pfd.nSize      = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion   = 1;
-    pfd.dwFlags    = PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL;
-    pfd.iPixelType = PFD_TYPE_RGBA;
-    pfd.cColorBits = 24;
-    pfd.cAlphaBits = 8;
-    pfd.cDepthBits = 32;
-    pfd.iLayerType = PFD_MAIN_PLANE;
-
-    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
-    if (pixelFormat == 0)
-        Error("ChoosePixelFormat() failed");
-
-    if (!SetPixelFormat(hdc, pixelFormat, &pfd))
-        Error("SetPixelFormat() failed");
-}
-
-static void InitWindow() {
-    WNDCLASSEX wcx;
-
-    wcx.cbSize        = sizeof(WNDCLASSEX);
-    wcx.style         = CS_HREDRAW | CS_VREDRAW;
-    wcx.lpfnWndProc   = WindowProc;
-    wcx.cbClsExtra    = 0;
-    wcx.cbWndExtra    = 0;
-    wcx.hInstance     = GetModuleHandle(NULL);
-    wcx.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
-    wcx.hCursor       = LoadCursor(NULL, IDC_ARROW);
-    wcx.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
-    wcx.lpszMenuName  = NULL;
-    wcx.lpszClassName = ClassName;
-    wcx.hIconSm       = NULL;
-
-
-    if (!RegisterClassEx(&wcx))
-        Error("RegisterClassEx() failed");
-
-
-    DWORD dwStyle = WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX;
-
-    RECT rect = { 0, 0, 600, 600 };
-
-    if (!AdjustWindowRectEx(&rect, dwStyle, FALSE, WS_EX_LEFT))
-        Error("AdjustWindowRectEx() failed");
-
-    hwnd = CreateWindowEx(WS_EX_LEFT,
-                          ClassName,
-                          WindowTitle,
-                          dwStyle,
-                          CW_USEDEFAULT,
-                          CW_USEDEFAULT,
-                          rect.right - rect.left,
-                          rect.bottom - rect.top,
-                          HWND_DESKTOP,
-                          NULL,
-                          wcx.hInstance,
-                          NULL);
-
-    if (!hwnd)
-        Error("CreateWindowEx() failed");
-
-    ShowWindow(hwnd, SW_SHOW);
-    SetFocus  (hwnd);
-
-    hdc = GetDC(hwnd);
-}
-
-/*----------------------------------------------------------------------------*/
-/* Här nedanför är publika funktioner som grafikbiblioteket exporterar till   */
-/* andra program som vill använda det. Allt ovan är privata funktioner som    */
-/* bara används internt av biblioteket.                                       */
-/*----------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------*/
 /* Grundläggande funktioner för att initiera grafikfönstret, ställa in        */
@@ -276,12 +129,10 @@ void InitGraphics() {
     if (initialized)
         Error("Graphics already initialized");
 
-    InitWindow     ();
-    InitPixelFormat();
-    InitOpenGL     ();
+    InitGraphicsImpl();
+    InitOpenGL();
 
     initialized = TRUE;
-    windowOpen  = TRUE;
 
     SetFrameRate(30);
 }
@@ -297,10 +148,8 @@ void InitGraphics() {
 void SetFrameRate(int fps) {
     CheckInitGraphics();
 
-    LARGE_INTEGER freq;
-    QueryPerformanceFrequency(&freq);
-
-    frameInterval = (int)(freq.QuadPart / fps);
+    microSecsPerFrame = 1000000 / fps;
+    ResetStopwatch(FrameRateStopwatchID);
 }
 
 /*--------------------------------------
@@ -347,7 +196,7 @@ void SetLineWidth(float width) {
 bool WindowIsOpen() {
     CheckInitGraphics();
 
-    return windowOpen;
+    return WindowIsOpenImpl();
 }
 
 /*----------------------------------------------------------------------------*/
@@ -380,6 +229,8 @@ void ClearCanvas(float red, float green, float blue) {
  *   Ritar upp ett hölje.
  *------------------------------------*/
 void DrawHull(hullT hull) {
+    CheckInitGraphics();
+
     for (int i = 0; i < hull.numLines; i++)
         DrawLine(hull.lines[i]);
 }
@@ -393,7 +244,9 @@ void DrawHull(hullT hull) {
  *   Ritar upp en linje.
  *------------------------------------*/
 void DrawLine(lineT line) {
-    glBegin   (GL_LINES);
+    CheckInitGraphics();
+
+    glBegin(GL_LINES);
     glVertex2f(line.a->x, line.a->y);
     glVertex2f(line.b->x, line.b->y);
     glEnd     ();
@@ -408,6 +261,8 @@ void DrawLine(lineT line) {
  *   Ritar en punkt på ritytan.
  *------------------------------------*/
 void DrawPoint(pointT p) {
+    CheckInitGraphics();
+
     glBegin   (GL_POINTS);
     glVertex2f(p.x, p.y);
     glEnd     ();
@@ -422,6 +277,8 @@ void DrawPoint(pointT p) {
  *   Ritar en uppsättning punkter.
  *------------------------------------*/
 void DrawPoints(pointsetT ps) {
+    CheckInitGraphics();
+
     for (int i = 0; i < ps.numPoints; i++) {
         pointT *p = &ps.points[i];
 
@@ -441,24 +298,15 @@ void DrawPoints(pointsetT ps) {
 void UpdateDisplay() {
     CheckInitGraphics();
 
-    SwapBuffers(hdc);
+    UpdateDisplayImpl();
 
-    while (TRUE) {
-        MSG msg;
-        while (PeekMessage(&msg, hwnd, 0, 0, PM_REMOVE)) {
-            TranslateMessage(&msg);
-            DispatchMessage (&msg);
-        }
-
-        LARGE_INTEGER pc;
-        QueryPerformanceCounter(&pc);
-        pc.QuadPart -= lastUpdate.QuadPart;
-
-        if (pc.QuadPart > frameInterval)
-            break;
+    // Här pausar vi tillräckligt länge för att synkronisera hastigheten som
+    // bildrutorna visas i.
+    while (StopwatchElapsed(FrameRateStopwatchID) < microSecsPerFrame) {
+        // Wiiie, här snurrar det på rejält!
     }
 
-    QueryPerformanceCounter(&lastUpdate);
+    ResetStopwatch(FrameRateStopwatchID);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -479,6 +327,5 @@ void UpdateDisplay() {
 void OnKeyPress(char c, actionT cb, void *arg) {
     CheckInitGraphics();
 
-    keyPressCB [c] = cb;
-    keyPressArg[c] = arg;
+    OnKeyPressImpl(c, cb, arg);
 }

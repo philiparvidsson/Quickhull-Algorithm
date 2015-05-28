@@ -41,14 +41,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(SolutionDir)\build\</IntDir>
+    <OutDir>$(SolutionDir)\bin\win32\</OutDir>
+    <IntDir>$(SolutionDir)\build\win32\</IntDir>
     <IncludePath>$(SolutionDir)\src\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)\bin\</OutDir>
-    <IntDir>$(SolutionDir)\build\</IntDir>
+    <OutDir>$(SolutionDir)\bin\win32\</OutDir>
+    <IntDir>$(SolutionDir)\build\win32\</IntDir>
     <IncludePath>$(SolutionDir)\src\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -91,10 +91,13 @@
     <ClCompile Include="src\assignment\benchmark.c" />
     <ClCompile Include="src\core\debug.c" />
     <ClCompile Include="src\core\collections\queue.c" />
+    <ClCompile Include="src\core\stopwatch.c" />
     <ClCompile Include="src\extra\sandbox.c" />
     <ClCompile Include="src\extra\graphics.c" />
     <ClCompile Include="src\core\io\input.c" />
     <ClCompile Include="src\core\math.c" />
+    <ClCompile Include="src\arch\win32\stopwatch_win32.c" />
+    <ClCompile Include="src\arch\win32\graphics_win32.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assignment\algorithmdata.h" />
@@ -105,6 +108,7 @@
     <ClInclude Include="src\core\common.h" />
     <ClInclude Include="src\core\debug.h" />
     <ClInclude Include="src\core\collections\queue.h" />
+    <ClInclude Include="src\core\stopwatch.h" />
     <ClInclude Include="src\extra\sandbox.h" />
     <ClInclude Include="src\extra\graphics.h" />
     <ClInclude Include="src\core\io\input.h" />

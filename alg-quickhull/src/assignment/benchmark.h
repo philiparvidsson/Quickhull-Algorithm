@@ -6,7 +6,7 @@
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
  * Description:
- *   Benchmark-funktioner för quickhull.
+ *   Benchmark-funktioner för algoritmerna.
  *
  * Changes:
  *

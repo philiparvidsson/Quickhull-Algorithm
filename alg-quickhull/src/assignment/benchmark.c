@@ -1,12 +1,12 @@
 /*------------------------------------------------------------------------------
  * File: benchmark.c
  * Created: May 16, 2015
- * Last changed: May 21, 2015
+ * Last changed: May 28, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
  * Description:
- *   Benchmark-funktioner för quickhull.
+ *   Benchmark-funktioner för algoritmerna.
  *
  * Changes:
  *
@@ -20,14 +20,20 @@
 
 #include "core/common.h"
 #include "core/math.h"
+#include "core/stopwatch.h"
 
 #include "assignment/bruteforce.h"
 #include "assignment/quickhull.h"
 
 #include <stdio.h>
-#include <time.h>
+#include <stdlib.h>
 
-#include <Windows.h>
+/*------------------------------------------------
+ * CONSTANTS
+ *----------------------------------------------*/
+
+#define AlgorithmStopwatchID 1
+#define BenchmarkStopwatchID 2
 
 /*------------------------------------------------
  * TYPES
@@ -70,12 +76,6 @@ typedef struct {
 #define NumSeconds 10
 
 /*------------------------------------------------
- * GLOBALS
- *----------------------------------------------*/
-
-static LARGE_INTEGER stopwatch;
-
-/*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
 
@@ -110,28 +110,12 @@ static void PrintStatistics(string s, benchmarkDataT *bmd) {
               bmd->minTime  , bmd->maxTime  , (int)bmd->avgTime  );
 }
 
-static void StopwatchStart() {
-    QueryPerformanceCounter(&stopwatch);
-}
 
-static int StopwatchStop() {
-    LARGE_INTEGER freq;
-    QueryPerformanceFrequency(&freq);
-
-    LARGE_INTEGER pc;
-    QueryPerformanceCounter(&pc);
-
-    pc.QuadPart -= stopwatch.QuadPart;
-    pc.QuadPart *= 1000000;
-    pc.QuadPart /= freq.QuadPart;
-
-    return (int)pc.QuadPart;
-}
 
 static void BenchmarkAlgo(pointsetT ps, hullT *hull, benchmarkDataT *bmd, algorithmDataT (*fn)(pointsetT ps, hullT *hull)) {
-    StopwatchStart();
+    ResetStopwatch(AlgorithmStopwatchID);
     algorithmDataT algo = fn(ps, hull);
-    int microSecs = StopwatchStop();
+    int microSecs = StopwatchElapsed(AlgorithmStopwatchID);
 
     if (algo.numOps    < bmd->minOps   ) bmd->minOps    = algo.numOps   ;
     if (algo.numOps    > bmd->maxOps   ) bmd->maxOps    = algo.numOps   ;
@@ -175,24 +159,24 @@ void RunBenchmark(int numPoints) {
     int numSecs       = 0;
     int numIterations = 0;
 
-    clock_t start = clock(), lastUpdate = start;
-    while ((clock() - start) < NumSeconds * CLOCKS_PER_SEC) {
-        numIterations++;
-
+    ResetStopwatch(BenchmarkStopwatchID);
+    while (StopwatchElapsed(BenchmarkStopwatchID) < 1000000*NumSeconds) {
         RandomizePoints(ps);
 
         BenchmarkAlgo(ps,&hull,&bmdbf, BruteforceHull );
         BenchmarkAlgo(ps,&hull,&bmdqh, Quickhull      );
 
+        numIterations++;
 
         // Här ser vi till att skriva ut hur långt i benchmarket vi kommit,
         // procentuellt sett, en gång varje sekund. Så att användaren inte tror
         // att programmet hängt sig.
-        int benchmarkTime = 1000 * (clock() - lastUpdate) / CLOCKS_PER_SEC;
+        /*int benchmarkTime = 1000 * (clock() - lastUpdate) / CLOCKS_PER_SEC;
         if (benchmarkTime >= 1000) {
             printf("%2.1f%%...\n", 100.0f * (float)(clock()-start) / (NumSeconds*CLOCKS_PER_SEC));
             lastUpdate = clock();
         }
+        */
     }
 
     FreeHull(hull);

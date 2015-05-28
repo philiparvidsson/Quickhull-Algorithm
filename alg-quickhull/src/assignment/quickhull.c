@@ -13,6 +13,18 @@
  *----------------------------------------------------------------------------*/
 
 /*------------------------------------------------
+ * DEFINES
+ *----------------------------------------------*/
+
+/*--------------------------------------
+ * Define: ArrayPooling
+ *
+ * Description:
+ *   Kommentera ut raden nedan för att inte använda array-poolen.
+ *------------------------------------*/
+#define ArrayPooling
+
+/*------------------------------------------------
  * INCLUDES
  *----------------------------------------------*/
 
@@ -50,13 +62,17 @@ static queueADT arrayPool;
  *   ny array, eller så återanvänder den en array från poolen.
  *------------------------------------*/
 static arrayADT GetPointArray() {
-    if (!arrayPool)
-        arrayPool = NewQueue(32);
+#   ifdef ArrayPooling
+        if (!arrayPool)
+            arrayPool = NewQueue(32);
 
-    if (QueueIsEmpty(arrayPool))
+        if (QueueIsEmpty(arrayPool))
+            return NewArray(sizeof(pointT *));
+
+        return Dequeue(arrayPool);
+#   else
         return NewArray(sizeof(pointT *));
-
-    return Dequeue(arrayPool);
+#   endif
 }
 
 /*--------------------------------------
@@ -68,27 +84,31 @@ static arrayADT GetPointArray() {
  *   Släpper tillbaka en array till poolen.
  *------------------------------------*/
 static void ReleaseArray(arrayADT a) {
-    if (QueueIsFull(arrayPool)) {
-        FreeArray(a);
-        printf("Warning: Array pool is not big enough.\n");
-        return;
-    }
+#   ifdef ArrayPooling
+        if (QueueIsFull(arrayPool)) {
+            FreeArray(a);
+            printf("Warning: Array pool is not big enough.\n");
+            return;
+        }
 
-    ResetArray(a);
-    Enqueue(arrayPool, a);
+        ResetArray(a);
+        Enqueue(arrayPool, a);
+   #else
+        FreeArray(a);
+#   endif
 }
 
 /*--------------------------------------
  * Function: InsertBefore()
  * Parameters:
- *   a  Array med höljets punkter.
  *   p  Den punkt som ska sättas in i a framför q.
  *   q  Den punkt i a som p ska sättas in framför.
+ *   a  Array med höljets punkter.
  *
  * Description:
  *   Sätter in punkten p framför q, i a.
  *------------------------------------*/
-static int InsertBefore(arrayADT a, pointT **p, pointT *q) {
+static int InsertBefore(pointT **p, pointT *q, arrayADT a) {
     int n = ArrayLength(a);
     for (int i = 0; i < n; i++) {
         pointT *point = *(pointT **)ArrayGet(a, i);
@@ -140,7 +160,7 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
      *------------------------------------------------------------------------*/
 
     if (numPoints == 1) {
-        algo.numOps = InsertBefore(hull, ArrayGet(subset, 0), b);
+        algo.numOps = InsertBefore( ArrayGet(subset, 0), b, hull);
         return algo;
     }
 
@@ -178,7 +198,7 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
     // bort från linjen a---b.
     pointT *farPoint = *(pointT **)ArrayGet(subset, index);
 
-    algo.numOps += InsertBefore(hull, &farPoint, b);
+    algo.numOps += InsertBefore(&farPoint, b, hull);
 
     /*--------------------------------------------------------------------------
      * 2. ANDRA PUNKTER
@@ -353,7 +373,8 @@ algorithmDataT Quickhull(pointsetT ps, hullT *hull) {
             Error("Hull is too small");
 
         hull->lines[i].a = *(pointT **)ArrayGet(hullPoints, i);
-        hull->lines[i].b = *(pointT **)ArrayGet(hullPoints, (i+1) % numHullPoints);
+        hull->lines[i].b = *(pointT **)ArrayGet(hullPoints,
+                                                (i+1) % numHullPoints);
         hull->numLines++;
     }
 

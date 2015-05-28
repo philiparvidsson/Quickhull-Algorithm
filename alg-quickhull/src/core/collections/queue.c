@@ -94,7 +94,7 @@ void FreeQueue(queueADT queue) {
  * Description:
  *   Lägger till ett värde i en kö.
  *------------------------------------*/
-void Enqueue(queueADT queue, const void *value) {
+void Enqueue(queueADT queue, void *value) {
     Assert(!QueueIsFull(queue));
 
     queue->data[queue->tail] = value;
