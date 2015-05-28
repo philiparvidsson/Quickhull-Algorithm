@@ -152,13 +152,13 @@
 // Dessa variabler förklaras i instruktionerna vid körning.
 static bool blackHole    = FALSE;
 static bool damping      = FALSE;
-static bool drawHull     = TRUE;
-static bool drawPoints   = TRUE;
+static bool drawHull     = TRUE ;
+static bool drawPoints   = TRUE ;
 static bool gravity      = FALSE;
 static bool lockHull     = FALSE;
 static bool rubberBand   = FALSE;
 static bool slopedFloor  = FALSE;
-static bool useQuickhull = TRUE;
+static bool useQuickhull = TRUE ;
 static bool wind         = FALSE;
 
 /*------------------------------------------------
@@ -167,7 +167,8 @@ static bool wind         = FALSE;
 
 /*----------------------------------------------------------------------------*/
 /* Nedan är ett gäng funktioner som hanterar knapptryckningar, för att sätta  */
-/* på och stänga av olika switchar, etc.                                         */
+/* på och stänga av olika switchar, etc. De saknar kommentarer eftersom deras */
+/* funktionalitet är uppenbar.                                                */
 /*----------------------------------------------------------------------------*/
 
 static void RandomizePS(void *arg) {
@@ -394,7 +395,7 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
             float floor = -0.9f * (1.0f-x) - 0.3f * x;
 
             if (p->y < floor) {
-                p->y  = floor;
+                p->y = floor;
 
                 // Vektorn n är golvets perp-vektor normaliserad. Vi räknar ut
                 // den såhär:

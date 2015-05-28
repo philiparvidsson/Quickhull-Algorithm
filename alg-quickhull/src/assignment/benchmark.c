@@ -197,9 +197,13 @@ void RunBenchmark(int numPoints) {
         // procentuellt sett, en gång varje sekund. Så att användaren inte tror
         // att programmet hängt sig.
         if (StopwatchElapsed(ProgressStopwatchID) >= SecsToMicrosecs(1.0f)) {
-            float p = (float)StopwatchElapsed(BenchmarkStopwatchID) / SecsToMicrosecs(NumSeconds);
-            printf("%2.1f%%...\n", 100.0f*p);
-            ResetStopwatch(ProgressStopwatchID);
+            float p = (float)StopwatchElapsed(BenchmarkStopwatchID)
+                    /        SecsToMicrosecs (NumSeconds);
+
+            if (p < 1.0f) {
+                printf("%2.1f%%...\n", 100.0f*p);
+                ResetStopwatch(ProgressStopwatchID);
+            }
         }
     }
 

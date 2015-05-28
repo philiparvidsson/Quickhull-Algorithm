@@ -142,6 +142,13 @@ LRESULT CALLBACK WindowProc(_In_ HWND   hwnd,
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+/*--------------------------------------
+ * Function: InitPixelFormat()
+ * Parameters:
+ *
+ * Description:
+ *   Ställer in lite grejer med fönstret så att OpenGL fungerar med det...
+ *------------------------------------*/
 static void InitPixelFormat() {
     PIXELFORMATDESCRIPTOR pfd;
 
@@ -162,6 +169,13 @@ static void InitPixelFormat() {
         Error("SetPixelFormat() failed");
 }
 
+/*--------------------------------------
+ * Function: InitGraphicsImpl()
+ * Parameters:
+ *
+ * Description:
+ *   Initierar grafik-läget.
+ *------------------------------------*/
 void InitGraphicsImpl() {
     WNDCLASSEX wcx;
 
