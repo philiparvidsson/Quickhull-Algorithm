@@ -185,7 +185,7 @@ void RunBenchmark(int numPoints) {
 
     ResetStopwatch(BenchmarkStopwatchID);
     ResetStopwatch(ProgressStopwatchID);
-    while (StopwatchElapsed(BenchmarkStopwatchID) < 1000000*NumSeconds) {
+    while (StopwatchElapsed(BenchmarkStopwatchID) < SecsToMicrosecs(NumSeconds)) {
         RandomizePoints(ps);
 
         BenchmarkAlgo(ps,&hull,&bmdbf, BruteforceHull );
@@ -196,8 +196,8 @@ void RunBenchmark(int numPoints) {
         // Här ser vi till att skriva ut hur långt i benchmarket vi kommit,
         // procentuellt sett, en gång varje sekund. Så att användaren inte tror
         // att programmet hängt sig.
-        if (StopwatchElapsed(ProgressStopwatchID) >= 1000000) {
-            float p = (float)StopwatchElapsed(BenchmarkStopwatchID) / (NumSeconds*1000000);
+        if (StopwatchElapsed(ProgressStopwatchID) >= SecsToMicrosecs(1.0f)) {
+            float p = (float)StopwatchElapsed(BenchmarkStopwatchID) / SecsToMicrosecs(NumSeconds);
             printf("%2.1f%%...\n", 100.0f*p);
             ResetStopwatch(ProgressStopwatchID);
         }

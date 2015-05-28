@@ -40,4 +40,24 @@ void ResetStopwatch(int id);
  *------------------------------------*/
 int StopwatchElapsed(int id);
 
+/*--------------------------------------
+ * Function: MicrosecsToSecs()
+ * Parameters:
+ *   microsecs  Antal mikrosekunder.
+ *
+ * Description:
+ *   Konverterar från mikrosekunder till sekunder.
+ *------------------------------------*/
+float MicrosecsToSecs(int microsecs);
+
+/*--------------------------------------
+ * Function: SecsToMicrosecs()
+ * Parameters:
+ *   secs  Antal sekunder.
+ *
+ * Description:
+ *   Konverterar från sekunder till mikrosekunder.
+ *------------------------------------*/
+int SecsToMicrosecs(float secs);
+
 #endif

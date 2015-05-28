@@ -26,6 +26,12 @@ extern void   ResetStopwatchImpl(int id);
 extern int  StopwatchElapsedImpl(int id);
 
 /*------------------------------------------------
+ * CONSTANTS
+ *----------------------------------------------*/
+
+#define MicrosecsPerSec 1000000
+
+/*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
 
@@ -52,4 +58,28 @@ void ResetStopwatch(int id) {
  *------------------------------------*/
 int StopwatchElapsed(int id) {
     return StopwatchElapsedImpl(id);
+}
+
+/*--------------------------------------
+ * Function: SecsToMicrosecs()
+ * Parameters:
+ *   secs  Antal sekunder.
+ *
+ * Description:
+ *   Konverterar från sekunder till mikrosekunder.
+ *------------------------------------*/
+int SecsToMicrosecs(float secs) {
+    return secs * MicrosecsPerSec;
+}
+
+/*--------------------------------------
+ * Function: MicrosecsToSecs()
+ * Parameters:
+ *   microsecs  Antal mikrosekunder.
+ *
+ * Description:
+ *   Konverterar från mikrosekunder till sekunder.
+ *------------------------------------*/
+float MicrosecsToSecs(int microsecs) {
+    return microsecs / MicrosecsPerSec;
 }
