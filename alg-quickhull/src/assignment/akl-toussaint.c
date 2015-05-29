@@ -20,6 +20,7 @@
 
 #include "akl-toussaint.h"
 
+#include "core/debug.h"
 #include "core/math.h"
 
 /*------------------------------------------------
@@ -76,12 +77,17 @@ pointsetT AklToussaintHeuristic(pointsetT ps) {
 
     pointsetT ps2 = CreatePoints(ps.numPoints);
 
-    ps2.points[0] = *topPoint;
-    ps2.points[1] = *bottomPoint;
-    ps2.points[2] = *leftPoint;
-    ps2.points[3] = *rightPoint;
+    ps2.numPoints = 0;
 
-    ps2.numPoints = 4;
+    ps2.points[ps2.numPoints++] =    *topPoint;
+    ps2.points[ps2.numPoints++] = *bottomPoint;
+
+    if (leftPoint!=topPoint && leftPoint!=bottomPoint)
+        ps2.points[ps2.numPoints++] = *leftPoint;
+
+    if (rightPoint!=topPoint && rightPoint!=bottomPoint)
+        ps2.points[ps2.numPoints++] = *rightPoint;
+
     for (int i = 0; i < ps.numPoints; i++) {
         pointT *p = &ps.points[i];
 
@@ -92,28 +98,28 @@ pointsetT AklToussaintHeuristic(pointsetT ps) {
 
         float d = (topPoint->x - leftPoint->x) * (p->y - leftPoint->y)
                 - (topPoint->y - leftPoint->y) * (p->x - leftPoint->x);
-        if (d > 0.0f) {
+        if (d >= 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (rightPoint->x - topPoint->x) * (p->y - topPoint->y)
           - (rightPoint->y - topPoint->y) * (p->x - topPoint->x);
-        if (d > 0.0f) {
+        if (d >= 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (bottomPoint->x - rightPoint->x) * (p->y - rightPoint->y)
           - (bottomPoint->y - rightPoint->y) * (p->x - rightPoint->x);
-        if (d > 0.0f) {
+        if (d >= 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (leftPoint->x - bottomPoint->x) * (p->y - bottomPoint->y)
           - (leftPoint->y - bottomPoint->y) * (p->x - bottomPoint->x);
-        if (d > 0.0f) {
+        if (d >= 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }

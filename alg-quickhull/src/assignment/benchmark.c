@@ -102,6 +102,13 @@ typedef struct {
  * FUNCTIONS
  *----------------------------------------------*/
 
+/*--------------------------------------
+ * Function: InitBenchmarkData()
+ * Parameters:
+ *
+ * Description:
+ *   Initierar ny benchmark-data.
+ *------------------------------------*/
 static benchmarkDataT InitBenchmarkData() {
     benchmarkDataT bmd = { 0 };
 
@@ -117,24 +124,18 @@ static benchmarkDataT InitBenchmarkData() {
     return bmd;
 }
 
-static void PrintStatistics(string s, benchmarkDataT *bmd) {
-    printf("STATISTICS (%s)\n"
-           "-----------------------------------------------------------------\n"
-           "                         Min.          Max.          Avg.\n"
-           " Critical Operations     %-10d    %-10d    %-10d\n"
-           " Number of Allocations   %-10d    %-10d    %-10d\n"
-           " Memory Used (bytes)     %-10d    %-10d    %-10d\n"
-           " Execution Time (\xe6s)     %-10d    %-10d    %-10d\n"
-           "-----------------------------------------------------------------\n"
-           "\n",
-           s, bmd->minOps   , bmd->maxOps   , (int)bmd->avgOps   ,
-              bmd->minAllocs, bmd->maxAllocs, (int)bmd->avgAllocs,
-              bmd->minBytes , bmd->maxBytes , (int)bmd->avgBytes ,
-              bmd->minTime  , bmd->maxTime  , (int)bmd->avgTime  );
-}
-
-
-
+/*--------------------------------------
+ * Function: BenchmarkAlgo()
+ * Parameters:
+ *   ps    Punktuppsättningen.
+ *   hull  Höljet.
+ *   bmd   Benchmark-datastruktur.
+ *   fn    Algoritmens funktion.
+ *
+ * Description:
+ *   Kör den specificerade algoritmen för att räkna ut det kovnexa höljet och
+ *   mäter körningen. Körningsdatan sparas i parametern bmd.
+ *------------------------------------*/
 static void BenchmarkAlgo(pointsetT ps, hullT *hull, benchmarkDataT *bmd,
                           algorithmDataT (*fn)(pointsetT ps, hullT *hull))
 {
@@ -157,10 +158,45 @@ static void BenchmarkAlgo(pointsetT ps, hullT *hull, benchmarkDataT *bmd,
     bmd->avgTime   += microSecs     ;
 }
 
+/*--------------------------------------
+ * Function: PrintStatistics()
+ * Parameters:
+ *   s    Namnet på algoritmen.
+ *   bmd  Data från benchmark-körning.
+ *
+ * Description:
+ *   Skriver ut benchmark-statistik.
+ *------------------------------------*/
+static void PrintStatistics(string s, benchmarkDataT *bmd) {
+    printf("STATISTICS (%s)\n"
+           "-----------------------------------------------------------------\n"
+           "                         Min.          Max.          Avg.\n"
+           " Critical Operations     %-10d    %-10d    %-10d\n"
+           " Number of Allocations   %-10d    %-10d    %-10d\n"
+           " Memory Used (bytes)     %-10d    %-10d    %-10d\n"
+           " Execution Time (\xe6s)     %-10d    %-10d    %-10d\n"
+           "-----------------------------------------------------------------\n"
+           "\n",
+           s, bmd->minOps   , bmd->maxOps   , (int)bmd->avgOps   ,
+              bmd->minAllocs, bmd->maxAllocs, (int)bmd->avgAllocs,
+              bmd->minBytes , bmd->maxBytes , (int)bmd->avgBytes ,
+              bmd->minTime  , bmd->maxTime  , (int)bmd->avgTime  );
+}
+
+/*--------------------------------------
+ * Function: BruteforceAklToussaint()
+ * Parameters:
+ *   ps    Punktuppsättningen för vilken ett hölje ska genereras.
+ *   hull  En pekare till höljet.
+ *
+ * Description:
+ *   Genererar att konvext hölje för punktuppsättningen genom uttömmande
+ *   sökning. Returnerar information om algoritmens arbete.
+ *------------------------------------*/
 algorithmDataT BruteforceAklToussaint(pointsetT ps, hullT *hull) {
-    ps = AklToussaintHeuristic(ps);
-    algorithmDataT algo = BruteforceHull(ps, hull);
-    FreePoints(ps);
+    pointsetT ps2 = AklToussaintHeuristic(ps);
+    algorithmDataT algo = BruteforceHull(ps2, hull);
+    FreePoints(ps2);
     return algo;
 }
 
@@ -210,7 +246,7 @@ void RunBenchmark(int numPoints) {
                     /        SecsToMicrosecs (NumSeconds);
 
             if (p < 1.0f) {
-                printf("%2.1f%%\n", 100.0f*p);
+                printf("%2.1f%% ", 100.0f*p);
                 ResetStopwatch(ProgressStopwatchID);
             }
         }
@@ -234,7 +270,7 @@ void RunBenchmark(int numPoints) {
     bfat.avgBytes  /= numIterations;
     bfat.avgTime   /= numIterations;
 
-    printf("100.0%%. Done!\n\n");
+    printf("\n100.0%%. Done!\n\n");
 
     PrintStatistics("Bruteforce"                , &bf);
     PrintStatistics("Bruteforce + Akl-Toussaint", &bfat);
