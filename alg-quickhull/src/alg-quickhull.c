@@ -70,7 +70,7 @@ main() {
 
     printf("Number of points to use? ");
     int numPoints = GetIntFromUser();
-    if (numPoints < 1        ) numPoints = 1;
+    if (numPoints < 3        ) numPoints = 3;
     if (numPoints > MaxPoints) numPoints = MaxPoints;
 
     printf("Do you want to run the benchmark? (y/N) ");
