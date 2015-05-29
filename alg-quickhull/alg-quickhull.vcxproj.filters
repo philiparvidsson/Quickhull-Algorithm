@@ -105,7 +105,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="readme.txt">
+    <Text Include="doc\readme.txt">
       <Filter>Documentation Files</Filter>
     </Text>
     <Text Include="license.txt">

@@ -121,7 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="license.txt" />
-    <Text Include="readme.txt" />
+    <Text Include="doc\readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
