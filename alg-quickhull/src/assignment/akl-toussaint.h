@@ -28,6 +28,16 @@
  * FUNCTIONS
  *----------------------------------------------*/
 
+/*--------------------------------------
+ * Function: AklToussaintHeuristic()
+ * Parameters:
+ *   ps  Punktuppsättningen som Akl-Toussaint-heuristiken ska tillämpas på.
+ *
+ * Description:
+ *   Tillämpar Akl-Toussaint-heuristik på den specificerade punktuppsättningen
+ *   och returnerar den som en ny punkuppsättning. Glöm inte att anropa
+ *   FreePoints()-funktionen och deallokera den nya punktuppsättningen.
+ *------------------------------------*/
 pointsetT AklToussaintHeuristic(pointsetT ps);
 
 #endif

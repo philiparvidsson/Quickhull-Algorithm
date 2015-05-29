@@ -151,6 +151,7 @@
  *----------------------------------------------*/
 
 // Dessa variabler förklaras i instruktionerna vid körning.
+static bool aklToussaint = FALSE;
 static bool blackHole    = FALSE;
 static bool damping      = FALSE;
 static bool drawHull     = TRUE ;
@@ -175,6 +176,13 @@ static bool wind         = FALSE;
 static void RandomizePS(void *arg) {
     pointsetT *ps = (pointsetT *)arg;
     RandomizePoints(*ps);
+}
+
+static void ToggleAklToussaint(void *arg) {
+    aklToussaint = !aklToussaint;
+
+    if (aklToussaint) printf(":: Akl-Toussaint heuristic enabled.\n");
+    else              printf(":: Akl-Toussaint heuristic disabled.\n");
 }
 
 static void ToggleBlackHole(void *arg) {
@@ -270,8 +278,9 @@ static void ToggleQuickhull(void *arg) {
  *------------------------------------*/
 static void PrintInstructions() {
     printf("\nINSTRUCTIONS:\n\n"
-           "KEYS\n------------\n"
+           "KEYS\n----------------\n"
            "Key    Effect\n\n"
+           "  a    Toggles Akl-Toussaint heuristic.\n"
            "  b    Toggles black hole (gravity towards center).\n"
            "  d    Toggles damping.\n"
            "  f    Toggles sloped floor.\n"
@@ -284,7 +293,7 @@ static void PrintInstructions() {
            "  w    Toggles wind.\n"
            "  x    Randomizes point velocities.\n"
            "  z    Randomizes point positions.\n"
-           "------------\n\n");
+           "----------------\n\n");
 }
 
 /*--------------------------------------
@@ -489,6 +498,7 @@ void RunSandbox(int numPoints) {
 
     // Här ställer vi in lite roliga knappar så att sandbox blir lite mer
     // interaktiv och rolig.
+    OnKeyPress('a', ToggleAklToussaint, NULL    );
     OnKeyPress('b', ToggleBlackHole   , NULL    );
     OnKeyPress('d', ToggleDamping     , NULL    );
     OnKeyPress('f', ToggleSlopedFloor , &corners);
@@ -515,13 +525,15 @@ void RunSandbox(int numPoints) {
         while (dt >= StepSize) {
             UpdatePoints(aps, ps, vps, hull, StepSize);
             dt -= StepSize;
+        }
 
-            pointsetT ps2 = ps;
+        pointsetT ps2 = ps;
 
-            if (!lockHull) {
-                if (useQuickhull) Quickhull     (ps2, &hull);
-                else              BruteforceHull(ps2, &hull);
-            }
+        if (aklToussaint) ps2 = AklToussaintHeuristic(ps);
+
+        if (!lockHull) {
+            if (useQuickhull) Quickhull     (ps2, &hull);
+            else              BruteforceHull(ps2, &hull);
         }
 
         // Dags att rita upp allting! Rensa ritytan!
@@ -539,6 +551,12 @@ void RunSandbox(int numPoints) {
             SetColor  (0.866f, 0.000f, 0.000f, 1.000f);
             DrawPoints(ps);
         }
+
+        // Vi får bara deallokera ps2 här. Efter att höljet ritats upp (för det
+        // kräver att ps2 är kvar i minnet) och innan UpdateDisplay() anropas,
+        // eftersom aklToussaint kan sättas till falskt när ett knapptryck
+        // detekteras i funktionen.
+        if (aklToussaint) FreePoints(ps2);
 
         // Fram med allt på skärmen!
         UpdateDisplay();

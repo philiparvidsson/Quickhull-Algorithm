@@ -21,13 +21,45 @@
 #include "akl-toussaint.h"
 
 #include "core/math.h"
-#include "core/collections/array.h"
 
 /*------------------------------------------------
  * FUNCTIONS
  *----------------------------------------------*/
 
+/*--------------------------------------
+ * Function: AklToussaintHeuristic()
+ * Parameters:
+ *   ps  Punktuppsättningen som Akl-Toussaint-heuristiken ska tillämpas på.
+ *
+ * Description:
+ *   Tillämpar Akl-Toussaint-heuristik på den specificerade punktuppsättningen
+ *   och returnerar den som en ny punkuppsättning. Glöm inte att anropa
+ *   FreePoints()-funktionen och deallokera den nya punktuppsättningen.
+ *------------------------------------*/
 pointsetT AklToussaintHeuristic(pointsetT ps) {
+    /* The following simple heuristic is often used as the first step in
+     * implementations of convex hull algorithms to improve their performance.
+     * It is based on the efficient convex hull algorithm by Selim Akl and
+     * G.T.Toussaint, 1978. The idea is to quickly exclude many points that
+     * would not be part of the convex hull anyway.This method is based on the
+     * following idea.Find the two points with the lowest and highest
+     * x-coordinates, and the two points with the lowest and highest
+     * y-coordinates. (Each of these operations takes O(n).) These four points
+     * form a convex quadrilateral, and all points that lie in this
+     * quadrilateral(except for the four initially chosen vertices) are not part
+     * of the convex hull.Finding all of these points that lie in this
+     * quadrilateral is also O(n), and thus, the entire operation is O(n).
+     * Optionally, the points with smallest and largest sums of x- and
+     * y-coordinates as well as those with smallest and largest differences of
+     * x- and y- coordinates can also be added to the quadrilateral, thus
+     * forming an irregular convex octagon, whose insides can be safely
+     * discarded.If the points are random variables, then for a wide class of
+     * probability density functions, this throw - away pre - processing step
+     * will make a convex hull algorithm run in linear expected time, even if
+     * the worst - case complexity of the convex hull algorithm is quadratic in
+     * n.
+     */
+
     pointT *   topPoint = &ps.points[0],
            *bottomPoint = topPoint,
            *  leftPoint = topPoint,
@@ -42,13 +74,14 @@ pointsetT AklToussaintHeuristic(pointsetT ps) {
         if (p->y < bottomPoint->y) bottomPoint = p;
     }
 
-    arrayADT points = NewArray(sizeof(pointT *));
+    pointsetT ps2 = CreatePoints(ps.numPoints);
 
-    ArrayAdd(points, &topPoint);
-    ArrayAdd(points, &bottomPoint);
-    ArrayAdd(points, &leftPoint);
-    ArrayAdd(points, &rightPoint);
+    ps2.points[0] = *topPoint;
+    ps2.points[1] = *bottomPoint;
+    ps2.points[2] = *leftPoint;
+    ps2.points[3] = *rightPoint;
 
+    ps2.numPoints = 4;
     for (int i = 0; i < ps.numPoints; i++) {
         pointT *p = &ps.points[i];
 
@@ -60,38 +93,31 @@ pointsetT AklToussaintHeuristic(pointsetT ps) {
         float d = (topPoint->x - leftPoint->x) * (p->y - leftPoint->y)
                 - (topPoint->y - leftPoint->y) * (p->x - leftPoint->x);
         if (d > 0.0f) {
-            ArrayAdd(points, &p);
+            ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (rightPoint->x - topPoint->x) * (p->y - topPoint->y)
           - (rightPoint->y - topPoint->y) * (p->x - topPoint->x);
         if (d > 0.0f) {
-            ArrayAdd(points, &p);
+            ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (bottomPoint->x - rightPoint->x) * (p->y - rightPoint->y)
           - (bottomPoint->y - rightPoint->y) * (p->x - rightPoint->x);
         if (d > 0.0f) {
-            ArrayAdd(points, &p);
+            ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (leftPoint->x - bottomPoint->x) * (p->y - bottomPoint->y)
           - (leftPoint->y - bottomPoint->y) * (p->x - bottomPoint->x);
         if (d > 0.0f) {
-            ArrayAdd(points, &p);
+            ps2.points[ps2.numPoints++] = *p;
             continue;
         }
     }
 
-    pointsetT athps = CreatePoints(ArrayLength(points));
-
-    for (int i = 0; i < athps.numPoints; i++)
-        athps.points[i] = **(pointT **)ArrayGet(points, i);
-
-    FreeArray(points);
-
-    return athps;
+    return ps2;
 }

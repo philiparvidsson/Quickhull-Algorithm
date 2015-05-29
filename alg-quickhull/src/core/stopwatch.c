@@ -87,5 +87,5 @@ int SecsToMicrosecs(float secs) {
  *   Konverterar från mikrosekunder till sekunder.
  *------------------------------------*/
 float MicrosecsToSecs(int microsecs) {
-    return microsecs / MicrosecsPerSec;
+    return (float)microsecs / MicrosecsPerSec;
 }

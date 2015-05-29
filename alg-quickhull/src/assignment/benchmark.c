@@ -167,8 +167,7 @@ algorithmDataT BruteforceAklToussaint(pointsetT ps, hullT *hull) {
 /*--------------------------------------
  * Function: RunBenchmark()
  * Parameters:
- *   numPoints  Antal punkter att använda vid uträkning av det konvexa
- *              höljet.
+ *   numPoints  Antal punkter att använda vid uträkning av det konvexa höljet.
  *
  * Description:
  *   Kör programmet i benchmark-läge.
@@ -211,7 +210,7 @@ void RunBenchmark(int numPoints) {
                     /        SecsToMicrosecs (NumSeconds);
 
             if (p < 1.0f) {
-                printf("%2.1f%%...\n", 100.0f*p);
+                printf("%2.1f%%\n", 100.0f*p);
                 ResetStopwatch(ProgressStopwatchID);
             }
         }
