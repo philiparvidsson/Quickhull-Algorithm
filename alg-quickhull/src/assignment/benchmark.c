@@ -246,7 +246,7 @@ void RunBenchmark(int numPoints) {
                     /        SecsToMicrosecs (NumSeconds);
 
             if (p < 1.0f) {
-                printf("%2.1f%% ", 100.0f*p);
+                printf("\x08\x08\x08\x08\x08\x08\x08\x08%2.1f%%...", 100.0f*p);
                 ResetStopwatch(ProgressStopwatchID);
             }
         }
@@ -270,7 +270,7 @@ void RunBenchmark(int numPoints) {
     bfat.avgBytes  /= numIterations;
     bfat.avgTime   /= numIterations;
 
-    printf("\n100.0%%. Done!\n\n");
+    printf("\x08\x08\x08\x08\x08\x08\x08\x08 100.0%%. Done!\n\n");
 
     PrintStatistics("Bruteforce"                , &bf);
     PrintStatistics("Bruteforce + Akl-Toussaint", &bfat);

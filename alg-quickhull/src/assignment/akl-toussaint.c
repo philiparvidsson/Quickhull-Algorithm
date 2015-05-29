@@ -38,27 +38,30 @@
  *   FreePoints()-funktionen och deallokera den nya punktuppsättningen.
  *------------------------------------*/
 pointsetT AklToussaintHeuristic(pointsetT ps) {
-    /* The following simple heuristic is often used as the first step in
-     * implementations of convex hull algorithms to improve their performance.
-     * It is based on the efficient convex hull algorithm by Selim Akl and
-     * G.T.Toussaint, 1978. The idea is to quickly exclude many points that
-     * would not be part of the convex hull anyway.This method is based on the
-     * following idea.Find the two points with the lowest and highest
-     * x-coordinates, and the two points with the lowest and highest
-     * y-coordinates. (Each of these operations takes O(n).) These four points
-     * form a convex quadrilateral, and all points that lie in this
-     * quadrilateral(except for the four initially chosen vertices) are not part
-     * of the convex hull.Finding all of these points that lie in this
-     * quadrilateral is also O(n), and thus, the entire operation is O(n).
-     * Optionally, the points with smallest and largest sums of x- and
-     * y-coordinates as well as those with smallest and largest differences of
-     * x- and y- coordinates can also be added to the quadrilateral, thus
-     * forming an irregular convex octagon, whose insides can be safely
-     * discarded.If the points are random variables, then for a wide class of
-     * probability density functions, this throw - away pre - processing step
-     * will make a convex hull algorithm run in linear expected time, even if
-     * the worst - case complexity of the convex hull algorithm is quadratic in
-     * n.
+    /* 
+     * Från Wikipedia:
+     *
+     *   The following simple heuristic is often used as the first step in
+     *   implementations of convex hull algorithms to improve their performance.
+     *   It is based on the efficient convex hull algorithm by Selim Akl and
+     *   G.T.Toussaint, 1978. The idea is to quickly exclude many points that
+     *   would not be part of the convex hull anyway.This method is based on the
+     *   following idea.Find the two points with the lowest and highest
+     *   x-coordinates, and the two points with the lowest and highest
+     *   y-coordinates. (Each of these operations takes O(n).) These four points
+     *   form a convex quadrilateral, and all points that lie in this
+     *   quadrilateral(except for the four initially chosen vertices) are not
+     *   part of the convex hull.Finding all of these points that lie in this
+     *   quadrilateral is also O(n), and thus, the entire operation is O(n).
+     *   Optionally, the points with smallest and largest sums of x- and
+     *   y-coordinates as well as those with smallest and largest differences of
+     *   x- and y- coordinates can also be added to the quadrilateral, thus
+     *   forming an irregular convex octagon, whose insides can be safely
+     *   discarded.If the points are random variables, then for a wide class of
+     *   probability density functions, this throw - away pre - processing step
+     *   will make a convex hull algorithm run in linear expected time, even if
+     *   the worst - case complexity of the convex hull algorithm is quadratic
+     *   in n.
      */
 
     pointT *   topPoint = &ps.points[0],
