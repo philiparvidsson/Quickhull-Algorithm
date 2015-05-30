@@ -116,6 +116,6 @@
     <None Include="doc\IndUppg_Algoritmer_vt15.pdf">
       <Filter>Documentation Files</Filter>
     </None>
-    <None Include="doc\Konvexa_holjet_oech_quickhull.pdf" />
+    <None Include="doc\Konvexa_holjet_och_quickhull.pdf" />
   </ItemGroup>
 </Project>
