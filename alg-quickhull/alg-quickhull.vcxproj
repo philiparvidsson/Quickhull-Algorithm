@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="doc\IndUppg_Algoritmer_vt15.pdf" />
-    <None Include="doc\Konvexa_holjet_oech_quickhull.pdf" />
+    <None Include="doc\Konvexa_holjet_och_quickhull.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="license.txt" />
