@@ -105,10 +105,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="doc\readme.txt">
+    <Text Include="license.txt">
       <Filter>Documentation Files</Filter>
     </Text>
-    <Text Include="license.txt">
+    <Text Include="readme.txt">
       <Filter>Documentation Files</Filter>
     </Text>
   </ItemGroup>
@@ -116,5 +116,6 @@
     <None Include="doc\IndUppg_Algoritmer_vt15.pdf">
       <Filter>Documentation Files</Filter>
     </None>
+    <None Include="doc\Konvexa_holjet_och_Quickhull.pdf" />
   </ItemGroup>
 </Project>

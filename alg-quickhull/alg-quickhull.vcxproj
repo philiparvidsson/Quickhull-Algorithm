@@ -118,10 +118,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="doc\IndUppg_Algoritmer_vt15.pdf" />
+    <None Include="doc\Konvexa_holjet_och_Quickhull.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="license.txt" />
-    <Text Include="doc\readme.txt" />
+    <Text Include="readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

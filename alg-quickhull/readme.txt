@@ -10,4 +10,6 @@ Akl-Toussaint-heuristik är implementerad i demon men INTE inkluderad i
 rapporten. Anledningen är att rapporten helt enkelt hade blivit alldeles för
 lång (tyvärr).
 
+Rapporten finns i doc/Konvexa_holjet_och_Quickhull.pdf. Glad läsning! :-)
+
     - Philip Arvidsson (philip@philiparvidsson.com)
