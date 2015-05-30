@@ -225,7 +225,8 @@ void RunBenchmark(int numPoints) {
 
     ResetStopwatch(BenchmarkStopwatchID);
     ResetStopwatch(ProgressStopwatchID);
-    while (StopwatchElapsed(BenchmarkStopwatchID) < SecsToMicrosecs(NumSeconds)) {
+    while (StopwatchElapsed(BenchmarkStopwatchID) < SecsToMicrosecs(NumSeconds))
+    {
         RandomizePoints(ps);
 
         BenchmarkAlgo(ps,&hull,&bf  , BruteforceHull         );
