@@ -30,35 +30,6 @@
 #include <stdlib.h>
 
 /*------------------------------------------------
- * CONSTANTS
- *----------------------------------------------*/
-
-/*--------------------------------------
- * Constant: AlgorithmStopwatchID
- *
- * Description:
- *   Tidtagaruret som används för att mäta hur snabbt algoritmer exekveras.
- *------------------------------------*/
-#define AlgorithmStopwatchID 61
-
-/*--------------------------------------
- * Constant: BenchmarkStopwatchID
- *
- * Description:
- *   Tidtagaruret som används för att mäta hur lång tid benchmark-läget körts.
- *------------------------------------*/
-#define BenchmarkStopwatchID 14
-
-/*--------------------------------------
- * Constant: ProgressStopwatchID
- *
- * Description:
- *   Tidtagaruret som används för att skriva ut hur procent för benchmark-läget
- *   med jämna mellanrum.
- *------------------------------------*/
-#define ProgressStopwatchID 79
-
-/*------------------------------------------------
  * TYPES
  *----------------------------------------------*/
 
@@ -97,6 +68,31 @@ typedef struct {
  *   Antal sekunder som ska benchmark ska köras.
  *------------------------------------*/
 #define NumSeconds 30
+
+/*--------------------------------------
+ * Constant: AlgorithmStopwatchID
+ *
+ * Description:
+ *   Tidtagaruret som används för att mäta hur snabbt algoritmer exekveras.
+ *------------------------------------*/
+#define AlgorithmStopwatchID 61
+
+/*--------------------------------------
+ * Constant: BenchmarkStopwatchID
+ *
+ * Description:
+ *   Tidtagaruret som används för att mäta hur lång tid benchmark-läget körts.
+ *------------------------------------*/
+#define BenchmarkStopwatchID 14
+
+/*--------------------------------------
+ * Constant: ProgressStopwatchID
+ *
+ * Description:
+ *   Tidtagaruret som används för att skriva ut hur procent för benchmark-läget
+ *   med jämna mellanrum.
+ *------------------------------------*/
+#define ProgressStopwatchID 79
 
 /*------------------------------------------------
  * FUNCTIONS
