@@ -47,7 +47,7 @@ void AssertFail(string expr, string funcName, int line) {
 /*--------------------------------------
  * Function: Crash()
  * Parameters:
- *   msg  Meddelandet som ska visas.
+ *   msg       Meddelandet som ska visas.
  *   funcName  Namnet på den funktion som programmet kraschade i.
  *   line      Den rad i koden som programmet kraschade på.
  *

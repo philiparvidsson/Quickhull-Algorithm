@@ -101,28 +101,28 @@ pointsetT AklToussaintHeuristic(pointsetT ps) {
 
         float d = (topPoint->x - leftPoint->x) * (p->y - leftPoint->y)
                 - (topPoint->y - leftPoint->y) * (p->x - leftPoint->x);
-        if (d >= 0.0f) {
+        if (d > 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (rightPoint->x - topPoint->x) * (p->y - topPoint->y)
           - (rightPoint->y - topPoint->y) * (p->x - topPoint->x);
-        if (d >= 0.0f) {
+        if (d > 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (bottomPoint->x - rightPoint->x) * (p->y - rightPoint->y)
           - (bottomPoint->y - rightPoint->y) * (p->x - rightPoint->x);
-        if (d >= 0.0f) {
+        if (d > 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }
 
         d = (leftPoint->x - bottomPoint->x) * (p->y - bottomPoint->y)
           - (leftPoint->y - bottomPoint->y) * (p->x - bottomPoint->x);
-        if (d >= 0.0f) {
+        if (d > 0.0f) {
             ps2.points[ps2.numPoints++] = *p;
             continue;
         }
