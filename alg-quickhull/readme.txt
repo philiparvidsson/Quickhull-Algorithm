@@ -1,4 +1,4 @@
-alg-quickhull  version 0.97
+alg-quickhull  version 0.98b
 
 Den källkod som gäller uppgiften ligger i mappen src/assignment. I filerna
 bruteforce.c och quickhull.c ligger algoritmernas respektive implementationer.
