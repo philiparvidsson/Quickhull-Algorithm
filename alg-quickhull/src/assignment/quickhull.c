@@ -161,7 +161,7 @@ static algorithmDataT QH(arrayADT hull, pointT *a, pointT *b, arrayADT subset) {
      *------------------------------------------------------------------------*/
 
     if (numPoints == 1) {
-        algo.numOps = InsertBefore( ArrayGet(subset, 0), b, hull);
+        algo.numOps = InsertBefore(ArrayGet(subset, 0), b, hull);
         return algo;
     }
 
