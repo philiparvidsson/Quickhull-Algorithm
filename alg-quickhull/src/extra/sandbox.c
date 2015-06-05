@@ -570,7 +570,6 @@ void RunSandbox(int numPoints) {
 
     FreeHull  (edges);
     FreePoints(corners);
-
     FreeHull  (hull);
     FreePoints(vps);
     FreePoints(ps);
