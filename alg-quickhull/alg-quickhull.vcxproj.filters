@@ -111,6 +111,9 @@
     <Text Include="readme.txt">
       <Filter>Documentation Files</Filter>
     </Text>
+    <Text Include="todo.txt">
+      <Filter>Documentation Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="doc\IndUppg_Algoritmer_vt15.pdf">
