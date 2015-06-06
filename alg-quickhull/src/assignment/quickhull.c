@@ -313,7 +313,7 @@ algorithmDataT Quickhull(pointsetT ps, hullT *hull) {
     for (int i = 1; i < ps.numPoints; i++) {
         pointT *point = &ps.points[i];
 
-        if (point->x < leftPoint ->x) leftPoint  = point;
+        if (point->x < leftPoint ->x)  leftPoint = point;
         if (point->x > rightPoint->x) rightPoint = point;
     }
 
