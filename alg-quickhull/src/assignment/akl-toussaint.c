@@ -46,7 +46,7 @@ pointsetT AklToussaintHeuristic(pointsetT ps) {
      *   It is based on the efficient convex hull algorithm by Selim Akl and
      *   G.T.Toussaint, 1978. The idea is to quickly exclude many points that
      *   would not be part of the convex hull anyway.This method is based on the
-     *   following idea.Find the two points with the lowest and highest
+     *   following idea. Find the two points with the lowest and highest
      *   x-coordinates, and the two points with the lowest and highest
      *   y-coordinates. (Each of these operations takes O(n).) These four points
      *   form a convex quadrilateral, and all points that lie in this
