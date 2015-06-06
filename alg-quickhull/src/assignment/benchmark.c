@@ -22,9 +22,10 @@
 #include "core/math.h"
 #include "core/stopwatch.h"
 
-#include "assignment/akl-toussaint.h"
 #include "assignment/bruteforce.h"
 #include "assignment/quickhull.h"
+
+#include "extra/akl-toussaint.h"
 
 #include <stdio.h>
 #include <stdlib.h>

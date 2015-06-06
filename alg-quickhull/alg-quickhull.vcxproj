@@ -85,7 +85,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\alg-quickhull.c" />
-    <ClCompile Include="src\assignment\akl-toussaint.c" />
+    <ClCompile Include="src\extra\akl-toussaint.c" />
     <ClCompile Include="src\assignment\bruteforce.c" />
     <ClCompile Include="src\assignment\quickhull.c" />
     <ClCompile Include="src\core\collections\array.c" />
@@ -101,7 +101,7 @@
     <ClCompile Include="src\arch\win32\graphics_win32.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\assignment\akl-toussaint.h" />
+    <ClInclude Include="src\extra\akl-toussaint.h" />
     <ClInclude Include="src\assignment\algorithmdata.h" />
     <ClInclude Include="src\assignment\bruteforce.h" />
     <ClInclude Include="src\assignment\quickhull.h" />

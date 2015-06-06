@@ -56,7 +56,7 @@
     <ClCompile Include="src\arch\win32\graphics_win32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\assignment\akl-toussaint.c">
+    <ClCompile Include="src\extra\akl-toussaint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -100,7 +100,7 @@
     <ClInclude Include="src\core\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\assignment\akl-toussaint.h">
+    <ClInclude Include="src\extra\akl-toussaint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

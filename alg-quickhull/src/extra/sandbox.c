@@ -19,10 +19,10 @@
 #include "core/common.h"
 #include "core/math.h"
 
-#include "assignment/akl-toussaint.h"
 #include "assignment/bruteforce.h"
 #include "assignment/quickhull.h"
 
+#include "extra/akl-toussaint.h"
 #include "extra/graphics.h"
 
 #include <math.h>
