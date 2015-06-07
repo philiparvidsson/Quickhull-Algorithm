@@ -2,3 +2,4 @@ Här finns lite idéer att implementera när någon känner för det:
 
 * Räknare för rekursionsdjup i benchmarkläge.
 * Implementera incremental hull
+* Toggle för att göra punkterna till bollar som kolliderar med varandra.
