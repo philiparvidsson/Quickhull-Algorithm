@@ -363,7 +363,7 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
         // Här tillämpar vi miljömässiga effekter på punkterna.
 
         if (blackHole) {
-            float r = (float)sqrt(p->x*p->x + p->y*p->y);
+            float r = (float)sqrtf(p->x*p->x + p->y*p->y);
             // Vi använder en linjär modell för dragningskraften, inte inverse
             // square law. Den funkar uselt med Euler-integrering oavsett.
             if (r > 0.000001f) {
@@ -415,7 +415,7 @@ static void UpdatePoints(pointsetT aps, pointsetT ps, pointsetT vps, hullT hull,
                 //
                 //   g_perp = (-0.6, 1.8)
                 //
-                //   n^ = g_perp / ||g_perp|| 
+                //   n^ = g_perp / ||g_perp||
                 //      = (-0.6, 1.8) / ||(-0.6, 1.8)||
                 //      = (-0.6, 1.8) / 1.89737
                 //      = (-0.316228, 0.948683)

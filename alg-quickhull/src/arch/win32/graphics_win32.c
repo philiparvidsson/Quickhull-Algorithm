@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: graphics_win32.c
- * Created: May 28, 2015
- * Last changed: May 28, 2015
+ * Created: September 30, 2015
+ * Last changed: September 30, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
@@ -73,14 +73,6 @@ static HDC hdc;
  *   Grafikfönstrets fönster-handtag (kommentarer på svenska äger).
  *------------------------------------*/
 static HWND hwnd;
-
-/*--------------------------------------
- * Variable: initialized
- *
- * Description:
- *   Indikerar om grafiksystemet är initierat.
- *------------------------------------*/
-static bool initialized;
 
 /*--------------------------------------
  * Variable: keyPressCB

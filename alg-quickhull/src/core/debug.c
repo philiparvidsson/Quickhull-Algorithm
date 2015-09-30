@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------
  * File: debug.c
  * Created: January 3, 2015
- * Last changed: January 11, 2015
+ * Last changed: September 30, 2015
  *
  * Author(s): Philip Arvidsson (philip@philiparvidsson.com)
  *
@@ -40,7 +40,9 @@ void AssertFail(string expr, string funcName, int line) {
            "This program will now crash.\n"
            "Press ENTER to continue...", expr, funcName, line);
     getchar();
+#ifdef _MSC_VER
     __debugbreak();
+#endif // _MSC_VER
     exit(EXIT_FAILURE);
 }
 
@@ -59,6 +61,8 @@ void Crash(string msg, string funcName, int line) {
            "This program will now crash.\n"
            "Press ENTER to continue...", msg, funcName, line);
     getchar();
+#ifdef _MSC_VER
     __debugbreak();
+#endif // _MSC_VER
     exit(EXIT_FAILURE);
 }
