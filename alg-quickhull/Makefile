@@ -8,7 +8,9 @@ SOURCES=$(shell find src -type f -iname '*.c')
 OBJECTS=$(foreach x, $(basename $(SOURCES)), $(x).o)
 
 all: $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $(LDLIBS)
+	mkdir -p bin
+	$(CC) $(LDFLAGS) $(OBJECTS) $(LDLIBS) -o bin/alg-quickhull
 
 clean:
+	rm -rf bin
 	rm -f $(TARGET) $(OBJECTS)
