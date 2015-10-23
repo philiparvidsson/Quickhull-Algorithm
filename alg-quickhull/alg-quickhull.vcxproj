@@ -85,6 +85,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\alg-quickhull.c" />
+    <ClCompile Include="src\arch\linux\graphics_linux.c" />
+    <ClCompile Include="src\arch\linux\stopwatch_linux.c" />
     <ClCompile Include="src\extra\akl-toussaint.c" />
     <ClCompile Include="src\assignment\bruteforce.c" />
     <ClCompile Include="src\assignment\quickhull.c" />
@@ -119,6 +121,7 @@
   <ItemGroup>
     <None Include="doc\IndUppg_Algoritmer_vt15.pdf" />
     <None Include="doc\Konvexa_holjet_och_quickhull.pdf" />
+    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="license.txt" />

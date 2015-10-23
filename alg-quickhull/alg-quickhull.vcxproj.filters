@@ -59,6 +59,12 @@
     <ClCompile Include="src\extra\akl-toussaint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\arch\linux\graphics_linux.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\arch\linux\stopwatch_linux.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assignment\algorithmdata.h">
@@ -122,5 +128,6 @@
     <None Include="doc\Konvexa_holjet_och_quickhull.pdf">
       <Filter>Documentation Files</Filter>
     </None>
+    <None Include="Makefile" />
   </ItemGroup>
 </Project>
