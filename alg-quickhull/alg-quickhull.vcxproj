@@ -128,6 +128,9 @@
     <Text Include="readme.txt" />
     <Text Include="todo.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\qh0.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
