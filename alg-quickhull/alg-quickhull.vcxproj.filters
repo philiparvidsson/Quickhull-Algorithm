@@ -130,4 +130,7 @@
     </None>
     <None Include="Makefile" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\qh0.png" />
+  </ItemGroup>
 </Project>
