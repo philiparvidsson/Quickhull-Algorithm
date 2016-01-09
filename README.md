@@ -8,5 +8,25 @@ This was actually an assignment, hence the documentation and source comments are
 
 <img src="alg-quickhull/images/qh0.png" alt="" />
 
+
+    KEYS
+    ----------------
+    Key    Effect
+    
+      a    Toggles Akl-Toussaint heuristic.
+      b    Toggles black hole (gravity towards center).
+      d    Toggles damping.
+      f    Toggles sloped floor.
+      g    Toggles gravity.
+      h    Toggles hull rendering.
+      l    Toggles hull lock (locks hull to its current point set).
+      p    Toggles point rendering.
+      q    Toggles between bruteforce and quickhull.
+      r    Toggles rubber band mode (hull becomes a rubber band).
+      w    Toggles wind.
+      x    Randomizes point velocities.
+      z    Randomizes point positions.
+    ----------------
+
 Philip Arvidsson<br/>
 University of Borås, Sweden
