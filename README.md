@@ -1,10 +1,10 @@
-# alg-quickhull
+# Examining the Quickhull Algorithm
 
-Assignment for Algorithms VT15P4 (21AL1B)
+Assignment for the Algorithms VT15P4 (21AL1B) course.
 
 Implementation of the quickhull algorithm + Akl-Toussaint heuristic for realtime visualization and comparison of efficiency. Enjoy!
 
-This was actually an assignment, hence the documentation and source comments are in Swedish. If you're interested in a translation, drop me a message.
+This was actually an assignment, hence the documentation and source code comments are in Swedish. If you're interested in a translation, drop me a message!
 
 <img src="alg-quickhull/images/qh0.png" alt="" />
 
@@ -28,5 +28,5 @@ This was actually an assignment, hence the documentation and source comments are
       z    Randomizes point positions.
     ----------------
 
-Philip Arvidsson<br/>
-University of Borås, Sweden
+**Philip Arvidsson**<br/>
+*University of Borås, Sweden*
