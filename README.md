@@ -40,6 +40,10 @@ cd quickhull-algorithm
 make
 ```
 
+### Windows
+
+Open the solution in Microsoft Visual Studio and use it to build and run the program.
+
 ## Quickhull is Linear: Proof
 
 What follows is a proof (using the [Master theorem](https://en.wikipedia.org/wiki/Master_theorem)) of quickhull having linear complexity for random inputs:
