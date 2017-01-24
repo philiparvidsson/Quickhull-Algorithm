@@ -40,8 +40,8 @@ cd quickhull-algorithm
 make
 ```
 
-## Quickhull is linear!
+## Quickhull is Linear: Proof
 
-What follows is a proof of quickhull having linear complexity for random inputs:
+What follows is a proof (using the [Master theorem](https://en.wikipedia.org/wiki/Master_theorem)) of quickhull having linear complexity for random inputs:
 
 <img src="alg-quickhull/images/proof.png" alt="" />
