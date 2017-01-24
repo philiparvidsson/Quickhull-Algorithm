@@ -6,13 +6,14 @@ Implementation of the quickhull algorithm + Akl-Toussaint heuristic for realtime
 
 This was actually an assignment, hence the documentation and source code comments are in Swedish. If you're interested in a translation, drop me a message!
 
-<img src="alg-quickhull/images/qh0.png" alt="" />
+<img src="alg-quickhull/images/qh1.png" alt="" />
 
+## Settings
 
     KEYS
     ----------------
     Key    Effect
-    
+
       a    Toggles Akl-Toussaint heuristic.
       b    Toggles black hole (gravity towards center).
       d    Toggles damping.
@@ -27,6 +28,17 @@ This was actually an assignment, hence the documentation and source code comment
       x    Randomizes point velocities.
       z    Randomizes point positions.
     ----------------
+
+## Building
+
+### Linux
+
+```bash
+sudo apt -qyy install git lib-common-mesa libgl1-mesa-dev
+git clone https://github.com/philiparvidsson/quickhull-algorithm.git
+cd quickhull-algorithm
+make
+```
 
 **Philip Arvidsson**<br/>
 *University of Borås, Sweden*
