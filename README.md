@@ -45,7 +45,3 @@ make
 What follows is a proof of quickhull having linear complexity for random inputs:
 
 <img src="alg-quickhull/images/proof.png" alt="" />
-
-
-**Philip Arvidsson**<br/>
-*University of Borås, Sweden*
