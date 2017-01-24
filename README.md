@@ -34,11 +34,18 @@ This was actually an assignment, hence the documentation and source code comment
 ### Linux
 
 ```bash
-sudo apt -qyy install git lib-common-mesa libgl1-mesa-dev
+sudo apt -qqy install git lib-common-mesa libgl1-mesa-dev
 git clone https://github.com/philiparvidsson/quickhull-algorithm.git
 cd quickhull-algorithm
 make
 ```
+
+## Quickhull is linear!
+
+What follows is a proof of quickhull having linear complexity for random inputs:
+
+<img src="alg-quickhull/images/proof.png" alt="" />
+
 
 **Philip Arvidsson**<br/>
 *University of Borås, Sweden*
