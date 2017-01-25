@@ -36,7 +36,7 @@ This was actually an assignment, hence the documentation and source code comment
 ```bash
 sudo apt -qqy install git lib-common-mesa libgl1-mesa-dev
 git clone https://github.com/philiparvidsson/quickhull-algorithm.git
-cd quickhull-algorithm
+cd quickhull-algorithm/alg-quickhull
 make
 ```
 
