@@ -46,6 +46,6 @@ Open the solution in Microsoft Visual Studio and use it to build and run the pro
 
 ## Quickhull is Linear: Proof
 
-What follows is a proof (using the [Master theorem](https://en.wikipedia.org/wiki/Master_theorem)) of quickhull having linear complexity for random inputs:
+What follows is a proof (using the [master theorem](https://en.wikipedia.org/wiki/Master_theorem)) of quickhull having linear complexity for random inputs:
 
 <img src="alg-quickhull/images/proof.png" alt="" />
