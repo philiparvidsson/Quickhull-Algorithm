@@ -46,6 +46,6 @@ Open the solution in Microsoft Visual Studio and use it to build and run the pro
 
 ## Quickhull is Linear: Proof
 
-What follows is a proof (using the [master theorem](https://en.wikipedia.org/wiki/Master_theorem)) of quickhull having linear complexity for uniformly randomly distributed points:
+What follows is my proof for the assignment (using the [master theorem](https://en.wikipedia.org/wiki/Master_theorem)) of quickhull having linear complexity for uniformly randomly distributed points:
 
 <img src="alg-quickhull/images/proof.png" alt="" />
