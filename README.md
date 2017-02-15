@@ -2,7 +2,7 @@
 
 Assignment for the Algorithms VT15P4 (21AL1B) course.
 
-Implementation of the quickhull algorithm + Akl-Toussaint heuristic for realtime visualization and comparison of efficiency. Enjoy!
+Implementation of the quickhull algorithm + Akl-Toussaint heuristic for realtime visualization (using OpenGL) and comparison of efficiency. Enjoy!
 
 This was actually an assignment, hence the documentation and source code comments are in Swedish. If you're interested in a translation, drop me a message!
 
